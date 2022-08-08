@@ -1,0 +1,17 @@
+export enum SchoolingLevel {
+  'Ensino Técnico Incompleto',
+  'Ensino Técnico Completo',
+  'Ensino Médio Incompleto',
+  'Ensino Médio Completo',
+  'Supletivo',
+  'Ensino Superior Incompleto',
+  'Ensino Superior Completo',
+  'Pós-Graduação Incompleta',
+  'Pós-Graduação Completa',
+  'Mestrado Incompleto',
+  'Mestrado Completo',
+  'Doutorado Incompleto',
+  'Doutorado Completo',
+  'Pós-Doutorado Incompleto',
+  'Pós-Doutorado Completo',
+}
