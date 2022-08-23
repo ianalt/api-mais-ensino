@@ -31,10 +31,10 @@ export class EducationInfo {
   @Column({ name: 'institution_name' })
   institutionName: string;
 
-  @Column({ name: 'start_year' })
+  @Column({ name: 'start_year', type: 'year' })
   startYear: string;
 
-  @Column({ name: 'conclusion_year', nullable: true })
+  @Column({ name: 'conclusion_year', type: 'year', nullable: true })
   conclusionYear: string | null;
 
   @ManyToOne(() => User, (user) => user.educationInfoList)
