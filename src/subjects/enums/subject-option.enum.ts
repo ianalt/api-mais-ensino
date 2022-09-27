@@ -1,15 +1,17 @@
-export enum SubjectOption {
-  'Literatura Brasileira',
-  'Português',
-  'Inglês',
-  'Espanhol',
-  'Geografia',
-  'História Nacional',
-  'História Geral',
-  'Filosofia',
-  'Sociologia',
-  'Biologia',
-  'Química',
-  'Física',
-  'Matemática',
-}
+// export enum SubjectOption {
+//   'Literatura Brasileira',
+//   'Português',
+//   'Inglês',
+//   'Espanhol',
+//   'Geografia',
+//   'História Nacional',
+//   'História Geral',
+//   'Filosofia',
+//   'Sociologia',
+//   'Biologia',
+//   'Química',
+//   'Física',
+//   'Matemática',
+// }
+
+// ENUM('Literatura Brasileira', 'Português', 'Inglês', 'Espanhol', 'Geografia', 'História Nacional', 'História Geral', 'Filosofia', 'Sociologia', 'Biologia', 'Química', 'Física', 'Matemática')

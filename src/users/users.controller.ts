@@ -6,8 +6,8 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards,
   Request,
+  UseGuards,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -31,31 +31,17 @@ export class UsersController {
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
-  @Get('/history/:id')
+  @Get('/:id')
   @Serialize(UserDTO)
   async findById(@Param('id') id: string) {
     return await this.usersService.findById(parseInt(id));
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
-  @Get('/:id')
-  @Serialize(UserDTO)
-  async findActiveById(@Param('id') id: string) {
-    return await this.usersService.findActiveById(parseInt(id));
-  }
-
-  @Roles('estudante', 'monitor', 'professor', 'admin')
-  @Get('/history')
+  @Get()
   @Serialize(UserDTO)
   async findAll() {
     return await this.usersService.findAll();
-  }
-
-  @Roles('estudante', 'monitor', 'professor', 'admin')
-  @Get()
-  @Serialize(UserDTO)
-  async findAllActive() {
-    return await this.usersService.findAllActive();
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
@@ -97,7 +83,7 @@ export class UsersController {
   @Patch('/delete/:id')
   @Serialize(UserDTO)
   async delete(@Param('id') id: string) {
-    return await this.usersService.setActive(parseInt(id), false);
+    return await this.usersService.delete(parseInt(id));
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')

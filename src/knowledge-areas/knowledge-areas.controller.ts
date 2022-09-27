@@ -10,9 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { CreateKnowledgeAreaDTO } from './dtos/create-knowledge-area.dto';
 import { UpdateKnowledgeAreaDTO } from './dtos/update-knowledge-area.dto';
@@ -23,8 +21,8 @@ import { KnowledgeAreasService } from './knowledge-areas.service';
 export class KnowledgeAreasController {
   constructor(private knowledgeAreasService: KnowledgeAreasService) {}
 
-  @Roles('admin')
-  @Get('/history/:id')
+  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Get('/:id')
   async findById(@Param('id') id: string) {
     const knowledgeArea = await this.knowledgeAreasService.findById(
       parseInt(id),
@@ -36,29 +34,15 @@ export class KnowledgeAreasController {
     return knowledgeArea;
   }
 
-  @Roles('admin')
-  @Get('/:id')
-  async findActiveById(@Param('id') id: string) {
-    const knowledgeArea = await this.knowledgeAreasService.findActiveById(
-      parseInt(id),
-    );
-
-    if (!knowledgeArea)
-      throw new NotFoundException('Knowledge area not found.');
-
-    return knowledgeArea;
-  }
-
-  @Roles('admin')
-  @Get('/history')
-  findAll() {
-    return this.knowledgeAreasService.findAll();
-  }
-
-  @Roles('admin')
+  @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get()
-  findAllActive() {
-    return this.knowledgeAreasService.findAllActive();
+  async findAll() {
+    const knowledgeAreas = await this.knowledgeAreasService.findAll();
+
+    if (!knowledgeAreas)
+      throw new NotFoundException('Could not find knowledge areas.');
+
+    return knowledgeAreas;
   }
 
   @Roles('admin')
@@ -76,7 +60,7 @@ export class KnowledgeAreasController {
   @Roles('admin')
   @Patch('delete/:id')
   async delete(@Param('id') id: string) {
-    return await this.knowledgeAreasService.setActive(parseInt(id), false);
+    return await this.knowledgeAreasService.delete(parseInt(id));
   }
 
   @Roles('admin')

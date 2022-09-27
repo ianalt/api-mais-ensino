@@ -17,7 +17,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('+Ensino API Documentation')
     .setDescription('+Ensino API')
-    .setVersion('0.3')
+    .setVersion('0.1')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

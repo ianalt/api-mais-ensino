@@ -1,9 +1,8 @@
-import { IsEnum, IsOptional, IsString } from 'class-validator';
-import { SubjectOption } from '../enums/subject-option.enum';
+import { IsOptional, IsString } from 'class-validator';
 
 export class UpdateSubjectDTO {
-  @IsEnum(SubjectOption)
-  name: SubjectOption;
+  @IsString()
+  name: string;
 
   @IsOptional()
   @IsString()

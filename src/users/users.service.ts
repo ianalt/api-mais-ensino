@@ -4,11 +4,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { hashPassword } from 'src/auth/hashing';
 import { Repository } from 'typeorm';
 import { CreateUserDTO } from './dtos/create-user.dto';
-import { User } from './user.entity';
 import { UpdateUserDTO } from './dtos/update-user.dto';
-import { hashPassword } from 'src/auth/hashing';
+import { User } from './user.entity';
 
 @Injectable()
 export class UsersService {
@@ -30,19 +30,6 @@ export class UsersService {
     if (!id) return null;
 
     const user = await this.usersRepository.findOne({
-      where: { id },
-      relations: this.allRelations,
-    });
-
-    if (!user) throw new NotFoundException('User not found.');
-
-    return user;
-  }
-
-  async findActiveById(id: number) {
-    if (!id) return null;
-
-    const user = await this.usersRepository.findOne({
       where: { id, active: true },
       relations: this.allRelations,
     });
@@ -53,16 +40,6 @@ export class UsersService {
   }
 
   async findAll() {
-    const users = await this.usersRepository.find({
-      relations: this.allRelations,
-    });
-
-    if (!users) throw new NotFoundException('Users not found.');
-
-    return users;
-  }
-
-  async findAllActive() {
     const users = await this.usersRepository.find({
       where: { active: true },
       relations: this.allRelations,
@@ -110,15 +87,6 @@ export class UsersService {
     if (!email) return null;
 
     return await this.usersRepository.findOne({
-      where: { email },
-      relations: this.allRelations,
-    });
-  }
-
-  async findActiveByEmail(email: string) {
-    if (!email) return null;
-
-    return await this.usersRepository.findOne({
       where: { email, active: true },
       relations: this.allRelations,
     });
@@ -142,7 +110,7 @@ export class UsersService {
   }
 
   async update(id: number, body: UpdateUserDTO) {
-    const user = await this.findActiveById(id);
+    const user = await this.findById(id);
 
     if (!user) throw new NotFoundException('User not found.');
 
@@ -163,19 +131,19 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  async setActive(id: number, active: boolean) {
+  async delete(id: number) {
     const user = await this.findById(id);
 
     if (!user) throw new NotFoundException('User not found.');
 
     user.updatedAt = new Date();
-    user.active = active;
+    user.active = false;
 
     return this.usersRepository.save(user);
   }
 
   async remove(id: number) {
-    const user = await this.findActiveById(id);
+    const user = await this.findById(id);
 
     if (!user) throw new NotFoundException('User not found.');
 

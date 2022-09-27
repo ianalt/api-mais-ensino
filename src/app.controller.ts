@@ -17,6 +17,7 @@ export class AppController {
     return this.appService.getHello();
   }
 
+  //TODO remove
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(@UploadedFile() file: Express.Multer.File) {

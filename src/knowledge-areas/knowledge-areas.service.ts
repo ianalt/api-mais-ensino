@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { Repository } from 'typeorm';
 import { CreateKnowledgeAreaDTO } from './dtos/create-knowledge-area.dto';
 import { UpdateKnowledgeAreaDTO } from './dtos/update-knowledge-area.dto';
@@ -19,25 +18,12 @@ export class KnowledgeAreasService {
     if (!id) return null;
 
     return this.knowledgeAreasRepository.findOne({
-      where: { id },
-      relations: this.allRelations,
-    });
-  }
-
-  findActiveById(id: number) {
-    if (!id) return null;
-
-    return this.knowledgeAreasRepository.findOne({
       where: { id, active: true },
       relations: this.allRelations,
     });
   }
 
   findAll() {
-    return this.knowledgeAreasRepository.find({ relations: ['subjects'] });
-  }
-
-  findAllActive() {
     return this.knowledgeAreasRepository.find({
       where: { active: true },
       relations: this.allRelations,
@@ -54,7 +40,7 @@ export class KnowledgeAreasService {
   }
 
   async update(id: number, body: UpdateKnowledgeAreaDTO) {
-    const knowledgeArea = await this.findActiveById(id);
+    const knowledgeArea = await this.findById(id);
 
     if (!knowledgeArea)
       throw new NotFoundException('Knowledge area not found.');
@@ -68,20 +54,20 @@ export class KnowledgeAreasService {
     return this.knowledgeAreasRepository.save(knowledgeArea);
   }
 
-  async setActive(id: number, active: boolean) {
+  async delete(id: number) {
     const knowledgeArea = await this.findById(id);
 
     if (!knowledgeArea)
       throw new NotFoundException('Knowledge area not found.');
 
     knowledgeArea.updatedAt = new Date();
-    knowledgeArea.active = active;
+    knowledgeArea.active = false;
 
     return this.knowledgeAreasRepository.save(knowledgeArea);
   }
 
   async remove(id: number) {
-    const knowledgeArea = await this.findActiveById(id);
+    const knowledgeArea = await this.findById(id);
 
     if (!knowledgeArea)
       throw new NotFoundException('Knowledge area not found.');

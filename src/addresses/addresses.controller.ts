@@ -10,9 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { AddressesService } from './addresses.service';
 import { CreateAddressDTO } from './dtos/create-address.dto';
@@ -24,7 +22,7 @@ export class AddressesController {
   constructor(private addressesService: AddressesService) {}
 
   @Roles('admin')
-  @Get('/history/:id')
+  @Get('/:id')
   async findById(@Param('id') id: string) {
     const address = await this.addressesService.findById(parseInt(id));
 
@@ -34,25 +32,9 @@ export class AddressesController {
   }
 
   @Roles('admin')
-  @Get('/:id')
-  async findActiveById(@Param('id') id: string) {
-    const address = await this.addressesService.findActiveById(parseInt(id));
-
-    if (!address) throw new NotFoundException('Address not found.');
-
-    return address;
-  }
-
-  @Roles('admin')
-  @Get('/history')
+  @Get()
   findAll() {
     return this.addressesService.findAll();
-  }
-
-  @Roles('admin')
-  @Get()
-  findAllActive() {
-    return this.addressesService.findAllActive();
   }
 
   @Roles('admin')
@@ -73,7 +55,7 @@ export class AddressesController {
   @Roles('admin')
   @Patch('delete/:id')
   async delete(@Param('id') id: string) {
-    return await this.addressesService.setActive(parseInt(id), false);
+    return await this.addressesService.delete(parseInt(id));
   }
 
   @Roles('admin')

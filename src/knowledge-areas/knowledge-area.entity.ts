@@ -1,6 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Subject } from 'src/subjects/subject.entity';
-import { KnowledgeAreaOption } from './enums/knowledge-area-option.enum';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'areas_conhecimento' })
 export class KnowledgeArea {
@@ -17,7 +16,7 @@ export class KnowledgeArea {
   active: boolean;
 
   @Column({ name: 'name' })
-  name: KnowledgeAreaOption;
+  name: string;
 
   @Column({ name: 'description' })
   description: string;

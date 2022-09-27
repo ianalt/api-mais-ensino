@@ -3,14 +3,13 @@ import { ValidateNested } from 'class-validator';
 import { BaseCategoryDTO } from 'src/categories/dtos/base-category.dto';
 import { BaseKnowledgeAreaDTO } from 'src/knowledge-areas/dtos/base-knowledge-area.dto';
 import { BaseUserDTO } from 'src/users/dtos/base-user.dto';
-import { SubjectOption } from '../enums/subject-option.enum';
 
 export class SubjectDTO {
   @Expose()
   id: number;
 
   @Expose()
-  name: SubjectOption;
+  name: string;
 
   @Expose()
   description: string;

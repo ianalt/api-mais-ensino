@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
 import { CreateEducationInfoDTO } from './dtos/create-education-info.dto';
@@ -23,25 +22,12 @@ export class EducationInfoService {
     if (!id) return null;
 
     return this.educationInfoRepository.findOne({
-      where: { id },
-      relations: this.allRelations,
-    });
-  }
-
-  findActiveById(id: number) {
-    if (!id) return null;
-
-    return this.educationInfoRepository.findOne({
       where: { id, active: true },
       relations: this.allRelations,
     });
   }
 
   findAll() {
-    return this.educationInfoRepository.find({ relations: this.allRelations });
-  }
-
-  findAllActive() {
     return this.educationInfoRepository.find({
       where: { active: true },
       relations: this.allRelations,
@@ -64,7 +50,7 @@ export class EducationInfoService {
   }
 
   async update(id: number, body: UpdateEducationInfoDTO) {
-    const educationInfo = await this.findActiveById(id);
+    const educationInfo = await this.findById(id);
 
     if (!educationInfo)
       throw new NotFoundException('Education info not found.');
@@ -78,20 +64,20 @@ export class EducationInfoService {
     return this.educationInfoRepository.save(educationInfo);
   }
 
-  async setActive(id: number, active: boolean) {
+  async delete(id: number) {
     const educationInfo = await this.findById(id);
 
     if (!educationInfo)
       throw new NotFoundException('Education info not found.');
 
     educationInfo.updatedAt = new Date();
-    educationInfo.active = active;
+    educationInfo.active = false;
 
     return this.educationInfoRepository.save(educationInfo);
   }
 
   async remove(id: number) {
-    const educationInfo = await this.findActiveById(id);
+    const educationInfo = await this.findById(id);
 
     if (!educationInfo)
       throw new NotFoundException('Education info not found.');

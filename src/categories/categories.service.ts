@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { Repository } from 'typeorm';
 import { Category } from './category.entity';
 import { CreateCategoryDTO } from './dtos/create-category.dto';
@@ -19,25 +18,12 @@ export class CategoriesService {
     if (!id) return null;
 
     return this.categoriesRepository.findOne({
-      where: { id },
-      relations: this.allRelations,
-    });
-  }
-
-  findActiveById(id: number) {
-    if (!id) return null;
-
-    return this.categoriesRepository.findOne({
       where: { id, active: true },
       relations: this.allRelations,
     });
   }
 
   findAll() {
-    return this.categoriesRepository.find();
-  }
-
-  findAllActive() {
     return this.categoriesRepository.find({
       where: { active: true },
       relations: this.allRelations,
@@ -54,7 +40,7 @@ export class CategoriesService {
   }
 
   async update(id: number, body: UpdateCategoryDTO) {
-    const category = await this.findActiveById(id);
+    const category = await this.findById(id);
 
     if (!category) throw new NotFoundException('Category not found.');
 
@@ -67,19 +53,19 @@ export class CategoriesService {
     return this.categoriesRepository.save(category);
   }
 
-  async setActive(id: number, active: boolean) {
+  async delete(id: number) {
     const category = await this.findById(id);
 
     if (!category) throw new NotFoundException('Category not found.');
 
     category.updatedAt = new Date();
-    category.active = active;
+    category.active = false;
 
     return this.categoriesRepository.save(category);
   }
 
   async remove(id: number) {
-    const category = await this.findActiveById(id);
+    const category = await this.findById(id);
 
     if (!category) throw new NotFoundException('Category not found.');
 

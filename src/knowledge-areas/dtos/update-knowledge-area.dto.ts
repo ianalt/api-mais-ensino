@@ -1,10 +1,9 @@
-import { IsEnum, IsOptional, IsString } from 'class-validator';
-import { KnowledgeAreaOption } from '../enums/knowledge-area-option.enum';
+import { IsOptional, IsString } from 'class-validator';
 
 export class UpdateKnowledgeAreaDTO {
   @IsOptional()
-  @IsEnum(KnowledgeAreaOption)
-  name: KnowledgeAreaOption;
+  @IsString()
+  name: string;
 
   @IsOptional()
   @IsString()

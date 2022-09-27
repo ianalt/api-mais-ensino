@@ -4,7 +4,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { Repository } from 'typeorm';
 import { CreateTokenDTO } from './dtos/create-token.dto';
 import { Token } from './token.entity';
@@ -22,29 +21,12 @@ export class TokensService {
     if (!id) return null;
 
     return await this.tokensRepository.findOne({
-      where: { id },
-      relations: this.allRelations,
-    });
-  }
-
-  async findActiveById(id: number) {
-    if (!id) return null;
-
-    return await this.tokensRepository.findOne({
       where: { id, active: true },
       relations: this.allRelations,
     });
   }
 
   async findAll() {
-    const tokens = await this.tokensRepository.find({ relations: ['user'] });
-
-    if (!tokens) throw new NotFoundException('Tokens not found.');
-
-    return tokens;
-  }
-
-  async findAllActive() {
     const tokens = await this.tokensRepository.find({
       where: { active: true },
       relations: this.allRelations,
@@ -66,18 +48,18 @@ export class TokensService {
     return this.tokensRepository.save(newToken);
   }
 
-  async setActive(id: number, active: boolean) {
+  async delete(id: number) {
     const token = await this.findById(id);
 
     if (!token) throw new NotFoundException('Token not found.');
 
-    token.active = active;
+    token.active = false;
 
     return this.tokensRepository.save(token);
   }
 
   async remove(id: number) {
-    const token = await this.findActiveById(id);
+    const token = await this.findById(id);
 
     if (!token) throw new NotFoundException('Token not found.');
 

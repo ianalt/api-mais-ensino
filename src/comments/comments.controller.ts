@@ -10,9 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { CommentsService } from './comments.service';
 import { CreateCommentDTO } from './dtos/create-comment.dto';
@@ -23,8 +21,8 @@ import { UpdateCommentDTO } from './dtos/update-comment.dto';
 export class CommentsController {
   constructor(private commentsService: CommentsService) {}
 
-  @Roles('admin')
-  @Get('/history/:id')
+  @Roles('monitor', 'professor', 'admin')
+  @Get('/:id')
   async findById(@Param('id') id: string) {
     const comment = await this.commentsService.findById(parseInt(id));
 
@@ -34,25 +32,9 @@ export class CommentsController {
   }
 
   @Roles('monitor', 'professor', 'admin')
-  @Get('/:id')
-  async findActiveById(@Param('id') id: string) {
-    const comment = await this.commentsService.findActiveById(parseInt(id));
-
-    if (!comment) throw new NotFoundException('Comment not found.');
-
-    return comment;
-  }
-
-  @Roles('admin')
-  @Get('/history')
+  @Get()
   findAll() {
     return this.commentsService.findAll();
-  }
-
-  @Roles('monitor', 'professor', 'admin')
-  @Get()
-  findAllActive() {
-    return this.commentsService.findAllActive();
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
@@ -70,7 +52,7 @@ export class CommentsController {
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Patch('delete/:id')
   async delete(@Param('id') id: string) {
-    return await this.commentsService.setActive(parseInt(id), false);
+    return await this.commentsService.delete(parseInt(id));
   }
 
   @Roles('admin')

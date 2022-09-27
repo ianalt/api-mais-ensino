@@ -10,9 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { CreatePhoneNumberDTO } from './dtos/create-phone-number.dto';
 import { UpdatePhoneNumberDTO } from './dtos/update-phone-number.dto';
@@ -24,7 +22,7 @@ export class PhoneNumbersController {
   constructor(private phoneNumbersService: PhoneNumbersService) {}
 
   @Roles('admin')
-  @Get('/history/:id')
+  @Get('/:id')
   async findById(@Param('id') id: string) {
     const phoneNumber = await this.phoneNumbersService.findById(parseInt(id));
 
@@ -34,27 +32,9 @@ export class PhoneNumbersController {
   }
 
   @Roles('admin')
-  @Get('/:id')
-  async findActiveById(@Param('id') id: string) {
-    const phoneNumber = await this.phoneNumbersService.findActiveById(
-      parseInt(id),
-    );
-
-    if (!phoneNumber) throw new NotFoundException('Phone number not found.');
-
-    return phoneNumber;
-  }
-
-  @Roles('admin')
-  @Get('/history')
+  @Get()
   findAll() {
     return this.phoneNumbersService.findAll();
-  }
-
-  @Roles('admin')
-  @Get()
-  findAllActive() {
-    return this.phoneNumbersService.findAllActive();
   }
 
   @Roles('admin')
@@ -72,7 +52,7 @@ export class PhoneNumbersController {
   @Roles('admin')
   @Patch('delete/:id')
   async delete(@Param('id') id: string) {
-    return await this.phoneNumbersService.setActive(parseInt(id), false);
+    return await this.phoneNumbersService.delete(parseInt(id));
   }
 
   @Roles('admin')

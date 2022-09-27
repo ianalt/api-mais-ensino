@@ -1,5 +1,5 @@
 import {
-  IsDate,
+  IsDateString,
   IsEmail,
   IsEnum,
   IsString,
@@ -31,7 +31,7 @@ export class CreateUserDTO {
   @IsString()
   cpf: string;
 
-  @IsDate()
+  @IsDateString()
   birthDate: Date;
 
   @IsEnum(Ethnicity)

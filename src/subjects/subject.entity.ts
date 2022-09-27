@@ -1,15 +1,14 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  OneToMany,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
 import { Category } from 'src/categories/category.entity';
 import { KnowledgeArea } from 'src/knowledge-areas/knowledge-area.entity';
 import { User } from 'src/users/user.entity';
-import { SubjectOption } from './enums/subject-option.enum';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({ name: 'disciplinas' })
 export class Subject {
@@ -26,7 +25,7 @@ export class Subject {
   active: boolean;
 
   @Column({ name: 'name' })
-  name: SubjectOption;
+  name: string;
 
   @Column({ name: 'description', nullable: true })
   description: string;

@@ -10,9 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { CommentFilesService } from './comment-files.service';
 import { CreateCommentFileDTO } from './dtos/create-comment-file.dto';
@@ -24,7 +22,7 @@ export class CommentFilesController {
   constructor(private commentFilesService: CommentFilesService) {}
 
   @Roles('admin')
-  @Get('/history/:id')
+  @Get('/:id')
   async findById(@Param('id') id: string) {
     const commentFile = await this.commentFilesService.findById(parseInt(id));
 
@@ -34,27 +32,9 @@ export class CommentFilesController {
   }
 
   @Roles('admin')
-  @Get('/:id')
-  async findActiveById(@Param('id') id: string) {
-    const commentFile = await this.commentFilesService.findActiveById(
-      parseInt(id),
-    );
-
-    if (!commentFile) throw new NotFoundException('Comment file not found.');
-
-    return commentFile;
-  }
-
-  @Roles('admin')
-  @Get('/history')
+  @Get()
   findAll() {
     return this.commentFilesService.findAll();
-  }
-
-  @Roles('admin')
-  @Get()
-  findAllActive() {
-    return this.commentFilesService.findAllActive();
   }
 
   @Roles('admin')
@@ -72,7 +52,7 @@ export class CommentFilesController {
   @Roles('admin')
   @Patch('delete/:id')
   async delete(@Param('id') id: string) {
-    return await this.commentFilesService.setActive(parseInt(id), false);
+    return await this.commentFilesService.delete(parseInt(id));
   }
 
   @Roles('admin')

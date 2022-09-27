@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { Repository } from 'typeorm';
 import { CreateTopicFileDTO } from './dtos/create-topic-file.dto';
 import { UpdateTopicFileDTO } from './dtos/update-topic-file.dto';
@@ -19,25 +18,12 @@ export class TopicFilesService {
     if (!id) return null;
 
     return this.topicFilesRepository.findOne({
-      where: { id },
-      relations: this.allRelations,
-    });
-  }
-
-  findActiveById(id: number) {
-    if (!id) return null;
-
-    return this.topicFilesRepository.findOne({
       where: { id, active: true },
       relations: this.allRelations,
     });
   }
 
   findAll() {
-    return this.topicFilesRepository.find({ relations: ['topic'] });
-  }
-
-  findAllActive() {
     return this.topicFilesRepository.find({
       where: { active: true },
       relations: this.allRelations,
@@ -54,7 +40,7 @@ export class TopicFilesService {
   }
 
   async update(id: number, body: UpdateTopicFileDTO) {
-    const topicFile = await this.findActiveById(id);
+    const topicFile = await this.findById(id);
 
     if (!topicFile) throw new NotFoundException('Topic file not found.');
 
@@ -67,19 +53,19 @@ export class TopicFilesService {
     return this.topicFilesRepository.save(topicFile);
   }
 
-  async setActive(id: number, active: boolean) {
+  async delete(id: number) {
     const topicFile = await this.findById(id);
 
     if (!topicFile) throw new NotFoundException('Topic file not found.');
 
     topicFile.updatedAt = new Date();
-    topicFile.active = active;
+    topicFile.active = false;
 
     return this.topicFilesRepository.save(topicFile);
   }
 
   async remove(id: number) {
-    const topicFile = await this.findActiveById(id);
+    const topicFile = await this.findById(id);
 
     if (!topicFile) throw new NotFoundException('Topic file not found.');
 

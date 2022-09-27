@@ -10,9 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { CreateEducationInfoDTO } from './dtos/create-education-info.dto';
 import { UpdateEducationInfoDTO } from './dtos/update-education-info.dto';
@@ -24,7 +22,7 @@ export class EducationInfoController {
   constructor(private educationInfoService: EducationInfoService) {}
 
   @Roles('admin')
-  @Get('/history/:id')
+  @Get('/:id')
   async findById(@Param('id') id: string) {
     const educationInfo = await this.educationInfoService.findById(
       parseInt(id),
@@ -37,28 +35,9 @@ export class EducationInfoController {
   }
 
   @Roles('admin')
-  @Get('/:id')
-  async findActiveById(@Param('id') id: string) {
-    const educationInfo = await this.educationInfoService.findActiveById(
-      parseInt(id),
-    );
-
-    if (!educationInfo)
-      throw new NotFoundException('Education info not found.');
-
-    return educationInfo;
-  }
-
-  @Roles('admin')
-  @Get('/history')
+  @Get()
   findAll() {
     return this.educationInfoService.findAll();
-  }
-
-  @Roles('admin')
-  @Get()
-  findAllActive() {
-    return this.educationInfoService.findAllActive();
   }
 
   @Roles('admin')
@@ -79,7 +58,7 @@ export class EducationInfoController {
   @Roles('admin')
   @Patch('delete/:id')
   async delete(@Param('id') id: string) {
-    return await this.educationInfoService.setActive(parseInt(id), false);
+    return await this.educationInfoService.delete(parseInt(id));
   }
 
   @Roles('admin')

@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { Repository } from 'typeorm';
 import { Comment } from './comment.entity';
 import { CreateCommentDTO } from './dtos/create-comment.dto';
@@ -25,27 +24,12 @@ export class CommentsService {
     if (!id) return null;
 
     return this.commentsRepository.findOne({
-      where: { id },
-      relations: this.allRelations,
-    });
-  }
-
-  findActiveById(id: number) {
-    if (!id) return null;
-
-    return this.commentsRepository.findOne({
       where: { id, active: true },
       relations: this.allRelations,
     });
   }
 
   findAll() {
-    return this.commentsRepository.find({
-      relations: this.allRelations,
-    });
-  }
-
-  findAllActive() {
     return this.commentsRepository.find({
       where: { active: true },
       relations: this.allRelations,
@@ -62,7 +46,7 @@ export class CommentsService {
   }
 
   async update(id: number, body: UpdateCommentDTO) {
-    const comment = await this.findActiveById(id);
+    const comment = await this.findById(id);
 
     if (!comment) throw new NotFoundException('Comment not found.');
 
@@ -75,19 +59,19 @@ export class CommentsService {
     return this.commentsRepository.save(comment);
   }
 
-  async setActive(id: number, active: boolean) {
+  async delete(id: number) {
     const comment = await this.findById(id);
 
     if (!comment) throw new NotFoundException('Comment not found.');
 
     comment.updatedAt = new Date();
-    comment.active = active;
+    comment.active = false;
 
     return this.commentsRepository.save(comment);
   }
 
   async remove(id: number) {
-    const comment = await this.findActiveById(id);
+    const comment = await this.findById(id);
 
     if (!comment) throw new NotFoundException('Comment not found.');
 

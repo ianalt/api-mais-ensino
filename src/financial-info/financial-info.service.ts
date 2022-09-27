@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
 import { CreateFinancialInfoDTO } from './dtos/create-financial-info.dto';
@@ -23,25 +22,12 @@ export class FinancialInfoService {
     if (!id) return null;
 
     return this.financialInfoRepository.findOne({
-      where: { id },
-      relations: this.allRelations,
-    });
-  }
-
-  findActiveById(id: number) {
-    if (!id) return null;
-
-    return this.financialInfoRepository.findOne({
       where: { id, active: true },
       relations: this.allRelations,
     });
   }
 
   findAll() {
-    return this.financialInfoRepository.find({ relations: this.allRelations });
-  }
-
-  findAllActive() {
     return this.financialInfoRepository.find({
       where: { active: true },
       relations: this.allRelations,
@@ -64,7 +50,7 @@ export class FinancialInfoService {
   }
 
   async update(id: number, body: UpdateFinancialInfoDTO) {
-    const financialInfo = await this.findActiveById(id);
+    const financialInfo = await this.findById(id);
 
     if (!financialInfo)
       throw new NotFoundException('Financial info not found.');
@@ -78,20 +64,20 @@ export class FinancialInfoService {
     return this.financialInfoRepository.save(financialInfo);
   }
 
-  async setActive(id: number, active: boolean) {
+  async delete(id: number) {
     const financialInfo = await this.findById(id);
 
     if (!financialInfo)
       throw new NotFoundException('Financial info not found.');
 
     financialInfo.updatedAt = new Date();
-    financialInfo.active = active;
+    financialInfo.active = false;
 
     return this.financialInfoRepository.save(financialInfo);
   }
 
   async remove(id: number) {
-    const financialInfo = await this.findActiveById(id);
+    const financialInfo = await this.findById(id);
 
     if (!financialInfo)
       throw new NotFoundException('Financial info not found.');

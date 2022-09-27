@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { Repository } from 'typeorm';
 import { CreateSubjectDTO } from './dtos/create-subject.dto';
 import { UpdateSubjectDTO } from './dtos/update-subject.dto';
@@ -19,27 +18,12 @@ export class SubjectsService {
     if (!id) return null;
 
     return this.subjectsRepository.findOne({
-      where: { id },
-      relations: this.allRelations,
-    });
-  }
-
-  findActiveById(id: number) {
-    if (!id) return null;
-
-    return this.subjectsRepository.findOne({
       where: { id, active: true },
       relations: this.allRelations,
     });
   }
 
   findAll() {
-    return this.subjectsRepository.find({
-      relations: this.allRelations,
-    });
-  }
-
-  findAllActive() {
     return this.subjectsRepository.find({
       where: { active: true },
       relations: this.allRelations,
@@ -56,7 +40,7 @@ export class SubjectsService {
   }
 
   async update(id: number, body: UpdateSubjectDTO) {
-    const subject = await this.findActiveById(id);
+    const subject = await this.findById(id);
 
     if (!subject) throw new NotFoundException('Subject not found.');
 
@@ -69,19 +53,19 @@ export class SubjectsService {
     return this.subjectsRepository.save(subject);
   }
 
-  async setActive(id: number, active: boolean) {
+  async delete(id: number) {
     const subject = await this.findById(id);
 
     if (!subject) throw new NotFoundException('Subject not found.');
 
     subject.updatedAt = new Date();
-    subject.active = active;
+    subject.active = false;
 
     return this.subjectsRepository.save(subject);
   }
 
   async remove(id: number) {
-    const subject = await this.findActiveById(id);
+    const subject = await this.findById(id);
 
     if (!subject) throw new NotFoundException('Subject not found.');
 

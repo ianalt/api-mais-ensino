@@ -10,9 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDTO } from './dtos/create-category.dto';
@@ -23,8 +21,8 @@ import { UpdateCategoryDTO } from './dtos/update-category.dto';
 export class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
 
-  @Roles('admin')
-  @Get('/history/:id')
+  @Roles('professor', 'admin')
+  @Get('/:id')
   async findById(@Param('id') id: string) {
     const category = await this.categoriesService.findById(parseInt(id));
 
@@ -34,25 +32,9 @@ export class CategoriesController {
   }
 
   @Roles('professor', 'admin')
-  @Get('/:id')
-  async findActiveById(@Param('id') id: string) {
-    const category = await this.categoriesService.findActiveById(parseInt(id));
-
-    if (!category) throw new NotFoundException('Category not found.');
-
-    return category;
-  }
-
-  @Roles('admin')
-  @Get('/history')
+  @Get()
   findAll() {
     return this.categoriesService.findAll();
-  }
-
-  @Roles('professor', 'admin')
-  @Get()
-  findAllActive() {
-    return this.categoriesService.findAllActive();
   }
 
   @Roles('professor', 'admin')
@@ -70,7 +52,7 @@ export class CategoriesController {
   @Roles('professor', 'admin')
   @Patch('delete/:id')
   async delete(@Param('id') id: string) {
-    return await this.categoriesService.setActive(parseInt(id), false);
+    return await this.categoriesService.delete(parseInt(id));
   }
 
   @Roles('admin')

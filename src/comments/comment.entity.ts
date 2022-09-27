@@ -1,14 +1,14 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  OneToMany,
-  JoinColumn,
-} from 'typeorm';
 import { CommentFile } from 'src/comment-files/comment-file.entity';
 import { Topic } from 'src/topics/topic.entity';
 import { User } from 'src/users/user.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({ name: 'comentarios' })
 export class Comment {

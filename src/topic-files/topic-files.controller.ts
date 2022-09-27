@@ -10,9 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { CreateTopicFileDTO } from './dtos/create-topic-file.dto';
 import { UpdateTopicFileDTO } from './dtos/update-topic-file.dto';
@@ -24,7 +22,7 @@ export class TopicFilesController {
   constructor(private topicFilesService: TopicFilesService) {}
 
   @Roles('admin')
-  @Get('/history/:id')
+  @Get('/:id')
   async findById(@Param('id') id: string) {
     const topic = await this.topicFilesService.findById(parseInt(id));
 
@@ -34,25 +32,9 @@ export class TopicFilesController {
   }
 
   @Roles('admin')
-  @Get('/:id')
-  async findActiveById(@Param('id') id: string) {
-    const topic = await this.topicFilesService.findActiveById(parseInt(id));
-
-    if (!topic) throw new NotFoundException('Topic file not found.');
-
-    return topic;
-  }
-
-  @Roles('admin')
-  @Get('/history')
+  @Get()
   findAll() {
     return this.topicFilesService.findAll();
-  }
-
-  @Roles('admin')
-  @Get()
-  findAllActive() {
-    return this.topicFilesService.findAllActive();
   }
 
   @Roles('admin')
@@ -70,7 +52,7 @@ export class TopicFilesController {
   @Roles('admin')
   @Patch('delete/:id')
   async delete(@Param('id') id: string) {
-    return await this.topicFilesService.setActive(parseInt(id), false);
+    return await this.topicFilesService.delete(parseInt(id));
   }
 
   @Roles('admin')

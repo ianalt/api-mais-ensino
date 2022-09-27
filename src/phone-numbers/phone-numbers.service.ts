@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
 import { CreatePhoneNumberDTO } from './dtos/create-phone-number.dto';
@@ -23,25 +22,12 @@ export class PhoneNumbersService {
     if (!id) return null;
 
     return this.phoneNumbersRepository.findOne({
-      where: { id },
-      relations: this.allRelations,
-    });
-  }
-
-  findActiveById(id: number) {
-    if (!id) return null;
-
-    return this.phoneNumbersRepository.findOne({
       where: { id, active: true },
       relations: this.allRelations,
     });
   }
 
   findAll() {
-    return this.phoneNumbersRepository.find({ relations: this.allRelations });
-  }
-
-  findAllActive() {
     return this.phoneNumbersRepository.find({
       where: { active: true },
       relations: this.allRelations,
@@ -64,7 +50,7 @@ export class PhoneNumbersService {
   }
 
   async update(id: number, body: UpdatePhoneNumberDTO) {
-    const phoneNumber = await this.findActiveById(id);
+    const phoneNumber = await this.findById(id);
 
     if (!phoneNumber) throw new NotFoundException('Phone number not found.');
 
@@ -77,19 +63,19 @@ export class PhoneNumbersService {
     return this.phoneNumbersRepository.save(phoneNumber);
   }
 
-  async setActive(id: number, active: boolean) {
+  async delete(id: number) {
     const phoneNumber = await this.findById(id);
 
     if (!phoneNumber) throw new NotFoundException('Phone number not found.');
 
     phoneNumber.updatedAt = new Date();
-    phoneNumber.active = active;
+    phoneNumber.active = false;
 
     return this.phoneNumbersRepository.save(phoneNumber);
   }
 
   async remove(id: number) {
-    const phoneNumber = await this.findActiveById(id);
+    const phoneNumber = await this.findById(id);
 
     if (!phoneNumber) throw new NotFoundException('Phone number not found.');
 
