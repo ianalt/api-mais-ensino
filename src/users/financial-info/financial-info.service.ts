@@ -18,7 +18,7 @@ export class FinancialInfoService {
 
   private allRelations = ['user'];
 
-  findById(id: number) {
+  findByID(id: number) {
     if (!id) return null;
 
     return this.financialInfoRepository.findOne({
@@ -34,8 +34,8 @@ export class FinancialInfoService {
     });
   }
 
-  async create(body: CreateFinancialInfoDTO, userId: number) {
-    const user = await this.usersRepository.findOne(userId);
+  async create(body: CreateFinancialInfoDTO, userID: number) {
+    const user = await this.usersRepository.findOne(userID);
 
     if (!user) throw new NotFoundException('User not found.');
 
@@ -49,7 +49,7 @@ export class FinancialInfoService {
   }
 
   async update(id: number, body: UpdateFinancialInfoDTO) {
-    const financialInfo = await this.findById(id);
+    const financialInfo = await this.findByID(id);
 
     if (!financialInfo)
       throw new NotFoundException('Financial info not found.');
@@ -64,7 +64,7 @@ export class FinancialInfoService {
   }
 
   async delete(id: number) {
-    const financialInfo = await this.findById(id);
+    const financialInfo = await this.findByID(id);
 
     if (!financialInfo)
       throw new NotFoundException('Financial info not found.');
@@ -76,7 +76,7 @@ export class FinancialInfoService {
   }
 
   async remove(id: number) {
-    const financialInfo = await this.findById(id);
+    const financialInfo = await this.findByID(id);
 
     if (!financialInfo)
       throw new NotFoundException('Financial info not found.');

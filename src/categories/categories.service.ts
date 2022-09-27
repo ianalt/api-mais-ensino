@@ -18,7 +18,7 @@ export class CategoriesService {
 
   private allRelations = ['topics', 'subject'];
 
-  findById(id: number) {
+  findByID(id: number) {
     if (!id) return null;
 
     return this.categoriesRepository.findOne({
@@ -56,7 +56,7 @@ export class CategoriesService {
   }
 
   async update(id: number, body: UpdateCategoryDTO) {
-    const category = await this.findById(id);
+    const category = await this.findByID(id);
 
     if (!category) throw new NotFoundException('Category not found.');
 
@@ -82,7 +82,7 @@ export class CategoriesService {
   }
 
   async delete(id: number) {
-    const category = await this.findById(id);
+    const category = await this.findByID(id);
 
     if (!category) throw new NotFoundException('Category not found.');
 
@@ -93,7 +93,7 @@ export class CategoriesService {
   }
 
   async remove(id: number) {
-    const category = await this.findById(id);
+    const category = await this.findByID(id);
 
     if (!category) throw new NotFoundException('Category not found.');
 

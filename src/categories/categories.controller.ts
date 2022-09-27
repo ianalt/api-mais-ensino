@@ -26,8 +26,8 @@ export class CategoriesController {
   @Roles('professor', 'admin')
   @Get('/:id')
   @Serialize(CategoryDTO)
-  async findById(@Param('id') id: string) {
-    const category = await this.categoriesService.findById(parseInt(id));
+  async findByID(@Param('id') id: string) {
+    const category = await this.categoriesService.findByID(parseInt(id));
 
     if (!category) throw new NotFoundException('Category not found.');
 

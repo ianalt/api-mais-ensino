@@ -7,10 +7,10 @@ import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { AddressesModule } from 'src/addresses/addresses.module';
-import { PhoneNumbersModule } from 'src/phone-numbers/phone-numbers.module';
-import { EducationInfoModule } from 'src/education-info/education-info.module';
-import { FinancialInfoModule } from 'src/financial-info/financial-info.module';
+import { AddressesModule } from 'src/users/addresses/addresses.module';
+import { PhoneNumbersModule } from 'src/users/phone-numbers/phone-numbers.module';
+import { EducationInfoModule } from 'src/users/education-info/education-info.module';
+import { FinancialInfoModule } from 'src/users/financial-info/financial-info.module';
 import { jwtConfig } from '../config/jwt-config';
 
 @Module({

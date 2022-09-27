@@ -23,8 +23,8 @@ export class EducationInfoController {
 
   @Roles('admin')
   @Get('/:id')
-  async findById(@Param('id') id: string) {
-    const educationInfo = await this.educationInfoService.findById(
+  async findByID(@Param('id') id: string) {
+    const educationInfo = await this.educationInfoService.findByID(
       parseInt(id),
     );
 
@@ -41,12 +41,12 @@ export class EducationInfoController {
   }
 
   @Roles('admin')
-  @Post('/:userId')
+  @Post('/:userID')
   create(
     @Body() body: CreateEducationInfoDTO,
-    @Param('userId') userId: string,
+    @Param('userID') userID: string,
   ) {
-    return this.educationInfoService.create(body, parseInt(userId));
+    return this.educationInfoService.create(body, parseInt(userID));
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')

@@ -14,7 +14,7 @@ export class CommentFilesService {
 
   private allRelations = ['comment'];
 
-  findById(id: number) {
+  findByID(id: number) {
     if (!id) return null;
 
     return this.commentFilesRepository.findOne({
@@ -39,7 +39,7 @@ export class CommentFilesService {
   }
 
   async update(id: number, body: UpdateCommentFileDTO) {
-    const commentFile = await this.findById(id);
+    const commentFile = await this.findByID(id);
 
     if (!commentFile) throw new NotFoundException('Comment file not found.');
 
@@ -53,7 +53,7 @@ export class CommentFilesService {
   }
 
   async delete(id: number) {
-    const commentFile = await this.findById(id);
+    const commentFile = await this.findByID(id);
 
     if (!commentFile) throw new NotFoundException('Comment file not found.');
 
@@ -64,7 +64,7 @@ export class CommentFilesService {
   }
 
   async remove(id: number) {
-    const commentFile = await this.findById(id);
+    const commentFile = await this.findByID(id);
 
     if (!commentFile) throw new NotFoundException('Comment file not found.');
 

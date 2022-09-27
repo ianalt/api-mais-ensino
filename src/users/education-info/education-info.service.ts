@@ -18,7 +18,7 @@ export class EducationInfoService {
 
   private allRelations = ['user'];
 
-  findById(id: number) {
+  findByID(id: number) {
     if (!id) return null;
 
     return this.educationInfoRepository.findOne({
@@ -34,8 +34,8 @@ export class EducationInfoService {
     });
   }
 
-  async create(body: CreateEducationInfoDTO, userId: number) {
-    const user = await this.usersRepository.findOne(userId);
+  async create(body: CreateEducationInfoDTO, userID: number) {
+    const user = await this.usersRepository.findOne(userID);
 
     if (!user) throw new NotFoundException('User not found.');
 
@@ -49,7 +49,7 @@ export class EducationInfoService {
   }
 
   async update(id: number, body: UpdateEducationInfoDTO) {
-    const educationInfo = await this.findById(id);
+    const educationInfo = await this.findByID(id);
 
     if (!educationInfo)
       throw new NotFoundException('Education info not found.');
@@ -64,7 +64,7 @@ export class EducationInfoService {
   }
 
   async delete(id: number) {
-    const educationInfo = await this.findById(id);
+    const educationInfo = await this.findByID(id);
 
     if (!educationInfo)
       throw new NotFoundException('Education info not found.');
@@ -76,7 +76,7 @@ export class EducationInfoService {
   }
 
   async remove(id: number) {
-    const educationInfo = await this.findById(id);
+    const educationInfo = await this.findByID(id);
 
     if (!educationInfo)
       throw new NotFoundException('Education info not found.');

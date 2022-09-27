@@ -17,7 +17,7 @@ export class TokensService {
 
   private allRelations = ['user'];
 
-  async findById(id: number) {
+  async findByID(id: number) {
     if (!id) return null;
 
     return await this.tokensRepository.findOne({
@@ -48,7 +48,7 @@ export class TokensService {
   }
 
   async delete(id: number) {
-    const token = await this.findById(id);
+    const token = await this.findByID(id);
 
     if (!token) throw new NotFoundException('Token not found.');
 
@@ -58,7 +58,7 @@ export class TokensService {
   }
 
   async remove(id: number) {
-    const token = await this.findById(id);
+    const token = await this.findByID(id);
 
     if (!token) throw new NotFoundException('Token not found.');
 

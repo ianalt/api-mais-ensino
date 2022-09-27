@@ -14,7 +14,7 @@ export class KnowledgeAreasService {
 
   private allRelations = ['subjects'];
 
-  findById(id: number) {
+  findByID(id: number) {
     if (!id) return null;
 
     return this.knowledgeAreasRepository.findOne({
@@ -39,7 +39,7 @@ export class KnowledgeAreasService {
   }
 
   async update(id: number, body: UpdateKnowledgeAreaDTO) {
-    const knowledgeArea = await this.findById(id);
+    const knowledgeArea = await this.findByID(id);
 
     if (!knowledgeArea)
       throw new NotFoundException('Knowledge area not found.');
@@ -54,7 +54,7 @@ export class KnowledgeAreasService {
   }
 
   async delete(id: number) {
-    const knowledgeArea = await this.findById(id);
+    const knowledgeArea = await this.findByID(id);
 
     if (!knowledgeArea)
       throw new NotFoundException('Knowledge area not found.');
@@ -66,7 +66,7 @@ export class KnowledgeAreasService {
   }
 
   async remove(id: number) {
-    const knowledgeArea = await this.findById(id);
+    const knowledgeArea = await this.findByID(id);
 
     if (!knowledgeArea)
       throw new NotFoundException('Knowledge area not found.');

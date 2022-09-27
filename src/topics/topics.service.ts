@@ -13,7 +13,7 @@ export class TopicsService {
 
   private allRelations = ['category', 'topicFiles', 'comments'];
 
-  findById(id: number) {
+  findByID(id: number) {
     if (!id) return null;
 
     return this.topicsRepository.findOne({
@@ -38,7 +38,7 @@ export class TopicsService {
   }
 
   async update(id: number, body: UpdateTopicDTO) {
-    const topic = await this.findById(id);
+    const topic = await this.findByID(id);
 
     if (!topic) throw new NotFoundException('Topic not found.');
 
@@ -52,7 +52,7 @@ export class TopicsService {
   }
 
   async delete(id: number) {
-    const topic = await this.findById(id);
+    const topic = await this.findByID(id);
 
     if (!topic) throw new NotFoundException('Topic not found.');
 
@@ -63,7 +63,7 @@ export class TopicsService {
   }
 
   async remove(id: number) {
-    const topic = await this.findById(id);
+    const topic = await this.findByID(id);
 
     if (!topic) throw new NotFoundException('Topic not found.');
 

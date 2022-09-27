@@ -20,7 +20,7 @@ export class CommentsService {
     'topic',
   ];
 
-  findById(id: number) {
+  findByID(id: number) {
     if (!id) return null;
 
     return this.commentsRepository.findOne({
@@ -45,7 +45,7 @@ export class CommentsService {
   }
 
   async update(id: number, body: UpdateCommentDTO) {
-    const comment = await this.findById(id);
+    const comment = await this.findByID(id);
 
     if (!comment) throw new NotFoundException('Comment not found.');
 
@@ -59,7 +59,7 @@ export class CommentsService {
   }
 
   async delete(id: number) {
-    const comment = await this.findById(id);
+    const comment = await this.findByID(id);
 
     if (!comment) throw new NotFoundException('Comment not found.');
 
@@ -70,7 +70,7 @@ export class CommentsService {
   }
 
   async remove(id: number) {
-    const comment = await this.findById(id);
+    const comment = await this.findByID(id);
 
     if (!comment) throw new NotFoundException('Comment not found.');
 

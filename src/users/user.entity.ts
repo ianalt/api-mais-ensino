@@ -7,10 +7,10 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { Address } from 'src/addresses/address.entity';
-import { EducationInfo } from 'src/education-info/education-info.entity';
-import { FinancialInfo } from 'src/financial-info/financial-info.entity';
-import { PhoneNumber } from 'src/phone-numbers/phone-number.entity';
+import { Address } from 'src/users/addresses/address.entity';
+import { EducationInfo } from 'src/users/education-info/education-info.entity';
+import { FinancialInfo } from 'src/users/financial-info/financial-info.entity';
+import { PhoneNumber } from 'src/users/phone-numbers/phone-number.entity';
 import { Subject } from 'src/subjects/subject.entity';
 import { Token } from 'src/tokens/token.entity';
 import { Ethnicity } from './enums/ethnicity.enum';

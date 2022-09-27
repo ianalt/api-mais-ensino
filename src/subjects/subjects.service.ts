@@ -18,7 +18,7 @@ export class SubjectsService {
 
   private allRelations = ['users', 'knowledgeArea', 'categories'];
 
-  findById(id: number) {
+  findByID(id: number) {
     if (!id) return null;
 
     return this.subjectsRepository.findOne({
@@ -57,7 +57,7 @@ export class SubjectsService {
   }
 
   async update(id: number, body: UpdateSubjectDTO) {
-    const subject = await this.findById(id);
+    const subject = await this.findByID(id);
 
     if (!subject) throw new NotFoundException('Subject not found.');
 
@@ -84,7 +84,7 @@ export class SubjectsService {
   }
 
   async delete(id: number) {
-    const subject = await this.findById(id);
+    const subject = await this.findByID(id);
 
     if (!subject) throw new NotFoundException('Subject not found.');
 
@@ -95,7 +95,7 @@ export class SubjectsService {
   }
 
   async remove(id: number) {
-    const subject = await this.findById(id);
+    const subject = await this.findByID(id);
 
     if (!subject) throw new NotFoundException('Subject not found.');
 

@@ -23,8 +23,8 @@ export class TopicFilesController {
 
   @Roles('admin')
   @Get('/:id')
-  async findById(@Param('id') id: string) {
-    const topic = await this.topicFilesService.findById(parseInt(id));
+  async findByID(@Param('id') id: string) {
+    const topic = await this.topicFilesService.findByID(parseInt(id));
 
     if (!topic) throw new NotFoundException('Topic file not found.');
 

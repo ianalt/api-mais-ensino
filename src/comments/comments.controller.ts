@@ -23,8 +23,8 @@ export class CommentsController {
 
   @Roles('monitor', 'professor', 'admin')
   @Get('/:id')
-  async findById(@Param('id') id: string) {
-    const comment = await this.commentsService.findById(parseInt(id));
+  async findByID(@Param('id') id: string) {
+    const comment = await this.commentsService.findByID(parseInt(id));
 
     if (!comment) throw new NotFoundException('Comment not found.');
 

@@ -33,8 +33,8 @@ export class UsersController {
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get('/:id')
   @Serialize(UserDTO)
-  async findById(@Param('id') id: string) {
-    return await this.usersService.findById(parseInt(id));
+  async findByID(@Param('id') id: string) {
+    return await this.usersService.findByID(parseInt(id));
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')

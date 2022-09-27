@@ -26,8 +26,8 @@ export class SubjectsController {
   @Roles('admin')
   @Get('/:id')
   @Serialize(SubjectDTO)
-  async findById(@Param('id') id: string) {
-    const subject = await this.subjectsService.findById(parseInt(id));
+  async findByID(@Param('id') id: string) {
+    const subject = await this.subjectsService.findByID(parseInt(id));
 
     if (!subject) throw new NotFoundException('Subject not found.');
 

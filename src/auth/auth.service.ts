@@ -4,10 +4,10 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { AddressesService } from 'src/addresses/addresses.service';
-import { EducationInfoService } from 'src/education-info/education-info.service';
-import { FinancialInfoService } from 'src/financial-info/financial-info.service';
-import { PhoneNumbersService } from 'src/phone-numbers/phone-numbers.service';
+import { AddressesService } from 'src/users/addresses/addresses.service';
+import { EducationInfoService } from 'src/users/education-info/education-info.service';
+import { FinancialInfoService } from 'src/users/financial-info/financial-info.service';
+import { PhoneNumbersService } from 'src/users/phone-numbers/phone-numbers.service';
 import { TokensService } from 'src/tokens/tokens.service';
 import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
@@ -78,9 +78,9 @@ export class AuthService {
           'An error has occurred while trying to sign up. Please try again.',
         );
 
-      const userId = newUser.id;
+      const userID = newUser.id;
 
-      const newAddress = await this.addressesService.create(address, userId);
+      const newAddress = await this.addressesService.create(address, userID);
 
       if (!newAddress)
         throw new BadRequestException(
@@ -89,7 +89,7 @@ export class AuthService {
 
       const newFinancialInfo = await this.financialInfoService.create(
         financialInfo,
-        userId,
+        userID,
       );
 
       if (!newFinancialInfo)
@@ -100,7 +100,7 @@ export class AuthService {
       for (let i = 0; i < phoneNumbers.length; ++i) {
         const newPhoneNumber = await this.phoneNumbersService.create(
           phoneNumbers[i],
-          userId,
+          userID,
         );
 
         if (!newPhoneNumber)
@@ -112,7 +112,7 @@ export class AuthService {
       for (let i = 0; i < educationInfoList.length; ++i) {
         const newEducationInfo = await this.educationInfoService.create(
           educationInfoList[i],
-          userId,
+          userID,
         );
 
         if (!newEducationInfo)
@@ -136,9 +136,9 @@ export class AuthService {
         'An error has occurred while trying to sign up. Please try again.',
       );
 
-    const userId = newUser.id;
+    const userID = newUser.id;
 
-    const newAddress = await this.addressesService.create(address, userId);
+    const newAddress = await this.addressesService.create(address, userID);
 
     if (!newAddress)
       throw new BadRequestException(
@@ -147,7 +147,7 @@ export class AuthService {
 
     const newFinancialInfo = await this.financialInfoService.create(
       financialInfo,
-      userId,
+      userID,
     );
 
     if (!newFinancialInfo)
@@ -158,7 +158,7 @@ export class AuthService {
     for (let i = 0; i < phoneNumbers.length; ++i) {
       const newPhoneNumber = await this.phoneNumbersService.create(
         phoneNumbers[i],
-        userId,
+        userID,
       );
 
       if (!newPhoneNumber)
@@ -170,7 +170,7 @@ export class AuthService {
     for (let i = 0; i < educationInfoList.length; ++i) {
       const newEducationInfo = await this.educationInfoService.create(
         educationInfoList[i],
-        userId,
+        userID,
       );
 
       if (!newEducationInfo)

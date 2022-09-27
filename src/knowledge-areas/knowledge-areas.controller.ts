@@ -26,8 +26,8 @@ export class KnowledgeAreasController {
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get('/:id')
   @Serialize(KnowledgeAreaDTO)
-  async findById(@Param('id') id: string) {
-    const knowledgeArea = await this.knowledgeAreasService.findById(
+  async findByID(@Param('id') id: string) {
+    const knowledgeArea = await this.knowledgeAreasService.findByID(
       parseInt(id),
     );
 

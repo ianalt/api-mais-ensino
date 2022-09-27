@@ -26,7 +26,7 @@ export class UsersService {
     'subject',
   ];
 
-  async findById(id: number) {
+  async findByID(id: number) {
     if (!id) return null;
 
     const user = await this.usersRepository.findOne({
@@ -109,7 +109,7 @@ export class UsersService {
   }
 
   async update(id: number, body: UpdateUserDTO) {
-    const user = await this.findById(id);
+    const user = await this.findByID(id);
 
     if (!user) throw new NotFoundException('User not found.');
 
@@ -131,7 +131,7 @@ export class UsersService {
   }
 
   async delete(id: number) {
-    const user = await this.findById(id);
+    const user = await this.findByID(id);
 
     if (!user) throw new NotFoundException('User not found.');
 
@@ -142,7 +142,7 @@ export class UsersService {
   }
 
   async remove(id: number) {
-    const user = await this.findById(id);
+    const user = await this.findByID(id);
 
     if (!user) throw new NotFoundException('User not found.');
 

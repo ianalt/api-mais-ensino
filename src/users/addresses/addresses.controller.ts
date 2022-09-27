@@ -23,8 +23,8 @@ export class AddressesController {
 
   @Roles('admin')
   @Get('/:id')
-  async findById(@Param('id') id: string) {
-    const address = await this.addressesService.findById(parseInt(id));
+  async findByID(@Param('id') id: string) {
+    const address = await this.addressesService.findByID(parseInt(id));
 
     if (!address) throw new NotFoundException('Address not found.');
 
@@ -38,12 +38,12 @@ export class AddressesController {
   }
 
   @Roles('admin')
-  @Post('user/:userId')
+  @Post('user/:userID')
   async create(
     @Body() body: CreateAddressDTO,
-    @Param('userId') userId: string,
+    @Param('userID') userID: string,
   ) {
-    return this.addressesService.create(body, parseInt(userId));
+    return this.addressesService.create(body, parseInt(userID));
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')

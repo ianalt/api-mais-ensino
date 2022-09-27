@@ -23,8 +23,8 @@ export class CommentFilesController {
 
   @Roles('admin')
   @Get('/:id')
-  async findById(@Param('id') id: string) {
-    const commentFile = await this.commentFilesService.findById(parseInt(id));
+  async findByID(@Param('id') id: string) {
+    const commentFile = await this.commentFilesService.findByID(parseInt(id));
 
     if (!commentFile) throw new NotFoundException('Comment file not found.');
 

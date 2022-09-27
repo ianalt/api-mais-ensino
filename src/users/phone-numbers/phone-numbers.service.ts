@@ -18,7 +18,7 @@ export class PhoneNumbersService {
 
   private allRelations = ['user'];
 
-  findById(id: number) {
+  findByID(id: number) {
     if (!id) return null;
 
     return this.phoneNumbersRepository.findOne({
@@ -34,8 +34,8 @@ export class PhoneNumbersService {
     });
   }
 
-  async create(body: CreatePhoneNumberDTO, userId: number) {
-    const user = await this.usersRepository.findOne(userId);
+  async create(body: CreatePhoneNumberDTO, userID: number) {
+    const user = await this.usersRepository.findOne(userID);
 
     if (!user) throw new NotFoundException('User not found.');
 
@@ -49,7 +49,7 @@ export class PhoneNumbersService {
   }
 
   async update(id: number, body: UpdatePhoneNumberDTO) {
-    const phoneNumber = await this.findById(id);
+    const phoneNumber = await this.findByID(id);
 
     if (!phoneNumber) throw new NotFoundException('Phone number not found.');
 
@@ -63,7 +63,7 @@ export class PhoneNumbersService {
   }
 
   async delete(id: number) {
-    const phoneNumber = await this.findById(id);
+    const phoneNumber = await this.findByID(id);
 
     if (!phoneNumber) throw new NotFoundException('Phone number not found.');
 
@@ -74,7 +74,7 @@ export class PhoneNumbersService {
   }
 
   async remove(id: number) {
-    const phoneNumber = await this.findById(id);
+    const phoneNumber = await this.findByID(id);
 
     if (!phoneNumber) throw new NotFoundException('Phone number not found.');
 

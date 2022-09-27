@@ -18,7 +18,7 @@ export class AddressesService {
 
   private allRelations = ['user'];
 
-  findById(id: number) {
+  findByID(id: number) {
     if (!id) return null;
 
     return this.addressesRepository.findOne({
@@ -34,8 +34,8 @@ export class AddressesService {
     });
   }
 
-  async create(body: CreateAddressDTO, userId: number) {
-    const user = await this.usersRepository.findOne(userId);
+  async create(body: CreateAddressDTO, userID: number) {
+    const user = await this.usersRepository.findOne(userID);
 
     if (!user) throw new NotFoundException('User not found.');
 
@@ -49,7 +49,7 @@ export class AddressesService {
   }
 
   async update(id: number, body: UpdateAddressDTO) {
-    const address = await this.findById(id);
+    const address = await this.findByID(id);
 
     if (!address) throw new NotFoundException('Address not found.');
 
@@ -63,7 +63,7 @@ export class AddressesService {
   }
 
   async delete(id: number) {
-    const address = await this.findById(id);
+    const address = await this.findByID(id);
 
     if (!address) throw new NotFoundException('Address not found.');
 
@@ -74,7 +74,7 @@ export class AddressesService {
   }
 
   async remove(id: number) {
-    const address = await this.findById(id);
+    const address = await this.findByID(id);
 
     if (!address) throw new NotFoundException('Address not found.');
 

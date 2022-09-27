@@ -23,8 +23,8 @@ export class PhoneNumbersController {
 
   @Roles('admin')
   @Get('/:id')
-  async findById(@Param('id') id: string) {
-    const phoneNumber = await this.phoneNumbersService.findById(parseInt(id));
+  async findByID(@Param('id') id: string) {
+    const phoneNumber = await this.phoneNumbersService.findByID(parseInt(id));
 
     if (!phoneNumber) throw new NotFoundException('Phone number not found.');
 
@@ -38,12 +38,12 @@ export class PhoneNumbersController {
   }
 
   @Roles('admin')
-  @Post('/:userId')
+  @Post('/:userID')
   async create(
     @Body() body: CreatePhoneNumberDTO,
-    @Param('userId') userId: string,
+    @Param('userID') userID: string,
   ) {
-    return this.phoneNumbersService.create(body, parseInt(userId));
+    return this.phoneNumbersService.create(body, parseInt(userID));
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')

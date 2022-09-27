@@ -23,8 +23,8 @@ export class FinancialInfoController {
 
   @Roles('admin')
   @Get('/:id')
-  async findById(@Param('id') id: string) {
-    const financialInfo = await this.financialInfoService.findById(
+  async findByID(@Param('id') id: string) {
+    const financialInfo = await this.financialInfoService.findByID(
       parseInt(id),
     );
 
@@ -41,12 +41,12 @@ export class FinancialInfoController {
   }
 
   @Roles('admin')
-  @Post('/:userId')
+  @Post('/:userID')
   create(
     @Body() body: CreateFinancialInfoDTO,
-    @Param('userId') userId: string,
+    @Param('userID') userID: string,
   ) {
-    return this.financialInfoService.create(body, parseInt(userId));
+    return this.financialInfoService.create(body, parseInt(userID));
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
