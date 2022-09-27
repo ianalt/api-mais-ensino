@@ -39,7 +39,7 @@ export class CommentFilesController {
 
   @Roles('admin')
   @Post()
-  create(@Body() body: CreateCommentFileDTO) {
+  async create(@Body() body: CreateCommentFileDTO) {
     return this.commentFilesService.create(body);
   }
 

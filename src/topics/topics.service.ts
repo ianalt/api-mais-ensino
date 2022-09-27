@@ -31,7 +31,6 @@ export class TopicsService {
 
   create(body: CreateTopicDTO) {
     const newTopic = this.topicsRepository.create({
-      createdAt: new Date(),
       ...body,
     });
 

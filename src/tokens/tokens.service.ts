@@ -39,7 +39,6 @@ export class TokensService {
 
   create(body: CreateTokenDTO) {
     const newToken = this.tokensRepository.create({
-      createdAt: new Date(),
       ...body,
     });
 

@@ -39,7 +39,7 @@ export class TopicsController {
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Post()
-  create(@Body() body: CreateTopicDTO) {
+  async create(@Body() body: CreateTopicDTO) {
     return this.topicsService.create(body);
   }
 

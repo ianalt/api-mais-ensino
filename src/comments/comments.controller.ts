@@ -39,7 +39,7 @@ export class CommentsController {
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Post()
-  create(@Body() body: CreateCommentDTO) {
+  async create(@Body() body: CreateCommentDTO) {
     return this.commentsService.create(body);
   }
 

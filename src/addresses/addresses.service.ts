@@ -40,7 +40,6 @@ export class AddressesService {
     if (!user) throw new NotFoundException('User not found.');
 
     const newAddress = this.addressesRepository.create({
-      createdAt: new Date(),
       ...body,
     });
 

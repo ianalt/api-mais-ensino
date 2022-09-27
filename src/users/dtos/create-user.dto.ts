@@ -6,14 +6,10 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { Role } from 'src/auth/enums/role.enum';
 import { Ethnicity } from '../enums/ethnicity.enum';
 import { Gender } from '../enums/gender.enum';
 
 export class CreateUserDTO {
-  @IsEnum(Role)
-  role: Role;
-
   @IsEmail()
   email: string;
 

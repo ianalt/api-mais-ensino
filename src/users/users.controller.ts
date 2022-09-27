@@ -13,7 +13,7 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
-import { CreateUserDTO } from './dtos/create-user.dto';
+import { CreateFullUserDTO } from './dtos/create-full-user.dto';
 import { UpdateUserDTO } from './dtos/update-user.dto';
 import { UserDTO } from './dtos/user.dto';
 import { UsersService } from './users.service';
@@ -68,7 +68,7 @@ export class UsersController {
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Post()
   @Serialize(UserDTO)
-  async create(@Body() body: CreateUserDTO) {
+  async create(@Body() body: CreateFullUserDTO) {
     return await this.usersService.create(body);
   }
 

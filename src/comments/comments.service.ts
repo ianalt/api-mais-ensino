@@ -38,7 +38,6 @@ export class CommentsService {
 
   create(body: CreateCommentDTO) {
     const newComment = this.commentsRepository.create({
-      createdAt: new Date(),
       ...body,
     });
 

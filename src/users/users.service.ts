@@ -101,7 +101,6 @@ export class UsersService {
       throw new BadRequestException('An error has occurred. Please try again.');
 
     const newUser = this.usersRepository.create({
-      createdAt: new Date(),
       ...attrs,
       password: hashedPassword,
     });

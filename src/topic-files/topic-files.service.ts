@@ -32,7 +32,6 @@ export class TopicFilesService {
 
   create(body: CreateTopicFileDTO) {
     const newTopicFile = this.topicFilesRepository.create({
-      createdAt: new Date(),
       ...body,
     });
 

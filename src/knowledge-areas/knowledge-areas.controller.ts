@@ -12,7 +12,9 @@ import {
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { CreateKnowledgeAreaDTO } from './dtos/create-knowledge-area.dto';
+import { KnowledgeAreaDTO } from './dtos/knowledge-area.dto';
 import { UpdateKnowledgeAreaDTO } from './dtos/update-knowledge-area.dto';
 import { KnowledgeAreasService } from './knowledge-areas.service';
 
@@ -23,6 +25,7 @@ export class KnowledgeAreasController {
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get('/:id')
+  @Serialize(KnowledgeAreaDTO)
   async findById(@Param('id') id: string) {
     const knowledgeArea = await this.knowledgeAreasService.findById(
       parseInt(id),
@@ -36,6 +39,7 @@ export class KnowledgeAreasController {
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get()
+  @Serialize(KnowledgeAreaDTO)
   async findAll() {
     const knowledgeAreas = await this.knowledgeAreasService.findAll();
 
@@ -47,24 +51,28 @@ export class KnowledgeAreasController {
 
   @Roles('admin')
   @Post()
-  create(@Body() body: CreateKnowledgeAreaDTO) {
+  @Serialize(KnowledgeAreaDTO)
+  async create(@Body() body: CreateKnowledgeAreaDTO) {
     return this.knowledgeAreasService.create(body);
   }
 
   @Roles('admin')
   @Patch('/:id')
+  @Serialize(KnowledgeAreaDTO)
   async update(@Param('id') id: string, @Body() body: UpdateKnowledgeAreaDTO) {
     return await this.knowledgeAreasService.update(parseInt(id), body);
   }
 
   @Roles('admin')
   @Patch('delete/:id')
+  @Serialize(KnowledgeAreaDTO)
   async delete(@Param('id') id: string) {
     return await this.knowledgeAreasService.delete(parseInt(id));
   }
 
   @Roles('admin')
   @Delete('/:id')
+  @Serialize(KnowledgeAreaDTO)
   async remove(@Param('id') id: string) {
     return await this.knowledgeAreasService.remove(parseInt(id));
   }

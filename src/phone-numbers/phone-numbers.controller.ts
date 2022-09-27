@@ -39,7 +39,10 @@ export class PhoneNumbersController {
 
   @Roles('admin')
   @Post('/:userId')
-  create(@Body() body: CreatePhoneNumberDTO, @Param('userId') userId: string) {
+  async create(
+    @Body() body: CreatePhoneNumberDTO,
+    @Param('userId') userId: string,
+  ) {
     return this.phoneNumbersService.create(body, parseInt(userId));
   }
 

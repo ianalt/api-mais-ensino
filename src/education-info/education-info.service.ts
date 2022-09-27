@@ -40,7 +40,6 @@ export class EducationInfoService {
     if (!user) throw new NotFoundException('User not found.');
 
     const newEducationInfo = this.educationInfoRepository.create({
-      createdAt: new Date(),
       ...body,
     });
 

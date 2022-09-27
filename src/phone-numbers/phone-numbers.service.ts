@@ -40,7 +40,6 @@ export class PhoneNumbersService {
     if (!user) throw new NotFoundException('User not found.');
 
     const newPhoneNumber = this.phoneNumbersRepository.create({
-      createdAt: new Date(),
       ...body,
     });
 

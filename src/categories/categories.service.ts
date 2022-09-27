@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Subject } from 'src/subjects/subject.entity';
 import { Repository } from 'typeorm';
 import { Category } from './category.entity';
 import { CreateCategoryDTO } from './dtos/create-category.dto';
@@ -10,9 +11,12 @@ export class CategoriesService {
   constructor(
     @InjectRepository(Category)
     private categoriesRepository: Repository<Category>,
+
+    @InjectRepository(Subject)
+    private subjectsRepository: Repository<Subject>,
   ) {}
 
-  private allRelations = ['topic', 'subject'];
+  private allRelations = ['topics', 'subject'];
 
   findById(id: number) {
     if (!id) return null;
@@ -30,11 +34,23 @@ export class CategoriesService {
     });
   }
 
-  create(body: CreateCategoryDTO) {
+  async create(body: CreateCategoryDTO) {
+    const { subjectID, ...attrs } = body;
+
+    const subject = await this.subjectsRepository.findOne({
+      where: {
+        active: true,
+        id: subjectID,
+      },
+    });
+
+    if (!subject) throw new NotFoundException('Subject not found.');
+
     const newCategory = this.categoriesRepository.create({
-      createdAt: new Date(),
       ...body,
     });
+
+    newCategory.subject = subject;
 
     return this.categoriesRepository.save(newCategory);
   }
@@ -44,9 +60,21 @@ export class CategoriesService {
 
     if (!category) throw new NotFoundException('Category not found.');
 
-    const attrs: Partial<Category> = body;
+    const { subjectID, ...values } = body;
+
+    const subject = await this.subjectsRepository.findOne({
+      where: {
+        active: true,
+        id: subjectID,
+      },
+    });
+
+    if (!subject) throw new NotFoundException('Subject not found.');
+
+    const attrs: Partial<Category> = values;
 
     category.updatedAt = new Date();
+    category.subject = subject;
 
     Object.assign(category, attrs);
 

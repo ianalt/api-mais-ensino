@@ -39,7 +39,7 @@ export class TopicFilesController {
 
   @Roles('admin')
   @Post()
-  create(@Body() body: CreateTopicFileDTO) {
+  async create(@Body() body: CreateTopicFileDTO) {
     return this.topicFilesService.create(body);
   }
 

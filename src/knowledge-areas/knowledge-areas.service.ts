@@ -32,7 +32,6 @@ export class KnowledgeAreasService {
 
   create(body: CreateKnowledgeAreaDTO) {
     const newKnowledgeArea = this.knowledgeAreasRepository.create({
-      createdAt: new Date(),
       ...body,
     });
 

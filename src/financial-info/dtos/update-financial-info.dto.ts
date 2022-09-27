@@ -6,7 +6,6 @@ export class UpdateFinancialInfoDTO {
   @IsPositive()
   generalIncome: number;
 
-  @IsOptional()
   @IsInt()
   @IsPositive()
   totalHouseHoldMembers: number;

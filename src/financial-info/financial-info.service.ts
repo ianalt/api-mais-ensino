@@ -40,7 +40,6 @@ export class FinancialInfoService {
     if (!user) throw new NotFoundException('User not found.');
 
     const newFinancialInfo = this.financialInfoRepository.create({
-      createdAt: new Date(),
       ...body,
     });
 

@@ -32,7 +32,6 @@ export class CommentFilesService {
 
   create(body: CreateCommentFileDTO) {
     const newCommentFile = this.commentFilesRepository.create({
-      createdAt: new Date(),
       ...body,
     });
 
