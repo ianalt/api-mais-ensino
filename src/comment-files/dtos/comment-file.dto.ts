@@ -5,5 +5,5 @@ export class CommentFileDTO {
   id: number;
 
   @Expose()
-  fileUrl: string;
+  fileURL: string;
 }

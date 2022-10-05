@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
 import { Comment } from './comment.entity';
 import { CreateCommentDTO } from './dtos/create-comment.dto';
@@ -10,6 +11,9 @@ export class CommentsService {
   constructor(
     @InjectRepository(Comment)
     private commentsRepository: Repository<Comment>,
+
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
   ) {}
 
   private allRelations = [
@@ -36,10 +40,20 @@ export class CommentsService {
     });
   }
 
-  create(body: CreateCommentDTO) {
-    const newComment = this.commentsRepository.create({
-      ...body,
+  async create(body: CreateCommentDTO) {
+    const { userID, ...attrs } = body;
+
+    const user = await this.usersRepository.findOne({
+      where: { active: true, id: userID },
     });
+
+    if (!user) throw new NotFoundException('User not found.');
+
+    const newComment = this.commentsRepository.create({
+      ...attrs,
+    });
+
+    newComment.user = user;
 
     return this.commentsRepository.save(newComment);
   }
@@ -49,9 +63,18 @@ export class CommentsService {
 
     if (!comment) throw new NotFoundException('Comment not found.');
 
-    const attrs: Partial<Comment> = body;
+    const { userID, ...values } = body;
+
+    const user = await this.usersRepository.findOne({
+      where: { active: true, id: userID },
+    });
+
+    if (!user) throw new NotFoundException('User not found.');
+
+    const attrs: Partial<Comment> = values;
 
     comment.updatedAt = new Date();
+    comment.user = user;
 
     Object.assign(comment, attrs);
 

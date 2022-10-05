@@ -11,5 +11,5 @@ export class BaseTopicDTO {
   content: string;
 
   @Expose()
-  videoUrl: string;
+  videoURL: string;
 }

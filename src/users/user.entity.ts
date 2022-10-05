@@ -1,21 +1,21 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  OneToMany,
-  OneToOne,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
-import { Address } from 'src/users/addresses/address.entity';
-import { EducationInfo } from 'src/users/education-info/education-info.entity';
-import { FinancialInfo } from 'src/users/financial-info/financial-info.entity';
-import { PhoneNumber } from 'src/users/phone-numbers/phone-number.entity';
+import { Address } from 'src/addresses/address.entity';
+import { Role } from 'src/auth/enums/role.enum';
+import { Comment } from 'src/comments/comment.entity';
+import { EducationInfo } from 'src/education-info/education-info.entity';
+import { FinancialInfo } from 'src/financial-info/financial-info.entity';
+import { PhoneNumber } from 'src/phone-numbers/phone-number.entity';
 import { Subject } from 'src/subjects/subject.entity';
 import { Token } from 'src/tokens/token.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Ethnicity } from './enums/ethnicity.enum';
-import { Comment } from 'src/comments/comment.entity';
-import { Role } from 'src/auth/enums/role.enum';
 import { Gender } from './enums/gender.enum';
 
 @Entity({ name: 'usuarios' })

@@ -56,7 +56,7 @@ export class FinancialInfoController {
   }
 
   @Roles('admin')
-  @Patch('delete/:id')
+  @Delete('delete/:id')
   async delete(@Param('id') id: string) {
     return await this.financialInfoService.delete(parseInt(id));
   }

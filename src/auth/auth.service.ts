@@ -4,10 +4,10 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { AddressesService } from 'src/users/addresses/addresses.service';
-import { EducationInfoService } from 'src/users/education-info/education-info.service';
-import { FinancialInfoService } from 'src/users/financial-info/financial-info.service';
-import { PhoneNumbersService } from 'src/users/phone-numbers/phone-numbers.service';
+import { AddressesService } from 'src/addresses/addresses.service';
+import { EducationInfoService } from 'src/education-info/education-info.service';
+import { FinancialInfoService } from 'src/financial-info/financial-info.service';
+import { PhoneNumbersService } from 'src/phone-numbers/phone-numbers.service';
 import { TokensService } from 'src/tokens/tokens.service';
 import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';

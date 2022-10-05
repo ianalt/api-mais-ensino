@@ -50,7 +50,7 @@ export class CommentFilesController {
   }
 
   @Roles('admin')
-  @Patch('delete/:id')
+  @Delete('delete/:id')
   async delete(@Param('id') id: string) {
     return await this.commentFilesService.delete(parseInt(id));
   }

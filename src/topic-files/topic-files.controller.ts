@@ -50,7 +50,7 @@ export class TopicFilesController {
   }
 
   @Roles('admin')
-  @Patch('delete/:id')
+  @Delete('delete/:id')
   async delete(@Param('id') id: string) {
     return await this.topicFilesService.delete(parseInt(id));
   }

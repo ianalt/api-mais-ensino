@@ -14,5 +14,5 @@ export class TopicFileDTO {
   active: boolean;
 
   @Expose()
-  fileUrl: string;
+  fileURL: string;
 }

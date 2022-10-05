@@ -53,7 +53,7 @@ export class PhoneNumbersController {
   }
 
   @Roles('admin')
-  @Patch('delete/:id')
+  @Delete('delete/:id')
   async delete(@Param('id') id: string) {
     return await this.phoneNumbersService.delete(parseInt(id));
   }

@@ -64,7 +64,7 @@ export class KnowledgeAreasController {
   }
 
   @Roles('admin')
-  @Patch('delete/:id')
+  @Delete('delete/:id')
   @Serialize(KnowledgeAreaDTO)
   async delete(@Param('id') id: string) {
     return await this.knowledgeAreasService.delete(parseInt(id));

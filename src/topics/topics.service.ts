@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Category } from 'src/categories/category.entity';
 import { Repository } from 'typeorm';
 import { CreateTopicDTO } from './dtos/create-topic.dto';
 import { UpdateTopicDTO } from './dtos/update-topic.dto';
@@ -9,9 +10,17 @@ import { Topic } from './topic.entity';
 export class TopicsService {
   constructor(
     @InjectRepository(Topic) private topicsRepository: Repository<Topic>,
+
+    @InjectRepository(Category)
+    private categoriesRepository: Repository<Category>,
   ) {}
 
-  private allRelations = ['category', 'topicFiles', 'comments'];
+  private allRelations = [
+    'category',
+    'category.subject',
+    'topicFiles',
+    'comments',
+  ];
 
   findByID(id: number) {
     if (!id) return null;
@@ -29,10 +38,23 @@ export class TopicsService {
     });
   }
 
-  create(body: CreateTopicDTO) {
-    const newTopic = this.topicsRepository.create({
-      ...body,
+  async create(body: CreateTopicDTO) {
+    const { categoryID, ...attrs } = body;
+
+    const category = await this.categoriesRepository.findOne({
+      where: {
+        active: true,
+        id: categoryID,
+      },
     });
+
+    if (!category) throw new NotFoundException('Category not found.');
+
+    const newTopic = this.topicsRepository.create({
+      ...attrs,
+    });
+
+    newTopic.category = category;
 
     return this.topicsRepository.save(newTopic);
   }
@@ -42,9 +64,21 @@ export class TopicsService {
 
     if (!topic) throw new NotFoundException('Topic not found.');
 
-    const attrs: Partial<Topic> = body;
+    const { categoryID, ...values } = body;
+
+    const category = await this.categoriesRepository.findOne({
+      where: {
+        active: true,
+        id: categoryID,
+      },
+    });
+
+    if (!category) throw new NotFoundException('Category not found.');
+
+    const attrs: Partial<Topic> = values;
 
     topic.updatedAt = new Date();
+    topic.category = category;
 
     Object.assign(topic, attrs);
 

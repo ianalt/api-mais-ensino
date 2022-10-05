@@ -31,7 +31,7 @@ export class Topic {
   content: string;
 
   @Column({ name: 'video_url', nullable: true })
-  videoUrl: string;
+  videoURL: string;
 
   @ManyToOne(() => Category, (category) => category.topics)
   @JoinColumn({ name: 'id_categoria' })

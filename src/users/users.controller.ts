@@ -80,7 +80,7 @@ export class UsersController {
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
-  @Patch('/delete/:id')
+  @Delete('delete/:id')
   @Serialize(UserDTO)
   async delete(@Param('id') id: string) {
     return await this.usersService.delete(parseInt(id));

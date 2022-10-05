@@ -47,7 +47,7 @@ export class CategoriesService {
     if (!subject) throw new NotFoundException('Subject not found.');
 
     const newCategory = this.categoriesRepository.create({
-      ...body,
+      ...attrs,
     });
 
     newCategory.subject = subject;

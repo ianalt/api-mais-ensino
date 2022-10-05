@@ -15,7 +15,7 @@ export class TopicDTO {
   content: string;
 
   @Expose()
-  videoUrl: string;
+  videoURL: string;
 
   @Expose()
   @ValidateNested({ each: true })

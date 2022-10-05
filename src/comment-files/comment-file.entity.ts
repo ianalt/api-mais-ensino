@@ -22,7 +22,7 @@ export class CommentFile {
   active: boolean;
 
   @Column({ name: 'file_url' })
-  fileUrl: string;
+  fileURL: string;
 
   @ManyToOne(() => Comment, (comment) => comment.commentFiles)
   @JoinColumn({ name: 'id_comentario' })

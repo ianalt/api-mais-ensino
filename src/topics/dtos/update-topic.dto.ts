@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsInt, IsOptional, IsPositive, IsString } from 'class-validator';
 
 export class UpdateTopicDTO {
   @IsOptional()
@@ -11,5 +11,9 @@ export class UpdateTopicDTO {
 
   @IsOptional()
   @IsString()
-  videoUrl: string;
+  videoURL: string;
+
+  @IsInt()
+  @IsPositive()
+  categoryID: number;
 }

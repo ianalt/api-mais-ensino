@@ -23,7 +23,7 @@ import { UpdateCategoryDTO } from './dtos/update-category.dto';
 export class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
 
-  @Roles('professor', 'admin')
+  @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get('/:id')
   @Serialize(CategoryDTO)
   async findByID(@Param('id') id: string) {
@@ -34,11 +34,15 @@ export class CategoriesController {
     return category;
   }
 
-  @Roles('professor', 'admin')
+  @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get()
   @Serialize(CategoryDTO)
-  findAll() {
-    return this.categoriesService.findAll();
+  async findAll() {
+    const categories = await this.categoriesService.findAll();
+
+    if (!categories) throw new NotFoundException('Could not find categories.');
+
+    return categories;
   }
 
   @Roles('professor', 'admin')
@@ -56,7 +60,7 @@ export class CategoriesController {
   }
 
   @Roles('professor', 'admin')
-  @Patch('delete/:id')
+  @Delete('delete/:id')
   @Serialize(CategoryDTO)
   async delete(@Param('id') id: string) {
     return await this.categoriesService.delete(parseInt(id));

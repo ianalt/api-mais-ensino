@@ -22,7 +22,7 @@ export class TopicFile {
   active: boolean;
 
   @Column({ name: 'file_url' })
-  fileUrl: string;
+  fileURL: string;
 
   @ManyToOne(() => Topic, (topic) => topic.topicFiles)
   @JoinColumn({ name: 'id_topico' })

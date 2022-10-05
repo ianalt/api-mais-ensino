@@ -1,17 +1,17 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { UsersModule } from 'src/users/users.module';
-import { TokensModule } from 'src/tokens/tokens.module';
-import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './strategies/local.strategy';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from './strategies/jwt.strategy';
-import { AddressesModule } from 'src/users/addresses/addresses.module';
-import { PhoneNumbersModule } from 'src/users/phone-numbers/phone-numbers.module';
-import { EducationInfoModule } from 'src/users/education-info/education-info.module';
-import { FinancialInfoModule } from 'src/users/financial-info/financial-info.module';
+import { PassportModule } from '@nestjs/passport';
+import { AddressesModule } from 'src/addresses/addresses.module';
+import { EducationInfoModule } from 'src/education-info/education-info.module';
+import { FinancialInfoModule } from 'src/financial-info/financial-info.module';
+import { PhoneNumbersModule } from 'src/phone-numbers/phone-numbers.module';
+import { TokensModule } from 'src/tokens/tokens.module';
+import { UsersModule } from 'src/users/users.module';
 import { jwtConfig } from '../config/jwt-config';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
   providers: [AuthService, LocalStrategy, JwtStrategy],

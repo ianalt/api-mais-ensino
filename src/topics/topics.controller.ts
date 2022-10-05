@@ -12,7 +12,9 @@ import {
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { CreateTopicDTO } from './dtos/create-topic.dto';
+import { TopicDTO } from './dtos/topic.dto';
 import { UpdateTopicDTO } from './dtos/update-topic.dto';
 import { TopicsService } from './topics.service';
 
@@ -23,6 +25,7 @@ export class TopicsController {
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get('/:id')
+  @Serialize(TopicDTO)
   async findByID(@Param('id') id: string) {
     const topic = await this.topicsService.findByID(parseInt(id));
 
@@ -33,30 +36,39 @@ export class TopicsController {
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get()
-  findAll() {
-    return this.topicsService.findAll();
+  @Serialize(TopicDTO)
+  async findAll() {
+    const topics = await this.topicsService.findAll();
+
+    if (!topics) throw new NotFoundException('Could not find topics.');
+
+    return topics;
   }
 
-  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Roles('professor', 'admin')
   @Post()
+  @Serialize(TopicDTO)
   async create(@Body() body: CreateTopicDTO) {
-    return this.topicsService.create(body);
+    return await this.topicsService.create(body);
   }
 
-  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Roles('professor', 'admin')
   @Patch('/:id')
+  @Serialize(TopicDTO)
   async update(@Param('id') id: string, @Body() body: UpdateTopicDTO) {
     return await this.topicsService.update(parseInt(id), body);
   }
 
-  @Roles('estudante', 'monitor', 'professor', 'admin')
-  @Patch('delete/:id')
+  @Roles('professor', 'admin')
+  @Delete('delete/:id')
+  @Serialize(TopicDTO)
   async delete(@Param('id') id: string) {
     return await this.topicsService.delete(parseInt(id));
   }
 
-  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Roles('professor', 'admin')
   @Delete('/:id')
+  @Serialize(TopicDTO)
   async remove(@Param('id') id: string) {
     return await this.topicsService.remove(parseInt(id));
   }

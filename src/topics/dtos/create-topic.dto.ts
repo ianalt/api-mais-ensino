@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsInt, IsOptional, IsPositive, IsString } from 'class-validator';
 
 export class CreateTopicDTO {
   @IsString()
@@ -7,6 +7,11 @@ export class CreateTopicDTO {
   @IsString()
   content: string;
 
+  @IsOptional()
   @IsString()
-  videoUrl: string;
+  videoURL: string;
+
+  @IsInt()
+  @IsPositive()
+  categoryID: number;
 }

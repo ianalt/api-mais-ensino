@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AddressesModule } from './addresses/addresses.module';
-import { EducationInfoModule } from './education-info/education-info.module';
-import { FinancialInfoModule } from './financial-info/financial-info.module';
-import { PhoneNumbersModule } from './phone-numbers/phone-numbers.module';
+import { CommentsModule } from 'src/comments/comments.module';
+import { AddressesModule } from '../addresses/addresses.module';
+import { EducationInfoModule } from '../education-info/education-info.module';
+import { FinancialInfoModule } from '../financial-info/financial-info.module';
+import { PhoneNumbersModule } from '../phone-numbers/phone-numbers.module';
 import { User } from './user.entity';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
@@ -17,6 +18,7 @@ import { UsersService } from './users.service';
     EducationInfoModule,
     FinancialInfoModule,
     PhoneNumbersModule,
+    CommentsModule,
   ],
   exports: [UsersService],
 })

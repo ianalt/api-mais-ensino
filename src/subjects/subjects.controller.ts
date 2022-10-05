@@ -23,7 +23,7 @@ import { SubjectsService } from './subjects.service';
 export class SubjectsController {
   constructor(private subjectsService: SubjectsService) {}
 
-  @Roles('admin')
+  @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get('/:id')
   @Serialize(SubjectDTO)
   async findByID(@Param('id') id: string) {
@@ -34,11 +34,15 @@ export class SubjectsController {
     return subject;
   }
 
-  @Roles('admin')
+  @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get()
   @Serialize(SubjectDTO)
-  findAll() {
-    return this.subjectsService.findAll();
+  async findAll() {
+    const subjects = await this.subjectsService.findAll();
+
+    if (!subjects) throw new NotFoundException('Could not find subjects.');
+
+    return subjects;
   }
 
   @Roles('admin')
@@ -56,7 +60,7 @@ export class SubjectsController {
   }
 
   @Roles('admin')
-  @Patch('delete/:id')
+  @Delete('delete/:id')
   @Serialize(SubjectDTO)
   async delete(@Param('id') id: string) {
     return await this.subjectsService.delete(parseInt(id));

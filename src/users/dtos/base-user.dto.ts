@@ -1,6 +1,7 @@
 import { Expose } from 'class-transformer';
 import { Role } from 'src/auth/enums/role.enum';
 
+//TODO basic info user DTO for table
 export class BaseUserDTO {
   @Expose()
   id: number;
