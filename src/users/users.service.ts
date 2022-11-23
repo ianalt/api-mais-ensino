@@ -113,9 +113,9 @@ export class UsersService {
 
     if (!user) throw new NotFoundException('User not found.');
 
-    const { password, ...others } = body;
+    const { password, ...values } = body;
 
-    const attrs: Partial<User> = others;
+    const attrs: Partial<User> = values;
 
     const hashedPassword = await hashPassword(password);
 

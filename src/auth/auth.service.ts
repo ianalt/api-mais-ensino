@@ -125,7 +125,7 @@ export class AuthService {
     }
   }
 
-  async signUp(body: SignUpDTO): Promise<User> {
+  async signUp(body: SignUpDTO) {
     const { user, address, phoneNumbers, educationInfoList, financialInfo } =
       body;
 

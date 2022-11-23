@@ -16,6 +16,7 @@ import { AddressesService } from './addresses.service';
 import { CreateAddressDTO } from './dtos/create-address.dto';
 import { UpdateAddressDTO } from './dtos/update-address.dto';
 
+//TODO apply changes to user profile edition
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('addresses')
 export class AddressesController {
