@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
 import { Comment } from './comment.entity';
-import { CreateCommentDTO } from './dtos/create-comment.dto';
-import { UpdateCommentDTO } from './dtos/update-comment.dto';
+import { CreateCommentDto } from './dtos/create-comment.dto';
+import { UpdateCommentDto } from './dtos/update-comment.dto';
 
 @Injectable()
 export class CommentsService {
@@ -24,7 +24,7 @@ export class CommentsService {
     'topic',
   ];
 
-  findByID(id: number) {
+  findById(id: number) {
     if (!id) return null;
 
     return this.commentsRepository.findOne({
@@ -40,11 +40,11 @@ export class CommentsService {
     });
   }
 
-  async create(body: CreateCommentDTO) {
-    const { userID, ...attrs } = body;
+  async create(body: CreateCommentDto) {
+    const { userId, ...attrs } = body;
 
     const user = await this.usersRepository.findOne({
-      where: { active: true, id: userID },
+      where: { active: true, id: userId },
     });
 
     if (!user) throw new NotFoundException('User not found.');
@@ -58,15 +58,15 @@ export class CommentsService {
     return this.commentsRepository.save(newComment);
   }
 
-  async update(id: number, body: UpdateCommentDTO) {
-    const comment = await this.findByID(id);
+  async update(id: number, body: UpdateCommentDto) {
+    const comment = await this.findById(id);
 
     if (!comment) throw new NotFoundException('Comment not found.');
 
-    const { userID, ...values } = body;
+    const { userId, ...values } = body;
 
     const user = await this.usersRepository.findOne({
-      where: { active: true, id: userID },
+      where: { active: true, id: userId },
     });
 
     if (!user) throw new NotFoundException('User not found.');
@@ -82,7 +82,7 @@ export class CommentsService {
   }
 
   async delete(id: number) {
-    const comment = await this.findByID(id);
+    const comment = await this.findById(id);
 
     if (!comment) throw new NotFoundException('Comment not found.');
 
@@ -93,7 +93,7 @@ export class CommentsService {
   }
 
   async remove(id: number) {
-    const comment = await this.findByID(id);
+    const comment = await this.findById(id);
 
     if (!comment) throw new NotFoundException('Comment not found.');
 

@@ -1,6 +1,6 @@
 import { IsInt, IsOptional, IsPositive, IsString } from 'class-validator';
 
-export class UpdateCommentDTO {
+export class UpdateCommentDto {
   @IsOptional()
   @IsString()
   content: string;
@@ -8,5 +8,5 @@ export class UpdateCommentDTO {
   @IsOptional()
   @IsInt()
   @IsPositive()
-  userID: number;
+  userId: number;
 }

@@ -2,8 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CommentFile } from './comment-file.entity';
-import { CreateCommentFileDTO } from './dtos/create-comment-file.dto';
-import { UpdateCommentFileDTO } from './dtos/update-comment-file.dto';
+import { CreateCommentFileDto } from './dtos/create-comment-file.dto';
+import { UpdateCommentFileDto } from './dtos/update-comment-file.dto';
 
 @Injectable()
 export class CommentFilesService {
@@ -14,7 +14,7 @@ export class CommentFilesService {
 
   private allRelations = ['comment'];
 
-  findByID(id: number) {
+  findById(id: number) {
     if (!id) return null;
 
     return this.commentFilesRepository.findOne({
@@ -30,7 +30,7 @@ export class CommentFilesService {
     });
   }
 
-  create(body: CreateCommentFileDTO) {
+  create(body: CreateCommentFileDto) {
     const newCommentFile = this.commentFilesRepository.create({
       ...body,
     });
@@ -38,8 +38,8 @@ export class CommentFilesService {
     return this.commentFilesRepository.save(newCommentFile);
   }
 
-  async update(id: number, body: UpdateCommentFileDTO) {
-    const commentFile = await this.findByID(id);
+  async update(id: number, body: UpdateCommentFileDto) {
+    const commentFile = await this.findById(id);
 
     if (!commentFile) throw new NotFoundException('Comment file not found.');
 
@@ -53,7 +53,7 @@ export class CommentFilesService {
   }
 
   async delete(id: number) {
-    const commentFile = await this.findByID(id);
+    const commentFile = await this.findById(id);
 
     if (!commentFile) throw new NotFoundException('Comment file not found.');
 
@@ -64,7 +64,7 @@ export class CommentFilesService {
   }
 
   async remove(id: number) {
-    const commentFile = await this.findByID(id);
+    const commentFile = await this.findById(id);
 
     if (!commentFile) throw new NotFoundException('Comment file not found.');
 

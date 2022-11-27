@@ -1,7 +1,7 @@
 import { IsOptional, IsString, IsDate } from 'class-validator';
 import { SchoolingLevel } from '../enums/schooling-level.enum';
 
-export class UpdateEducationInfoDTO {
+export class UpdateEducationInfoDto {
   @IsOptional()
   @IsString()
   schoolingLevel: SchoolingLevel;

@@ -1,10 +1,10 @@
 import { IsInt, IsOptional, IsPositive, IsString } from 'class-validator';
 
-export class CreateCategoryDTO {
+export class CreateCategoryDto {
   @IsString()
   name: string;
 
   @IsInt()
   @IsPositive()
-  subjectID: number;
+  subjectId: number;
 }

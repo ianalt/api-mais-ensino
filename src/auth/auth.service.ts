@@ -11,7 +11,7 @@ import { PhoneNumbersService } from 'src/phone-numbers/phone-numbers.service';
 import { TokensService } from 'src/tokens/tokens.service';
 import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
-import { SignUpDTO } from './dtos/sign-up.dto';
+import { SignUpDto } from './dtos/sign-up.dto';
 import { comparePasswords } from './hashing';
 
 @Injectable()
@@ -66,7 +66,7 @@ export class AuthService {
     };
   }
 
-  async seeding(body: SignUpDTO[]) {
+  async seeding(body: SignUpDto[]) {
     for (const signUp of body) {
       const { user, address, phoneNumbers, educationInfoList, financialInfo } =
         signUp;
@@ -78,9 +78,9 @@ export class AuthService {
           'An error has occurred while trying to sign up. Please try again.',
         );
 
-      const userID = newUser.id;
+      const userId = newUser.id;
 
-      const newAddress = await this.addressesService.create(address, userID);
+      const newAddress = await this.addressesService.create(address, userId);
 
       if (!newAddress)
         throw new BadRequestException(
@@ -89,7 +89,7 @@ export class AuthService {
 
       const newFinancialInfo = await this.financialInfoService.create(
         financialInfo,
-        userID,
+        userId,
       );
 
       if (!newFinancialInfo)
@@ -100,7 +100,7 @@ export class AuthService {
       for (let i = 0; i < phoneNumbers.length; ++i) {
         const newPhoneNumber = await this.phoneNumbersService.create(
           phoneNumbers[i],
-          userID,
+          userId,
         );
 
         if (!newPhoneNumber)
@@ -112,7 +112,7 @@ export class AuthService {
       for (let i = 0; i < educationInfoList.length; ++i) {
         const newEducationInfo = await this.educationInfoService.create(
           educationInfoList[i],
-          userID,
+          userId,
         );
 
         if (!newEducationInfo)
@@ -125,7 +125,7 @@ export class AuthService {
     }
   }
 
-  async signUp(body: SignUpDTO) {
+  async signUp(body: SignUpDto) {
     const { user, address, phoneNumbers, educationInfoList, financialInfo } =
       body;
 
@@ -136,9 +136,9 @@ export class AuthService {
         'An error has occurred while trying to sign up. Please try again.',
       );
 
-    const userID = newUser.id;
+    const userId = newUser.id;
 
-    const newAddress = await this.addressesService.create(address, userID);
+    const newAddress = await this.addressesService.create(address, userId);
 
     if (!newAddress)
       throw new BadRequestException(
@@ -147,7 +147,7 @@ export class AuthService {
 
     const newFinancialInfo = await this.financialInfoService.create(
       financialInfo,
-      userID,
+      userId,
     );
 
     if (!newFinancialInfo)
@@ -158,7 +158,7 @@ export class AuthService {
     for (let i = 0; i < phoneNumbers.length; ++i) {
       const newPhoneNumber = await this.phoneNumbersService.create(
         phoneNumbers[i],
-        userID,
+        userId,
       );
 
       if (!newPhoneNumber)
@@ -170,7 +170,7 @@ export class AuthService {
     for (let i = 0; i < educationInfoList.length; ++i) {
       const newEducationInfo = await this.educationInfoService.create(
         educationInfoList[i],
-        userID,
+        userId,
       );
 
       if (!newEducationInfo)

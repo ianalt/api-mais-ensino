@@ -1,11 +1,11 @@
 import { Expose, Type } from 'class-transformer';
 import { ValidateNested } from 'class-validator';
-import { CommentFileDTO } from 'src/comment-files/dtos/comment-file.dto';
-import { BaseUserDTO } from 'src/users/dtos/base-user.dto';
-import { BaseCommentDTO } from './base-comment.dto';
-import { CommentDTO } from './comment.dto';
+import { CommentFileDto } from 'src/comment-files/dtos/comment-file.dto';
+import { BaseUserDto } from 'src/users/dtos/base-user.dto';
+import { BaseCommentDto } from './base-comment.dto';
+import { CommentDto } from './comment.dto';
 
-export class SubCommentDTO {
+export class SubCommentDto {
   @Expose()
   id: number;
 
@@ -20,16 +20,16 @@ export class SubCommentDTO {
 
   @Expose()
   @ValidateNested({ each: true })
-  @Type(() => BaseUserDTO)
-  user: BaseUserDTO;
+  @Type(() => BaseUserDto)
+  user: BaseUserDto;
 
   @Expose()
   @ValidateNested({ each: true })
-  @Type(() => CommentDTO)
-  comment: BaseCommentDTO;
+  @Type(() => CommentDto)
+  comment: BaseCommentDto;
 
   @Expose()
   @ValidateNested({ each: true })
-  @Type(() => CommentFileDTO)
-  commentFiles: CommentFileDTO[];
+  @Type(() => CommentFileDto)
+  commentFiles: CommentFileDto[];
 }

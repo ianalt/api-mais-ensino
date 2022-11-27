@@ -2,8 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { KnowledgeArea } from 'src/knowledge-areas/knowledge-area.entity';
 import { Repository } from 'typeorm';
-import { CreateSubjectDTO } from './dtos/create-subject.dto';
-import { UpdateSubjectDTO } from './dtos/update-subject.dto';
+import { CreateSubjectDto } from './dtos/create-subject.dto';
+import { UpdateSubjectDto } from './dtos/update-subject.dto';
 import { Subject } from './subject.entity';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class SubjectsService {
 
   private allRelations = ['users', 'knowledgeArea', 'categories'];
 
-  findByID(id: number) {
+  findById(id: number) {
     if (!id) return null;
 
     return this.subjectsRepository.findOne({
@@ -34,13 +34,13 @@ export class SubjectsService {
     });
   }
 
-  async create(body: CreateSubjectDTO) {
-    const { knowledgeAreaID, ...attrs } = body;
+  async create(body: CreateSubjectDto) {
+    const { knowledgeAreaId, ...attrs } = body;
 
     const knowledgeArea = await this.knowledgeAreasRepository.findOne({
       where: {
         active: true,
-        id: knowledgeAreaID,
+        id: knowledgeAreaId,
       },
     });
 
@@ -56,17 +56,17 @@ export class SubjectsService {
     return this.subjectsRepository.save(newSubject);
   }
 
-  async update(id: number, body: UpdateSubjectDTO) {
-    const subject = await this.findByID(id);
+  async update(id: number, body: UpdateSubjectDto) {
+    const subject = await this.findById(id);
 
     if (!subject) throw new NotFoundException('Subject not found.');
 
-    const { knowledgeAreaID, ...values } = body;
+    const { knowledgeAreaId, ...values } = body;
 
     const knowledgeArea = await this.knowledgeAreasRepository.findOne({
       where: {
         active: true,
-        id: knowledgeAreaID,
+        id: knowledgeAreaId,
       },
     });
 
@@ -84,7 +84,7 @@ export class SubjectsService {
   }
 
   async delete(id: number) {
-    const subject = await this.findByID(id);
+    const subject = await this.findById(id);
 
     if (!subject) throw new NotFoundException('Subject not found.');
 
@@ -95,7 +95,7 @@ export class SubjectsService {
   }
 
   async remove(id: number) {
-    const subject = await this.findByID(id);
+    const subject = await this.findById(id);
 
     if (!subject) throw new NotFoundException('Subject not found.');
 

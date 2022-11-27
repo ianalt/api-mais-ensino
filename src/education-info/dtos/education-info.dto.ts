@@ -1,7 +1,7 @@
 import { Expose } from 'class-transformer';
 import { SchoolingLevel } from '../enums/schooling-level.enum';
 
-export class EducationInfoDTO {
+export class EducationInfoDto {
   @Expose()
   id: number;
 

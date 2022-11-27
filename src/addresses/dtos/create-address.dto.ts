@@ -1,7 +1,7 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { State } from '../enums/state.enum';
 
-export class CreateAddressDTO {
+export class CreateAddressDto {
   @IsString()
   cep: string;
 

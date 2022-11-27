@@ -6,8 +6,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { hashPassword } from 'src/auth/hashing';
 import { Repository } from 'typeorm';
-import { CreateUserDTO } from './dtos/create-user.dto';
-import { UpdateUserDTO } from './dtos/update-user.dto';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
 import { User } from './user.entity';
 
 @Injectable()
@@ -26,7 +26,7 @@ export class UsersService {
     'subject',
   ];
 
-  async findByID(id: number) {
+  async findById(id: number) {
     if (!id) return null;
 
     const user = await this.usersRepository.findOne({
@@ -92,7 +92,7 @@ export class UsersService {
     });
   }
 
-  async create(body: CreateUserDTO) {
+  async create(body: CreateUserDto) {
     const { password, ...attrs } = body;
 
     const hashedPassword = await hashPassword(password);
@@ -108,8 +108,8 @@ export class UsersService {
     return this.usersRepository.save(newUser);
   }
 
-  async update(id: number, body: UpdateUserDTO) {
-    const user = await this.findByID(id);
+  async update(id: number, body: UpdateUserDto) {
+    const user = await this.findById(id);
 
     if (!user) throw new NotFoundException('User not found.');
 
@@ -131,7 +131,7 @@ export class UsersService {
   }
 
   async delete(id: number) {
-    const user = await this.findByID(id);
+    const user = await this.findById(id);
 
     if (!user) throw new NotFoundException('User not found.');
 
@@ -142,7 +142,7 @@ export class UsersService {
   }
 
   async remove(id: number) {
-    const user = await this.findByID(id);
+    const user = await this.findById(id);
 
     if (!user) throw new NotFoundException('User not found.');
 

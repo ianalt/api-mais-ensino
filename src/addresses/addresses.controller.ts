@@ -5,6 +5,7 @@ import {
   Get,
   NotFoundException,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   UseGuards,
@@ -13,10 +14,9 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { AddressesService } from './addresses.service';
-import { CreateAddressDTO } from './dtos/create-address.dto';
-import { UpdateAddressDTO } from './dtos/update-address.dto';
+import { CreateAddressDto } from './dtos/create-address.dto';
+import { UpdateAddressDto } from './dtos/update-address.dto';
 
-//TODO apply changes to user profile edition
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('addresses')
 export class AddressesController {
@@ -24,8 +24,8 @@ export class AddressesController {
 
   @Roles('admin')
   @Get('/:id')
-  async findByID(@Param('id') id: string) {
-    const address = await this.addressesService.findByID(parseInt(id));
+  async findById(@Param('id', ParseIntPipe) id: number) {
+    const address = await this.addressesService.findById(id);
 
     if (!address) throw new NotFoundException('Address not found.');
 
@@ -39,29 +39,32 @@ export class AddressesController {
   }
 
   @Roles('admin')
-  @Post('user/:userID')
+  @Post('user/:userId')
   async create(
-    @Body() body: CreateAddressDTO,
-    @Param('userID') userID: string,
+    @Body() body: CreateAddressDto,
+    @Param('userId', ParseIntPipe) userId: number,
   ) {
-    return this.addressesService.create(body, parseInt(userID));
+    return this.addressesService.create(body, userId);
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Patch('/:id')
-  async update(@Param('id') id: string, @Body() body: UpdateAddressDTO) {
-    return await this.addressesService.update(parseInt(id), body);
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateAddressDto,
+  ) {
+    return await this.addressesService.update(id, body);
   }
 
   @Roles('admin')
   @Delete('delete/:id')
-  async delete(@Param('id') id: string) {
-    return await this.addressesService.delete(parseInt(id));
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    return await this.addressesService.delete(id);
   }
 
   @Roles('admin')
   @Delete('/:id')
-  async remove(@Param('id') id: string) {
-    return await this.addressesService.remove(parseInt(id));
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.addressesService.remove(id);
   }
 }

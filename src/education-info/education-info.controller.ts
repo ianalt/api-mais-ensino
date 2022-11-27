@@ -12,8 +12,8 @@ import {
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { CreateEducationInfoDTO } from './dtos/create-education-info.dto';
-import { UpdateEducationInfoDTO } from './dtos/update-education-info.dto';
+import { CreateEducationInfoDto } from './dtos/create-education-info.dto';
+import { UpdateEducationInfoDto } from './dtos/update-education-info.dto';
 import { EducationInfoService } from './education-info.service';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -23,10 +23,8 @@ export class EducationInfoController {
 
   @Roles('admin')
   @Get('/:id')
-  async findByID(@Param('id') id: string) {
-    const educationInfo = await this.educationInfoService.findByID(
-      parseInt(id),
-    );
+  async findById(@Param('id', ParseIntPipe) id: number) {
+    const educationInfo = await this.educationInfoService.findById(id);
 
     if (!educationInfo)
       throw new NotFoundException('Education info not found.');
@@ -41,29 +39,32 @@ export class EducationInfoController {
   }
 
   @Roles('admin')
-  @Post('/:userID')
+  @Post('/:userId')
   create(
-    @Body() body: CreateEducationInfoDTO,
-    @Param('userID') userID: string,
+    @Body() body: CreateEducationInfoDto,
+    @Param('userId', ParseIntPipe) userId: number,
   ) {
-    return this.educationInfoService.create(body, parseInt(userID));
+    return this.educationInfoService.create(body, userId);
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Patch('/:id')
-  async update(@Param('id') id: string, @Body() body: UpdateEducationInfoDTO) {
-    return await this.educationInfoService.update(parseInt(id), body);
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateEducationInfoDto,
+  ) {
+    return await this.educationInfoService.update(id, body);
   }
 
   @Roles('admin')
   @Delete('delete/:id')
-  async delete(@Param('id') id: string) {
-    return await this.educationInfoService.delete(parseInt(id));
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    return await this.educationInfoService.delete(id);
   }
 
   @Roles('admin')
   @Delete('/:id')
-  async remove(@Param('id') id: string) {
-    return await this.educationInfoService.remove(parseInt(id));
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.educationInfoService.remove(id);
   }
 }

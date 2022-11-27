@@ -1,10 +1,10 @@
 import { Expose, Type } from 'class-transformer';
 import { ValidateNested } from 'class-validator';
-import { BaseCategoryDTO } from 'src/categories/dtos/base-category.dto';
-import { CommentDTO } from 'src/comments/dtos/comment.dto';
-import { TopicFileDTO } from 'src/topic-files/dtos/topic-file.dto';
+import { BaseCategoryDto } from 'src/categories/dtos/base-category.dto';
+import { CommentDto } from 'src/comments/dtos/comment.dto';
+import { TopicFileDto } from 'src/topic-files/dtos/topic-file.dto';
 
-export class TopicDTO {
+export class TopicDto {
   @Expose()
   id: number;
 
@@ -19,16 +19,16 @@ export class TopicDTO {
 
   @Expose()
   @ValidateNested({ each: true })
-  @Type(() => BaseCategoryDTO)
-  category: BaseCategoryDTO;
+  @Type(() => BaseCategoryDto)
+  category: BaseCategoryDto;
 
   @Expose()
   @ValidateNested({ each: true })
-  @Type(() => TopicFileDTO)
-  topicFiles: TopicFileDTO[];
+  @Type(() => TopicFileDto)
+  topicFiles: TopicFileDto[];
 
   @Expose()
   @ValidateNested({ each: true })
-  @Type(() => CommentDTO)
-  comments: CommentDTO[];
+  @Type(() => CommentDto)
+  comments: CommentDto[];
 }

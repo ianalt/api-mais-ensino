@@ -9,7 +9,7 @@ import {
 import { Ethnicity } from '../enums/ethnicity.enum';
 import { Gender } from '../enums/gender.enum';
 
-export class CreateUserDTO {
+export class CreateUserDto {
   @IsEmail()
   email: string;
 

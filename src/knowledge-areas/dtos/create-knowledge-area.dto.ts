@@ -1,6 +1,6 @@
 import { IsOptional, IsString } from 'class-validator';
 
-export class CreateKnowledgeAreaDTO {
+export class CreateKnowledgeAreaDto {
   @IsString()
   name: string;
 

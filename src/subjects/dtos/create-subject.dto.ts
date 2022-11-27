@@ -1,6 +1,6 @@
 import { IsInt, IsOptional, IsPositive, IsString } from 'class-validator';
 
-export class CreateSubjectDTO {
+export class CreateSubjectDto {
   @IsString()
   name: string;
 
@@ -10,5 +10,5 @@ export class CreateSubjectDTO {
 
   @IsInt()
   @IsPositive()
-  knowledgeAreaID: number;
+  knowledgeAreaId: number;
 }

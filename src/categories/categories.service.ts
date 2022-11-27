@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Subject } from 'src/subjects/subject.entity';
 import { Repository } from 'typeorm';
 import { Category } from './category.entity';
-import { CreateCategoryDTO } from './dtos/create-category.dto';
-import { UpdateCategoryDTO } from './dtos/update-category.dto';
+import { CreateCategoryDto } from './dtos/create-category.dto';
+import { UpdateCategoryDto } from './dtos/update-category.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -18,7 +18,7 @@ export class CategoriesService {
 
   private allRelations = ['topics', 'subject'];
 
-  findByID(id: number) {
+  findById(id: number) {
     if (!id) return null;
 
     return this.categoriesRepository.findOne({
@@ -34,13 +34,13 @@ export class CategoriesService {
     });
   }
 
-  async create(body: CreateCategoryDTO) {
-    const { subjectID, ...attrs } = body;
+  async create(body: CreateCategoryDto) {
+    const { subjectId, ...attrs } = body;
 
     const subject = await this.subjectsRepository.findOne({
       where: {
         active: true,
-        id: subjectID,
+        id: subjectId,
       },
     });
 
@@ -55,17 +55,17 @@ export class CategoriesService {
     return this.categoriesRepository.save(newCategory);
   }
 
-  async update(id: number, body: UpdateCategoryDTO) {
-    const category = await this.findByID(id);
+  async update(id: number, body: UpdateCategoryDto) {
+    const category = await this.findById(id);
 
     if (!category) throw new NotFoundException('Category not found.');
 
-    const { subjectID, ...values } = body;
+    const { subjectId, ...values } = body;
 
     const subject = await this.subjectsRepository.findOne({
       where: {
         active: true,
-        id: subjectID,
+        id: subjectId,
       },
     });
 
@@ -82,7 +82,7 @@ export class CategoriesService {
   }
 
   async delete(id: number) {
-    const category = await this.findByID(id);
+    const category = await this.findById(id);
 
     if (!category) throw new NotFoundException('Category not found.');
 
@@ -93,7 +93,7 @@ export class CategoriesService {
   }
 
   async remove(id: number) {
-    const category = await this.findByID(id);
+    const category = await this.findById(id);
 
     if (!category) throw new NotFoundException('Category not found.');
 

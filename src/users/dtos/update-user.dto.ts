@@ -3,7 +3,7 @@ import { Role } from 'src/auth/enums/role.enum';
 import { Ethnicity } from '../enums/ethnicity.enum';
 import { Gender } from '../enums/gender.enum';
 
-export class UpdateUserDTO {
+export class UpdateUserDto {
   @IsOptional()
   @IsString()
   role: Role;

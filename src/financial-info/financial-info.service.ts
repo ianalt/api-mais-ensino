@@ -2,8 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
-import { CreateFinancialInfoDTO } from './dtos/create-financial-info.dto';
-import { UpdateFinancialInfoDTO } from './dtos/update-financial-info.dto';
+import { CreateFinancialInfoDto } from './dtos/create-financial-info.dto';
+import { UpdateFinancialInfoDto } from './dtos/update-financial-info.dto';
 import { FinancialInfo } from './financial-info.entity';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class FinancialInfoService {
 
   private allRelations = ['user'];
 
-  findByID(id: number) {
+  findById(id: number) {
     if (!id) return null;
 
     return this.financialInfoRepository.findOne({
@@ -34,8 +34,8 @@ export class FinancialInfoService {
     });
   }
 
-  async create(body: CreateFinancialInfoDTO, userID: number) {
-    const user = await this.usersRepository.findOne(userID);
+  async create(body: CreateFinancialInfoDto, userId: number) {
+    const user = await this.usersRepository.findOne(userId);
 
     if (!user) throw new NotFoundException('User not found.');
 
@@ -48,8 +48,8 @@ export class FinancialInfoService {
     return this.financialInfoRepository.save(newFinancialInfo);
   }
 
-  async update(id: number, body: UpdateFinancialInfoDTO) {
-    const financialInfo = await this.findByID(id);
+  async update(id: number, body: UpdateFinancialInfoDto) {
+    const financialInfo = await this.findById(id);
 
     if (!financialInfo)
       throw new NotFoundException('Financial info not found.');
@@ -64,7 +64,7 @@ export class FinancialInfoService {
   }
 
   async delete(id: number) {
-    const financialInfo = await this.findByID(id);
+    const financialInfo = await this.findById(id);
 
     if (!financialInfo)
       throw new NotFoundException('Financial info not found.');
@@ -76,7 +76,7 @@ export class FinancialInfoService {
   }
 
   async remove(id: number) {
-    const financialInfo = await this.findByID(id);
+    const financialInfo = await this.findById(id);
 
     if (!financialInfo)
       throw new NotFoundException('Financial info not found.');

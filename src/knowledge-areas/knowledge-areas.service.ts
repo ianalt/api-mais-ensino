@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateKnowledgeAreaDTO } from './dtos/create-knowledge-area.dto';
-import { UpdateKnowledgeAreaDTO } from './dtos/update-knowledge-area.dto';
+import { CreateKnowledgeAreaDto } from './dtos/create-knowledge-area.dto';
+import { UpdateKnowledgeAreaDto } from './dtos/update-knowledge-area.dto';
 import { KnowledgeArea } from './knowledge-area.entity';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class KnowledgeAreasService {
 
   private allRelations = ['subjects'];
 
-  findByID(id: number) {
+  findById(id: number) {
     if (!id) return null;
 
     return this.knowledgeAreasRepository.findOne({
@@ -30,7 +30,7 @@ export class KnowledgeAreasService {
     });
   }
 
-  create(body: CreateKnowledgeAreaDTO) {
+  create(body: CreateKnowledgeAreaDto) {
     const newKnowledgeArea = this.knowledgeAreasRepository.create({
       ...body,
     });
@@ -38,8 +38,8 @@ export class KnowledgeAreasService {
     return this.knowledgeAreasRepository.save(newKnowledgeArea);
   }
 
-  async update(id: number, body: UpdateKnowledgeAreaDTO) {
-    const knowledgeArea = await this.findByID(id);
+  async update(id: number, body: UpdateKnowledgeAreaDto) {
+    const knowledgeArea = await this.findById(id);
 
     if (!knowledgeArea)
       throw new NotFoundException('Knowledge area not found.');
@@ -54,7 +54,7 @@ export class KnowledgeAreasService {
   }
 
   async delete(id: number) {
-    const knowledgeArea = await this.findByID(id);
+    const knowledgeArea = await this.findById(id);
 
     if (!knowledgeArea)
       throw new NotFoundException('Knowledge area not found.');
@@ -66,7 +66,7 @@ export class KnowledgeAreasService {
   }
 
   async remove(id: number) {
-    const knowledgeArea = await this.findByID(id);
+    const knowledgeArea = await this.findById(id);
 
     if (!knowledgeArea)
       throw new NotFoundException('Knowledge area not found.');

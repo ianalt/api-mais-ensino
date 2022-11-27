@@ -13,9 +13,9 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
-import { CreateSubjectDTO } from './dtos/create-subject.dto';
-import { SubjectDTO } from './dtos/subject.dto';
-import { UpdateSubjectDTO } from './dtos/update-subject.dto';
+import { CreateSubjectDto } from './dtos/create-subject.dto';
+import { SubjectDto } from './dtos/subject.dto';
+import { UpdateSubjectDto } from './dtos/update-subject.dto';
 import { SubjectsService } from './subjects.service';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -25,9 +25,9 @@ export class SubjectsController {
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get('/:id')
-  @Serialize(SubjectDTO)
-  async findByID(@Param('id') id: string) {
-    const subject = await this.subjectsService.findByID(parseInt(id));
+  @Serialize(SubjectDto)
+  async findById(@Param('id', ParseIntPipe) id: number) {
+    const subject = await this.subjectsService.findById(id);
 
     if (!subject) throw new NotFoundException('Subject not found.');
 
@@ -36,7 +36,7 @@ export class SubjectsController {
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get()
-  @Serialize(SubjectDTO)
+  @Serialize(SubjectDto)
   async findAll() {
     const subjects = await this.subjectsService.findAll();
 
@@ -47,29 +47,32 @@ export class SubjectsController {
 
   @Roles('admin')
   @Post()
-  @Serialize(SubjectDTO)
-  async create(@Body() body: CreateSubjectDTO) {
+  @Serialize(SubjectDto)
+  async create(@Body() body: CreateSubjectDto) {
     return await this.subjectsService.create(body);
   }
 
   @Roles('admin')
   @Patch('/:id')
-  @Serialize(SubjectDTO)
-  async update(@Param('id') id: string, @Body() body: UpdateSubjectDTO) {
-    return await this.subjectsService.update(parseInt(id), body);
+  @Serialize(SubjectDto)
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateSubjectDto,
+  ) {
+    return await this.subjectsService.update(id, body);
   }
 
   @Roles('admin')
   @Delete('delete/:id')
-  @Serialize(SubjectDTO)
-  async delete(@Param('id') id: string) {
-    return await this.subjectsService.delete(parseInt(id));
+  @Serialize(SubjectDto)
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    return await this.subjectsService.delete(id);
   }
 
   @Roles('admin')
   @Delete('/:id')
-  @Serialize(SubjectDTO)
-  async remove(@Param('id') id: string) {
-    return await this.subjectsService.remove(parseInt(id));
+  @Serialize(SubjectDto)
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.subjectsService.remove(id);
   }
 }

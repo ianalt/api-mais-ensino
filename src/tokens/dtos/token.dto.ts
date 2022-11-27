@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
 
-export class TokenDTO {
+export class TokenDto {
   @Expose()
   id: number;
 

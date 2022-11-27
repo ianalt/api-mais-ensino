@@ -1,10 +1,10 @@
 import { IsInt, IsPositive, IsString } from 'class-validator';
 
-export class CreateCommentDTO {
+export class CreateCommentDto {
   @IsString()
   content: string;
 
   @IsInt()
   @IsPositive()
-  userID: number;
+  userId: number;
 }

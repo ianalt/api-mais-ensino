@@ -1,7 +1,7 @@
 import { Controller, Post, UseGuards, Request, Body } from '@nestjs/common';
 import { User } from 'src/users/user.entity';
 import { AuthService } from './auth.service';
-import { SignUpDTO } from './dtos/sign-up.dto';
+import { SignUpDto } from './dtos/sign-up.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @Controller('auth')
@@ -16,12 +16,12 @@ export class AuthController {
   }
 
   @Post('/sign-up')
-  async signUp(@Body() body: SignUpDTO) {
+  async signUp(@Body() body: SignUpDto) {
     return await this.authService.signUp(body);
   }
 
   @Post('/seeding')
-  async seeding(@Body() body: SignUpDTO[]) {
+  async seeding(@Body() body: SignUpDto[]) {
     return await this.authService.seeding(body);
   }
 }

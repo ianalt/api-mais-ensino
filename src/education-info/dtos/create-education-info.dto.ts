@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import { SchoolingLevel } from '../enums/schooling-level.enum';
 
-export class CreateEducationInfoDTO {
+export class CreateEducationInfoDto {
   @IsEnum(SchoolingLevel)
   schoolingLevel: SchoolingLevel;
 

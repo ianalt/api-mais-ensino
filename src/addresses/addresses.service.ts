@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
 import { Address } from './address.entity';
-import { CreateAddressDTO } from './dtos/create-address.dto';
-import { UpdateAddressDTO } from './dtos/update-address.dto';
+import { CreateAddressDto } from './dtos/create-address.dto';
+import { UpdateAddressDto } from './dtos/update-address.dto';
 
 @Injectable()
 export class AddressesService {
@@ -18,7 +18,7 @@ export class AddressesService {
 
   private allRelations = ['user'];
 
-  findByID(id: number) {
+  findById(id: number) {
     if (!id) return null;
 
     return this.addressesRepository.findOne({
@@ -34,8 +34,8 @@ export class AddressesService {
     });
   }
 
-  async create(body: CreateAddressDTO, userID: number) {
-    const user = await this.usersRepository.findOne(userID);
+  async create(body: CreateAddressDto, userId: number) {
+    const user = await this.usersRepository.findOne(userId);
 
     if (!user) throw new NotFoundException('User not found.');
 
@@ -48,8 +48,8 @@ export class AddressesService {
     return this.addressesRepository.save(newAddress);
   }
 
-  async update(id: number, body: UpdateAddressDTO) {
-    const address = await this.findByID(id);
+  async update(id: number, body: UpdateAddressDto) {
+    const address = await this.findById(id);
 
     if (!address) throw new NotFoundException('Address not found.');
 
@@ -63,7 +63,7 @@ export class AddressesService {
   }
 
   async delete(id: number) {
-    const address = await this.findByID(id);
+    const address = await this.findById(id);
 
     if (!address) throw new NotFoundException('Address not found.');
 
@@ -74,7 +74,7 @@ export class AddressesService {
   }
 
   async remove(id: number) {
-    const address = await this.findByID(id);
+    const address = await this.findById(id);
 
     if (!address) throw new NotFoundException('Address not found.');
 

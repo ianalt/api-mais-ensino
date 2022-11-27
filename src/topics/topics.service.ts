@@ -2,8 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from 'src/categories/category.entity';
 import { Repository } from 'typeorm';
-import { CreateTopicDTO } from './dtos/create-topic.dto';
-import { UpdateTopicDTO } from './dtos/update-topic.dto';
+import { CreateTopicDto } from './dtos/create-topic.dto';
+import { UpdateTopicDto } from './dtos/update-topic.dto';
 import { Topic } from './topic.entity';
 
 @Injectable()
@@ -22,7 +22,7 @@ export class TopicsService {
     'comments',
   ];
 
-  findByID(id: number) {
+  findById(id: number) {
     if (!id) return null;
 
     return this.topicsRepository.findOne({
@@ -38,13 +38,13 @@ export class TopicsService {
     });
   }
 
-  async create(body: CreateTopicDTO) {
-    const { categoryID, ...attrs } = body;
+  async create(body: CreateTopicDto) {
+    const { categoryId, ...attrs } = body;
 
     const category = await this.categoriesRepository.findOne({
       where: {
         active: true,
-        id: categoryID,
+        id: categoryId,
       },
     });
 
@@ -59,17 +59,17 @@ export class TopicsService {
     return this.topicsRepository.save(newTopic);
   }
 
-  async update(id: number, body: UpdateTopicDTO) {
-    const topic = await this.findByID(id);
+  async update(id: number, body: UpdateTopicDto) {
+    const topic = await this.findById(id);
 
     if (!topic) throw new NotFoundException('Topic not found.');
 
-    const { categoryID, ...values } = body;
+    const { categoryId, ...values } = body;
 
     const category = await this.categoriesRepository.findOne({
       where: {
         active: true,
-        id: categoryID,
+        id: categoryId,
       },
     });
 
@@ -86,7 +86,7 @@ export class TopicsService {
   }
 
   async delete(id: number) {
-    const topic = await this.findByID(id);
+    const topic = await this.findById(id);
 
     if (!topic) throw new NotFoundException('Topic not found.');
 
@@ -97,7 +97,7 @@ export class TopicsService {
   }
 
   async remove(id: number) {
-    const topic = await this.findByID(id);
+    const topic = await this.findById(id);
 
     if (!topic) throw new NotFoundException('Topic not found.');
 

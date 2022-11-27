@@ -13,9 +13,9 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
-import { CreateTopicDTO } from './dtos/create-topic.dto';
-import { TopicDTO } from './dtos/topic.dto';
-import { UpdateTopicDTO } from './dtos/update-topic.dto';
+import { CreateTopicDto } from './dtos/create-topic.dto';
+import { TopicDto } from './dtos/topic.dto';
+import { UpdateTopicDto } from './dtos/update-topic.dto';
 import { TopicsService } from './topics.service';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -25,9 +25,9 @@ export class TopicsController {
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get('/:id')
-  @Serialize(TopicDTO)
-  async findByID(@Param('id') id: string) {
-    const topic = await this.topicsService.findByID(parseInt(id));
+  @Serialize(TopicDto)
+  async findById(@Param('id', ParseIntPipe) id: number) {
+    const topic = await this.topicsService.findById(id);
 
     if (!topic) throw new NotFoundException('Topic not found.');
 
@@ -36,7 +36,7 @@ export class TopicsController {
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get()
-  @Serialize(TopicDTO)
+  @Serialize(TopicDto)
   async findAll() {
     const topics = await this.topicsService.findAll();
 
@@ -47,29 +47,32 @@ export class TopicsController {
 
   @Roles('professor', 'admin')
   @Post()
-  @Serialize(TopicDTO)
-  async create(@Body() body: CreateTopicDTO) {
+  @Serialize(TopicDto)
+  async create(@Body() body: CreateTopicDto) {
     return await this.topicsService.create(body);
   }
 
   @Roles('professor', 'admin')
   @Patch('/:id')
-  @Serialize(TopicDTO)
-  async update(@Param('id') id: string, @Body() body: UpdateTopicDTO) {
-    return await this.topicsService.update(parseInt(id), body);
+  @Serialize(TopicDto)
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateTopicDto,
+  ) {
+    return await this.topicsService.update(id, body);
   }
 
   @Roles('professor', 'admin')
   @Delete('delete/:id')
-  @Serialize(TopicDTO)
-  async delete(@Param('id') id: string) {
-    return await this.topicsService.delete(parseInt(id));
+  @Serialize(TopicDto)
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    return await this.topicsService.delete(id);
   }
 
   @Roles('professor', 'admin')
   @Delete('/:id')
-  @Serialize(TopicDTO)
-  async remove(@Param('id') id: string) {
-    return await this.topicsService.remove(parseInt(id));
+  @Serialize(TopicDto)
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.topicsService.remove(id);
   }
 }

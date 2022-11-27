@@ -1,6 +1,6 @@
 import { IsOptional, IsString } from 'class-validator';
 
-export class UpdateCommentFileDTO {
+export class UpdateCommentFileDto {
   @IsOptional()
   @IsString()
   fileURL: string;

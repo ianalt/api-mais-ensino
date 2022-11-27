@@ -1,16 +1,16 @@
 import { Expose, Type } from 'class-transformer';
 import { ValidateNested } from 'class-validator';
-import { AddressDTO } from 'src/addresses/dtos/address.dto';
+import { AddressDto } from 'src/addresses/dtos/address.dto';
 import { Role } from 'src/auth/enums/role.enum';
-import { CommentDTO } from 'src/comments/dtos/comment.dto';
-import { EducationInfoDTO } from 'src/education-info/dtos/education-info.dto';
-import { FinancialInfoDTO } from 'src/financial-info/dtos/financial-info.dto';
-import { PhoneNumberDTO } from 'src/phone-numbers/dtos/phone-number.dto';
-import { BaseSubjectDTO } from 'src/subjects/dtos/base-subject.dto';
+import { CommentDto } from 'src/comments/dtos/comment.dto';
+import { EducationInfoDto } from 'src/education-info/dtos/education-info.dto';
+import { FinancialInfoDto } from 'src/financial-info/dtos/financial-info.dto';
+import { PhoneNumberDto } from 'src/phone-numbers/dtos/phone-number.dto';
+import { BaseSubjectDto } from 'src/subjects/dtos/base-subject.dto';
 import { Ethnicity } from '../enums/ethnicity.enum';
 import { Gender } from '../enums/gender.enum';
 
-export class UserDTO {
+export class UserDto {
   @Expose()
   id: number;
 
@@ -40,31 +40,31 @@ export class UserDTO {
 
   @Expose()
   @ValidateNested()
-  @Type(() => AddressDTO)
-  address: AddressDTO;
+  @Type(() => AddressDto)
+  address: AddressDto;
 
   @Expose()
   @ValidateNested()
-  @Type(() => FinancialInfoDTO)
-  financialInfo: FinancialInfoDTO;
+  @Type(() => FinancialInfoDto)
+  financialInfo: FinancialInfoDto;
 
   @Expose()
   @ValidateNested({ each: true })
-  @Type(() => PhoneNumberDTO)
-  phoneNumbers: PhoneNumberDTO[];
+  @Type(() => PhoneNumberDto)
+  phoneNumbers: PhoneNumberDto[];
 
   @Expose()
   @ValidateNested({ each: true })
-  @Type(() => EducationInfoDTO)
-  educationInfoList: EducationInfoDTO[];
+  @Type(() => EducationInfoDto)
+  educationInfoList: EducationInfoDto[];
 
   @Expose()
   @ValidateNested({ each: true })
-  @Type(() => CommentDTO)
-  comments: CommentDTO[];
+  @Type(() => CommentDto)
+  comments: CommentDto[];
 
   @Expose()
   @ValidateNested()
-  @Type(() => BaseSubjectDTO)
-  subject: BaseSubjectDTO;
+  @Type(() => BaseSubjectDto)
+  subject: BaseSubjectDto;
 }

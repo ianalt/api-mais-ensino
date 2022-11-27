@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateTopicFileDTO } from './dtos/create-topic-file.dto';
-import { UpdateTopicFileDTO } from './dtos/update-topic-file.dto';
+import { CreateTopicFileDto } from './dtos/create-topic-file.dto';
+import { UpdateTopicFileDto } from './dtos/update-topic-file.dto';
 import { TopicFile } from './topic-file.entity';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class TopicFilesService {
 
   private allRelations = ['topic'];
 
-  findByID(id: number) {
+  findById(id: number) {
     if (!id) return null;
 
     return this.topicFilesRepository.findOne({
@@ -30,7 +30,7 @@ export class TopicFilesService {
     });
   }
 
-  create(body: CreateTopicFileDTO) {
+  create(body: CreateTopicFileDto) {
     const newTopicFile = this.topicFilesRepository.create({
       ...body,
     });
@@ -38,8 +38,8 @@ export class TopicFilesService {
     return this.topicFilesRepository.save(newTopicFile);
   }
 
-  async update(id: number, body: UpdateTopicFileDTO) {
-    const topicFile = await this.findByID(id);
+  async update(id: number, body: UpdateTopicFileDto) {
+    const topicFile = await this.findById(id);
 
     if (!topicFile) throw new NotFoundException('Topic file not found.');
 
@@ -53,7 +53,7 @@ export class TopicFilesService {
   }
 
   async delete(id: number) {
-    const topicFile = await this.findByID(id);
+    const topicFile = await this.findById(id);
 
     if (!topicFile) throw new NotFoundException('Topic file not found.');
 
@@ -64,7 +64,7 @@ export class TopicFilesService {
   }
 
   async remove(id: number) {
-    const topicFile = await this.findByID(id);
+    const topicFile = await this.findById(id);
 
     if (!topicFile) throw new NotFoundException('Topic file not found.');
 

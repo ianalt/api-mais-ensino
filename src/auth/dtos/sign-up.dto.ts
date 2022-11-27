@@ -1,30 +1,30 @@
 import { Type } from 'class-transformer';
 import { ArrayMaxSize, ValidateNested } from 'class-validator';
-import { CreateAddressDTO } from 'src/addresses/dtos/create-address.dto';
-import { CreateEducationInfoDTO } from 'src/education-info/dtos/create-education-info.dto';
-import { CreateFinancialInfoDTO } from 'src/financial-info/dtos/create-financial-info.dto';
-import { CreatePhoneNumberDTO } from 'src/phone-numbers/dtos/create-phone-number.dto';
-import { CreateUserDTO } from 'src/users/dtos/create-user.dto';
+import { CreateAddressDto } from 'src/addresses/dtos/create-address.dto';
+import { CreateEducationInfoDto } from 'src/education-info/dtos/create-education-info.dto';
+import { CreateFinancialInfoDto } from 'src/financial-info/dtos/create-financial-info.dto';
+import { CreatePhoneNumberDto } from 'src/phone-numbers/dtos/create-phone-number.dto';
+import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 
-export class SignUpDTO {
+export class SignUpDto {
   @ValidateNested()
-  @Type(() => CreateUserDTO)
-  user: CreateUserDTO;
+  @Type(() => CreateUserDto)
+  user: CreateUserDto;
 
   @ValidateNested()
-  @Type(() => CreateAddressDTO)
-  address: CreateAddressDTO;
+  @Type(() => CreateAddressDto)
+  address: CreateAddressDto;
 
   @ValidateNested({ each: true })
-  @Type(() => CreatePhoneNumberDTO)
+  @Type(() => CreatePhoneNumberDto)
   @ArrayMaxSize(2)
-  phoneNumbers: CreatePhoneNumberDTO[];
+  phoneNumbers: CreatePhoneNumberDto[];
 
   @ValidateNested({ each: true })
-  @Type(() => CreateEducationInfoDTO)
-  educationInfoList: CreateEducationInfoDTO[];
+  @Type(() => CreateEducationInfoDto)
+  educationInfoList: CreateEducationInfoDto[];
 
   @ValidateNested()
-  @Type(() => CreateFinancialInfoDTO)
-  financialInfo: CreateFinancialInfoDTO;
+  @Type(() => CreateFinancialInfoDto)
+  financialInfo: CreateFinancialInfoDto;
 }

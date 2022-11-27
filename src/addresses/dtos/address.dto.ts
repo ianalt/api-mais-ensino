@@ -1,7 +1,7 @@
 import { Expose } from 'class-transformer';
 import { State } from '../enums/state.enum';
 
-export class AddressDTO {
+export class AddressDto {
   @Expose()
   id: number;
 

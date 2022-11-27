@@ -1,15 +1,15 @@
 import { Expose, Type } from 'class-transformer';
 import { ValidateNested } from 'class-validator';
-import { AddressDTO } from 'src/addresses/dtos/address.dto';
+import { AddressDto } from 'src/addresses/dtos/address.dto';
 import { Role } from 'src/auth/enums/role.enum';
-import { CommentDTO } from 'src/comments/dtos/comment.dto';
-import { EducationInfoDTO } from 'src/education-info/dtos/education-info.dto';
-import { PhoneNumberDTO } from 'src/phone-numbers/dtos/phone-number.dto';
-import { SubjectDTO } from 'src/subjects/dtos/subject.dto';
+import { CommentDto } from 'src/comments/dtos/comment.dto';
+import { EducationInfoDto } from 'src/education-info/dtos/education-info.dto';
+import { PhoneNumberDto } from 'src/phone-numbers/dtos/phone-number.dto';
+import { SubjectDto } from 'src/subjects/dtos/subject.dto';
 import { Ethnicity } from '../enums/ethnicity.enum';
 import { Gender } from '../enums/gender.enum';
 
-export class MonitorDTO {
+export class MonitorDto {
   @Expose()
   id: number;
 
@@ -39,26 +39,26 @@ export class MonitorDTO {
 
   @Expose()
   @ValidateNested({ each: true })
-  @Type(() => AddressDTO)
-  address: AddressDTO;
+  @Type(() => AddressDto)
+  address: AddressDto;
 
   @Expose()
   @ValidateNested({ each: true })
-  @Type(() => PhoneNumberDTO)
-  phoneNumbers: PhoneNumberDTO[];
+  @Type(() => PhoneNumberDto)
+  phoneNumbers: PhoneNumberDto[];
 
   @Expose()
   @ValidateNested({ each: true })
-  @Type(() => EducationInfoDTO)
-  educationInfoList: EducationInfoDTO[];
+  @Type(() => EducationInfoDto)
+  educationInfoList: EducationInfoDto[];
 
   @Expose()
   @ValidateNested({ each: true })
-  @Type(() => CommentDTO)
-  comments: CommentDTO[];
+  @Type(() => CommentDto)
+  comments: CommentDto[];
 
   @Expose()
   @ValidateNested({ each: true })
-  @Type(() => SubjectDTO)
-  subject: SubjectDTO;
+  @Type(() => SubjectDto)
+  subject: SubjectDto;
 }

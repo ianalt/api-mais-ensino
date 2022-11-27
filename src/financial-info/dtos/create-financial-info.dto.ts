@@ -1,6 +1,6 @@
 import { IsInt, IsNumber, IsPositive } from 'class-validator';
 
-export class CreateFinancialInfoDTO {
+export class CreateFinancialInfoDto {
   @IsNumber()
   @IsPositive()
   generalIncome: number;

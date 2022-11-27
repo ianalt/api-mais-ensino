@@ -12,8 +12,8 @@ import {
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { CreatePhoneNumberDTO } from './dtos/create-phone-number.dto';
-import { UpdatePhoneNumberDTO } from './dtos/update-phone-number.dto';
+import { CreatePhoneNumberDto } from './dtos/create-phone-number.dto';
+import { UpdatePhoneNumberDto } from './dtos/update-phone-number.dto';
 import { PhoneNumbersService } from './phone-numbers.service';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -23,8 +23,8 @@ export class PhoneNumbersController {
 
   @Roles('admin')
   @Get('/:id')
-  async findByID(@Param('id') id: string) {
-    const phoneNumber = await this.phoneNumbersService.findByID(parseInt(id));
+  async findById(@Param('id', ParseIntPipe) id: number) {
+    const phoneNumber = await this.phoneNumbersService.findById(id);
 
     if (!phoneNumber) throw new NotFoundException('Phone number not found.');
 
@@ -38,29 +38,32 @@ export class PhoneNumbersController {
   }
 
   @Roles('admin')
-  @Post('/:userID')
+  @Post('/:userId')
   async create(
-    @Body() body: CreatePhoneNumberDTO,
-    @Param('userID') userID: string,
+    @Body() body: CreatePhoneNumberDto,
+    @Param('userId', ParseIntPipe) userId: number,
   ) {
-    return this.phoneNumbersService.create(body, parseInt(userID));
+    return this.phoneNumbersService.create(body, userId);
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Patch('/:id')
-  async update(@Param('id') id: string, @Body() body: UpdatePhoneNumberDTO) {
-    return await this.phoneNumbersService.update(parseInt(id), body);
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdatePhoneNumberDto,
+  ) {
+    return await this.phoneNumbersService.update(id, body);
   }
 
   @Roles('admin')
   @Delete('delete/:id')
-  async delete(@Param('id') id: string) {
-    return await this.phoneNumbersService.delete(parseInt(id));
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    return await this.phoneNumbersService.delete(id);
   }
 
   @Roles('admin')
   @Delete('/:id')
-  async remove(@Param('id') id: string) {
-    return await this.phoneNumbersService.remove(parseInt(id));
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.phoneNumbersService.remove(id);
   }
 }

@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
 
-export class CommentFileDTO {
+export class CommentFileDto {
   @Expose()
   id: number;
 

@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
 
-export class BaseKnowledgeAreaDTO {
+export class BaseKnowledgeAreaDto {
   @Expose()
   id: number;
 

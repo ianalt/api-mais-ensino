@@ -14,9 +14,9 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { CategoriesService } from './categories.service';
-import { CategoryDTO } from './dtos/category.dto';
-import { CreateCategoryDTO } from './dtos/create-category.dto';
-import { UpdateCategoryDTO } from './dtos/update-category.dto';
+import { CategoryDto } from './dtos/category.dto';
+import { CreateCategoryDto } from './dtos/create-category.dto';
+import { UpdateCategoryDto } from './dtos/update-category.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('categories')
@@ -25,9 +25,9 @@ export class CategoriesController {
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get('/:id')
-  @Serialize(CategoryDTO)
-  async findByID(@Param('id') id: string) {
-    const category = await this.categoriesService.findByID(parseInt(id));
+  @Serialize(CategoryDto)
+  async findById(@Param('id', ParseIntPipe) id: number) {
+    const category = await this.categoriesService.findById(id);
 
     if (!category) throw new NotFoundException('Category not found.');
 
@@ -36,7 +36,7 @@ export class CategoriesController {
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get()
-  @Serialize(CategoryDTO)
+  @Serialize(CategoryDto)
   async findAll() {
     const categories = await this.categoriesService.findAll();
 
@@ -47,29 +47,32 @@ export class CategoriesController {
 
   @Roles('professor', 'admin')
   @Post()
-  @Serialize(CategoryDTO)
-  async create(@Body() body: CreateCategoryDTO) {
+  @Serialize(CategoryDto)
+  async create(@Body() body: CreateCategoryDto) {
     return await this.categoriesService.create(body);
   }
 
   @Roles('professor', 'admin')
   @Patch('/:id')
-  @Serialize(CategoryDTO)
-  async update(@Param('id') id: string, @Body() body: UpdateCategoryDTO) {
-    return await this.categoriesService.update(parseInt(id), body);
+  @Serialize(CategoryDto)
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateCategoryDto,
+  ) {
+    return await this.categoriesService.update(id, body);
   }
 
   @Roles('professor', 'admin')
   @Delete('delete/:id')
-  @Serialize(CategoryDTO)
-  async delete(@Param('id') id: string) {
-    return await this.categoriesService.delete(parseInt(id));
+  @Serialize(CategoryDto)
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    return await this.categoriesService.delete(id);
   }
 
   @Roles('admin')
   @Delete('/:id')
-  @Serialize(CategoryDTO)
-  async remove(@Param('id') id: string) {
-    return await this.categoriesService.remove(parseInt(id));
+  @Serialize(CategoryDto)
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.categoriesService.remove(id);
   }
 }

@@ -1,6 +1,6 @@
 import { IsInt, IsOptional, IsPositive, IsString } from 'class-validator';
 
-export class UpdateTopicDTO {
+export class UpdateTopicDto {
   @IsOptional()
   @IsString()
   title: string;
@@ -15,5 +15,5 @@ export class UpdateTopicDTO {
 
   @IsInt()
   @IsPositive()
-  categoryID: number;
+  categoryId: number;
 }

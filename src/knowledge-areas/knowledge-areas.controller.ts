@@ -13,9 +13,9 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
-import { CreateKnowledgeAreaDTO } from './dtos/create-knowledge-area.dto';
-import { KnowledgeAreaDTO } from './dtos/knowledge-area.dto';
-import { UpdateKnowledgeAreaDTO } from './dtos/update-knowledge-area.dto';
+import { CreateKnowledgeAreaDto } from './dtos/create-knowledge-area.dto';
+import { KnowledgeAreaDto } from './dtos/knowledge-area.dto';
+import { UpdateKnowledgeAreaDto } from './dtos/update-knowledge-area.dto';
 import { KnowledgeAreasService } from './knowledge-areas.service';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -25,11 +25,9 @@ export class KnowledgeAreasController {
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get('/:id')
-  @Serialize(KnowledgeAreaDTO)
-  async findByID(@Param('id') id: string) {
-    const knowledgeArea = await this.knowledgeAreasService.findByID(
-      parseInt(id),
-    );
+  @Serialize(KnowledgeAreaDto)
+  async findById(@Param('id', ParseIntPipe) id: number) {
+    const knowledgeArea = await this.knowledgeAreasService.findById(id);
 
     if (!knowledgeArea)
       throw new NotFoundException('Knowledge area not found.');
@@ -39,7 +37,7 @@ export class KnowledgeAreasController {
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get()
-  @Serialize(KnowledgeAreaDTO)
+  @Serialize(KnowledgeAreaDto)
   async findAll() {
     const knowledgeAreas = await this.knowledgeAreasService.findAll();
 
@@ -51,29 +49,32 @@ export class KnowledgeAreasController {
 
   @Roles('admin')
   @Post()
-  @Serialize(KnowledgeAreaDTO)
-  async create(@Body() body: CreateKnowledgeAreaDTO) {
+  @Serialize(KnowledgeAreaDto)
+  async create(@Body() body: CreateKnowledgeAreaDto) {
     return this.knowledgeAreasService.create(body);
   }
 
   @Roles('admin')
   @Patch('/:id')
-  @Serialize(KnowledgeAreaDTO)
-  async update(@Param('id') id: string, @Body() body: UpdateKnowledgeAreaDTO) {
-    return await this.knowledgeAreasService.update(parseInt(id), body);
+  @Serialize(KnowledgeAreaDto)
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateKnowledgeAreaDto,
+  ) {
+    return await this.knowledgeAreasService.update(id, body);
   }
 
   @Roles('admin')
   @Delete('delete/:id')
-  @Serialize(KnowledgeAreaDTO)
-  async delete(@Param('id') id: string) {
-    return await this.knowledgeAreasService.delete(parseInt(id));
+  @Serialize(KnowledgeAreaDto)
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    return await this.knowledgeAreasService.delete(id);
   }
 
   @Roles('admin')
   @Delete('/:id')
-  @Serialize(KnowledgeAreaDTO)
-  async remove(@Param('id') id: string) {
-    return await this.knowledgeAreasService.remove(parseInt(id));
+  @Serialize(KnowledgeAreaDto)
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.knowledgeAreasService.remove(id);
   }
 }

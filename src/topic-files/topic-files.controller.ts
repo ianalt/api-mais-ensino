@@ -12,8 +12,8 @@ import {
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { CreateTopicFileDTO } from './dtos/create-topic-file.dto';
-import { UpdateTopicFileDTO } from './dtos/update-topic-file.dto';
+import { CreateTopicFileDto } from './dtos/create-topic-file.dto';
+import { UpdateTopicFileDto } from './dtos/update-topic-file.dto';
 import { TopicFilesService } from './topic-files.service';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -23,8 +23,8 @@ export class TopicFilesController {
 
   @Roles('admin')
   @Get('/:id')
-  async findByID(@Param('id') id: string) {
-    const topic = await this.topicFilesService.findByID(parseInt(id));
+  async findById(@Param('id', ParseIntPipe) id: number) {
+    const topic = await this.topicFilesService.findById(id);
 
     if (!topic) throw new NotFoundException('Topic file not found.');
 
@@ -39,25 +39,28 @@ export class TopicFilesController {
 
   @Roles('admin')
   @Post()
-  async create(@Body() body: CreateTopicFileDTO) {
+  async create(@Body() body: CreateTopicFileDto) {
     return this.topicFilesService.create(body);
   }
 
   @Roles('admin')
   @Patch('/:id')
-  async update(@Param('id') id: string, @Body() body: UpdateTopicFileDTO) {
-    return await this.topicFilesService.update(parseInt(id), body);
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateTopicFileDto,
+  ) {
+    return await this.topicFilesService.update(id, body);
   }
 
   @Roles('admin')
   @Delete('delete/:id')
-  async delete(@Param('id') id: string) {
-    return await this.topicFilesService.delete(parseInt(id));
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    return await this.topicFilesService.delete(id);
   }
 
   @Roles('admin')
   @Delete('/:id')
-  async remove(@Param('id') id: string) {
-    return await this.topicFilesService.remove(parseInt(id));
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.topicFilesService.remove(id);
   }
 }

@@ -12,8 +12,8 @@ import {
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { CreateFinancialInfoDTO } from './dtos/create-financial-info.dto';
-import { UpdateFinancialInfoDTO } from './dtos/update-financial-info.dto';
+import { CreateFinancialInfoDto } from './dtos/create-financial-info.dto';
+import { UpdateFinancialInfoDto } from './dtos/update-financial-info.dto';
 import { FinancialInfoService } from './financial-info.service';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -23,10 +23,8 @@ export class FinancialInfoController {
 
   @Roles('admin')
   @Get('/:id')
-  async findByID(@Param('id') id: string) {
-    const financialInfo = await this.financialInfoService.findByID(
-      parseInt(id),
-    );
+  async findById(@Param('id', ParseIntPipe) id: number) {
+    const financialInfo = await this.financialInfoService.findById(id);
 
     if (!financialInfo)
       throw new NotFoundException('Financial info not found.');
@@ -41,29 +39,32 @@ export class FinancialInfoController {
   }
 
   @Roles('admin')
-  @Post('/:userID')
+  @Post('/:userId')
   create(
-    @Body() body: CreateFinancialInfoDTO,
-    @Param('userID') userID: string,
+    @Body() body: CreateFinancialInfoDto,
+    @Param('userId', ParseIntPipe) userId: number,
   ) {
-    return this.financialInfoService.create(body, parseInt(userID));
+    return this.financialInfoService.create(body, userId);
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Patch('/:id')
-  async update(@Param('id') id: string, @Body() body: UpdateFinancialInfoDTO) {
-    return await this.financialInfoService.update(parseInt(id), body);
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateFinancialInfoDto,
+  ) {
+    return await this.financialInfoService.update(id, body);
   }
 
   @Roles('admin')
   @Delete('delete/:id')
-  async delete(@Param('id') id: string) {
-    return await this.financialInfoService.delete(parseInt(id));
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    return await this.financialInfoService.delete(id);
   }
 
   @Roles('admin')
   @Delete('/:id')
-  async remove(@Param('id') id: string) {
-    return await this.financialInfoService.remove(parseInt(id));
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.financialInfoService.remove(id);
   }
 }

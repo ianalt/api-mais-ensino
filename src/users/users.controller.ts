@@ -13,9 +13,9 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
-import { CreateFullUserDTO } from './dtos/create-full-user.dto';
-import { UpdateUserDTO } from './dtos/update-user.dto';
-import { UserDTO } from './dtos/user.dto';
+import { CreateFullUserDto } from './dtos/create-full-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
+import { UserDto } from './dtos/user.dto';
 import { UsersService } from './users.service';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -25,71 +25,74 @@ export class UsersController {
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get('profile')
-  @Serialize(UserDTO)
+  @Serialize(UserDto)
   async getProfile(@Request() req) {
     return req.user;
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get('/:id')
-  @Serialize(UserDTO)
-  async findByID(@Param('id') id: string) {
-    return await this.usersService.findByID(parseInt(id));
+  @Serialize(UserDto)
+  async findById(@Param('id', ParseIntPipe) id: number) {
+    return await this.usersService.findById(id);
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get()
-  @Serialize(UserDTO)
+  @Serialize(UserDto)
   async findAll() {
     return await this.usersService.findAll();
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get()
-  @Serialize(UserDTO)
+  @Serialize(UserDto)
   async findAllStudents() {
     return await this.usersService.findAllStudents();
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get()
-  @Serialize(UserDTO)
+  @Serialize(UserDto)
   async findAllMonitors() {
     return await this.usersService.findAllMonitors();
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get()
-  @Serialize(UserDTO)
+  @Serialize(UserDto)
   async findAllTeachers() {
     return await this.usersService.findAllTeachers();
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Post()
-  @Serialize(UserDTO)
-  async create(@Body() body: CreateFullUserDTO) {
+  @Serialize(UserDto)
+  async create(@Body() body: CreateFullUserDto) {
     return await this.usersService.create(body);
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Patch('/:id')
-  @Serialize(UserDTO)
-  async update(@Param('id') id: string, @Body() body: UpdateUserDTO) {
-    return await this.usersService.update(parseInt(id), body);
+  @Serialize(UserDto)
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateUserDto,
+  ) {
+    return await this.usersService.update(id, body);
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Delete('delete/:id')
-  @Serialize(UserDTO)
-  async delete(@Param('id') id: string) {
-    return await this.usersService.delete(parseInt(id));
+  @Serialize(UserDto)
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    return await this.usersService.delete(id);
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Delete('/:id')
-  @Serialize(UserDTO)
-  async remove(@Param('id') id: string) {
-    return await this.usersService.remove(parseInt(id));
+  @Serialize(UserDto)
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.usersService.remove(id);
   }
 }

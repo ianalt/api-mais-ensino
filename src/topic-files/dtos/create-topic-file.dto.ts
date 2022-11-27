@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-export class CreateTopicFileDTO {
+export class CreateTopicFileDto {
   @IsString()
   fileURL: string;
 }

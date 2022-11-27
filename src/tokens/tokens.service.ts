@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateTokenDTO } from './dtos/create-token.dto';
+import { CreateTokenDto } from './dtos/create-token.dto';
 import { Token } from './token.entity';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class TokensService {
 
   private allRelations = ['user'];
 
-  async findByID(id: number) {
+  async findById(id: number) {
     if (!id) return null;
 
     return await this.tokensRepository.findOne({
@@ -37,7 +37,7 @@ export class TokensService {
     return tokens;
   }
 
-  create(body: CreateTokenDTO) {
+  create(body: CreateTokenDto) {
     const newToken = this.tokensRepository.create({
       ...body,
     });
@@ -48,7 +48,7 @@ export class TokensService {
   }
 
   async delete(id: number) {
-    const token = await this.findByID(id);
+    const token = await this.findById(id);
 
     if (!token) throw new NotFoundException('Token not found.');
 
@@ -58,7 +58,7 @@ export class TokensService {
   }
 
   async remove(id: number) {
-    const token = await this.findByID(id);
+    const token = await this.findById(id);
 
     if (!token) throw new NotFoundException('Token not found.');
 

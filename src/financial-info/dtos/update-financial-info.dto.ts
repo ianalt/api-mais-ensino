@@ -1,6 +1,6 @@
 import { IsInt, IsNumber, IsOptional, IsPositive } from 'class-validator';
 
-export class UpdateFinancialInfoDTO {
+export class UpdateFinancialInfoDto {
   @IsOptional()
   @IsNumber()
   @IsPositive()

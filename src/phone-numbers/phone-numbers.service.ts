@@ -2,8 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
-import { CreatePhoneNumberDTO } from './dtos/create-phone-number.dto';
-import { UpdatePhoneNumberDTO } from './dtos/update-phone-number.dto';
+import { CreatePhoneNumberDto } from './dtos/create-phone-number.dto';
+import { UpdatePhoneNumberDto } from './dtos/update-phone-number.dto';
 import { PhoneNumber } from './phone-number.entity';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class PhoneNumbersService {
 
   private allRelations = ['user'];
 
-  findByID(id: number) {
+  findById(id: number) {
     if (!id) return null;
 
     return this.phoneNumbersRepository.findOne({
@@ -34,8 +34,8 @@ export class PhoneNumbersService {
     });
   }
 
-  async create(body: CreatePhoneNumberDTO, userID: number) {
-    const user = await this.usersRepository.findOne(userID);
+  async create(body: CreatePhoneNumberDto, userId: number) {
+    const user = await this.usersRepository.findOne(userId);
 
     if (!user) throw new NotFoundException('User not found.');
 
@@ -48,8 +48,8 @@ export class PhoneNumbersService {
     return this.phoneNumbersRepository.save(newPhoneNumber);
   }
 
-  async update(id: number, body: UpdatePhoneNumberDTO) {
-    const phoneNumber = await this.findByID(id);
+  async update(id: number, body: UpdatePhoneNumberDto) {
+    const phoneNumber = await this.findById(id);
 
     if (!phoneNumber) throw new NotFoundException('Phone number not found.');
 
@@ -63,7 +63,7 @@ export class PhoneNumbersService {
   }
 
   async delete(id: number) {
-    const phoneNumber = await this.findByID(id);
+    const phoneNumber = await this.findById(id);
 
     if (!phoneNumber) throw new NotFoundException('Phone number not found.');
 
@@ -74,7 +74,7 @@ export class PhoneNumbersService {
   }
 
   async remove(id: number) {
-    const phoneNumber = await this.findByID(id);
+    const phoneNumber = await this.findById(id);
 
     if (!phoneNumber) throw new NotFoundException('Phone number not found.');
 
