@@ -12,6 +12,7 @@ export class AuthController {
   @Post()
   async signIn(@Request() req) {
     const currentUser: User = req.user;
+    console.log(req.user.password);
     return this.authService.signIn(currentUser);
   }
 

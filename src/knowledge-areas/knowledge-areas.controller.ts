@@ -5,6 +5,7 @@ import {
   Get,
   NotFoundException,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   UseGuards,
@@ -18,11 +19,22 @@ import { KnowledgeAreaDto } from './dtos/knowledge-area.dto';
 import { UpdateKnowledgeAreaDto } from './dtos/update-knowledge-area.dto';
 import { KnowledgeAreasService } from './knowledge-areas.service';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('knowledge-areas')
 export class KnowledgeAreasController {
   constructor(private knowledgeAreasService: KnowledgeAreasService) {}
 
+  @Get('/welcome')
+  @Serialize(KnowledgeAreaDto)
+  async findAllForWelcome() {
+    const knowledgeAreas = await this.knowledgeAreasService.findAll();
+
+    if (!knowledgeAreas)
+      throw new NotFoundException('Could not find knowledge areas.');
+
+    return knowledgeAreas;
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get('/:id')
   @Serialize(KnowledgeAreaDto)
@@ -35,6 +47,7 @@ export class KnowledgeAreasController {
     return knowledgeArea;
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get()
   @Serialize(KnowledgeAreaDto)
@@ -47,6 +60,7 @@ export class KnowledgeAreasController {
     return knowledgeAreas;
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Post()
   @Serialize(KnowledgeAreaDto)
@@ -54,6 +68,7 @@ export class KnowledgeAreasController {
     return this.knowledgeAreasService.create(body);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Patch('/:id')
   @Serialize(KnowledgeAreaDto)
@@ -64,6 +79,7 @@ export class KnowledgeAreasController {
     return await this.knowledgeAreasService.update(id, body);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Delete('delete/:id')
   @Serialize(KnowledgeAreaDto)
@@ -71,6 +87,7 @@ export class KnowledgeAreasController {
     return await this.knowledgeAreasService.delete(id);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Delete('/:id')
   @Serialize(KnowledgeAreaDto)
