@@ -1,7 +1,7 @@
 import {
   BadRequestException,
-  ForbiddenException,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AddressesService } from 'src/addresses/addresses.service';
@@ -12,6 +12,7 @@ import { TokensService } from 'src/tokens/tokens.service';
 import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { SignUpDto } from './dtos/sign-up.dto';
+import { Role } from './enums/role.enum';
 import { comparePasswords } from './hashing';
 
 @Injectable()
@@ -40,8 +41,8 @@ export class AuthService {
     return null;
   }
 
-  generateToken(email: string, id: number) {
-    const payload = { email: email, sub: id };
+  generateToken(email: string, id: number, role: Role) {
+    const payload = { email: email, sub: id, role: role };
 
     return {
       access_token: this.jwtService.sign(payload),
@@ -49,9 +50,9 @@ export class AuthService {
   }
 
   async signIn(user: User) {
-    const { email, id } = user;
+    const { email, id, role } = user;
 
-    const { access_token } = this.generateToken(email, id);
+    const { access_token } = this.generateToken(email, id, role);
 
     const newToken = await this.tokensService.create({
       content: access_token,
@@ -59,7 +60,7 @@ export class AuthService {
     });
 
     if (!newToken)
-      throw new ForbiddenException('Could not sign in. Please try again.');
+      throw new UnauthorizedException('Could not sign in. Please try again.');
 
     return {
       access_token: newToken.content,
