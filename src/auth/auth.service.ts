@@ -30,6 +30,8 @@ export class AuthService {
   async validateUser(email: string, password: string) {
     const user = await this.usersService.findByEmail(email);
 
+    if (!user) return null;
+
     const passwordMatches = await comparePasswords(user.password, password);
 
     if (user && passwordMatches) {
@@ -59,8 +61,7 @@ export class AuthService {
       user: user,
     });
 
-    if (!newToken)
-      throw new UnauthorizedException('Could not sign in. Please try again.');
+    if (!newToken) return null;
 
     return {
       access_token: newToken.content,
@@ -76,7 +77,7 @@ export class AuthService {
 
       if (!newUser)
         throw new BadRequestException(
-          'An error has occurred while trying to sign up. Please try again.',
+          'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
         );
 
       const userId = newUser.id;
@@ -85,7 +86,7 @@ export class AuthService {
 
       if (!newAddress)
         throw new BadRequestException(
-          'An error has occurred while trying to sign up. Please try again.',
+          'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
         );
 
       const newFinancialInfo = await this.financialInfoService.create(
@@ -95,7 +96,7 @@ export class AuthService {
 
       if (!newFinancialInfo)
         throw new BadRequestException(
-          'An error has occurred while trying to sign up. Please try again.',
+          'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
         );
 
       for (let i = 0; i < phoneNumbers.length; ++i) {
@@ -106,7 +107,7 @@ export class AuthService {
 
         if (!newPhoneNumber)
           throw new BadRequestException(
-            'An error has occurred while trying to sign up. Please try again.',
+            'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
           );
       }
 
@@ -118,7 +119,7 @@ export class AuthService {
 
         if (!newEducationInfo)
           throw new BadRequestException(
-            'An error has occurred while trying to sign up. Please try again.',
+            'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
           );
       }
 
@@ -134,7 +135,7 @@ export class AuthService {
 
     if (!newUser)
       throw new BadRequestException(
-        'An error has occurred while trying to sign up. Please try again.',
+        'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
       );
 
     const userId = newUser.id;
@@ -143,7 +144,7 @@ export class AuthService {
 
     if (!newAddress)
       throw new BadRequestException(
-        'An error has occurred while trying to sign up. Please try again.',
+        'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
       );
 
     const newFinancialInfo = await this.financialInfoService.create(
@@ -153,7 +154,7 @@ export class AuthService {
 
     if (!newFinancialInfo)
       throw new BadRequestException(
-        'An error has occurred while trying to sign up. Please try again.',
+        'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
       );
 
     for (let i = 0; i < phoneNumbers.length; ++i) {
@@ -164,7 +165,7 @@ export class AuthService {
 
       if (!newPhoneNumber)
         throw new BadRequestException(
-          'An error has occurred while trying to sign up. Please try again.',
+          'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
         );
     }
 
@@ -176,7 +177,7 @@ export class AuthService {
 
       if (!newEducationInfo)
         throw new BadRequestException(
-          'An error has occurred while trying to sign up. Please try again.',
+          'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
         );
     }
 

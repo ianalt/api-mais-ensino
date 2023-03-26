@@ -1,4 +1,11 @@
-import { Controller, Post, UseGuards, Request, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  UseGuards,
+  Request,
+  Body,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { User } from 'src/users/user.entity';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dtos/sign-up.dto';
@@ -13,8 +20,14 @@ export class AuthController {
   async signIn(@Request() req) {
     const currentUser: User = req.user;
 
-    console.log(currentUser);
-    return this.authService.signIn(currentUser);
+    const signedInUser = await this.authService.signIn(currentUser);
+
+    if (!signedInUser)
+      throw new UnauthorizedException(
+        'Não foi possível realizar seu login. Tente novamente.',
+      );
+
+    return signedInUser;
   }
 
   @Post('/sign-up')
