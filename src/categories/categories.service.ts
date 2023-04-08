@@ -27,11 +27,14 @@ export class CategoriesService {
     });
   }
 
-  findAll() {
-    return this.categoriesRepository.find({
-      where: { active: true },
+  async findAll() {
+    const categories = await this.categoriesRepository.find({
       relations: this.allRelations,
     });
+
+    if (!categories) return null;
+
+    return categories;
   }
 
   async create(body: CreateCategoryDto) {

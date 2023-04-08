@@ -33,6 +33,8 @@ export class SubjectsService {
     });
 
     if (!subjects) return null;
+
+    return subjects;
   }
 
   async create(body: CreateSubjectDto) {

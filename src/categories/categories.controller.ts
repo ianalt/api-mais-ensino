@@ -41,7 +41,8 @@ export class CategoriesController {
   async findAll() {
     const categories = await this.categoriesService.findAll();
 
-    if (!categories) throw new NotFoundException('Could not find categories.');
+    if (!categories)
+      throw new NotFoundException('Não foi possível encontrar categorias.');
 
     return categories;
   }

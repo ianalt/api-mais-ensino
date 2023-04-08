@@ -8,6 +8,9 @@ export class CategoryDto {
   id: number;
 
   @Expose()
+  active: boolean;
+
+  @Expose()
   name: string;
 
   @Expose()
