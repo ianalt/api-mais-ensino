@@ -31,11 +31,14 @@ export class TopicsService {
     });
   }
 
-  findAll() {
-    return this.topicsRepository.find({
-      where: { active: true },
+  async findAll() {
+    const topics = await this.topicsRepository.find({
       relations: this.allRelations,
     });
+
+    if (!topics) return null;
+
+    return topics;
   }
 
   async create(body: CreateTopicDto) {

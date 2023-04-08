@@ -41,7 +41,8 @@ export class TopicsController {
   async findAll() {
     const topics = await this.topicsService.findAll();
 
-    if (!topics) throw new NotFoundException('Could not find topics.');
+    if (!topics)
+      throw new NotFoundException('Não foi possível encontrar tópicos');
 
     return topics;
   }

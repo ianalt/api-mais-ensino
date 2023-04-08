@@ -9,6 +9,9 @@ export class TopicDto {
   id: number;
 
   @Expose()
+  active: boolean;
+
+  @Expose()
   title: string;
 
   @Expose()
