@@ -27,11 +27,12 @@ export class SubjectsService {
     });
   }
 
-  findAll() {
-    return this.subjectsRepository.find({
-      where: { active: true },
+  async findAll() {
+    const subjects = await this.subjectsRepository.find({
       relations: this.allRelations,
     });
+
+    if (!subjects) return null;
   }
 
   async create(body: CreateSubjectDto) {

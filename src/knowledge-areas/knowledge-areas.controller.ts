@@ -55,7 +55,9 @@ export class KnowledgeAreasController {
     const knowledgeAreas = await this.knowledgeAreasService.findAll();
 
     if (!knowledgeAreas)
-      throw new NotFoundException('Could not find knowledge areas.');
+      throw new NotFoundException(
+        'Não foi possível encontrar áreas de conhecimento.',
+      );
 
     return knowledgeAreas;
   }

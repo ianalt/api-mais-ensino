@@ -23,11 +23,14 @@ export class KnowledgeAreasService {
     });
   }
 
-  findAll() {
-    return this.knowledgeAreasRepository.find({
-      where: { active: true },
+  async findAll() {
+    const knowledgeAreas = await this.knowledgeAreasRepository.find({
       relations: this.allRelations,
     });
+
+    if (!knowledgeAreas) return null;
+
+    return knowledgeAreas;
   }
 
   create(body: CreateKnowledgeAreaDto) {

@@ -41,7 +41,6 @@ export class UsersService {
 
   async findAll() {
     const users = await this.usersRepository.find({
-      where: { active: true },
       relations: this.allRelations,
     });
 

@@ -41,7 +41,8 @@ export class SubjectsController {
   async findAll() {
     const subjects = await this.subjectsService.findAll();
 
-    if (!subjects) throw new NotFoundException('Could not find subjects.');
+    if (!subjects)
+      throw new NotFoundException('Não foi possível encontrar disciplinas');
 
     return subjects;
   }

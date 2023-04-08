@@ -15,6 +15,9 @@ export class UserDto {
   id: number;
 
   @Expose()
+  active: boolean;
+
+  @Expose()
   role: Role;
 
   @Expose()

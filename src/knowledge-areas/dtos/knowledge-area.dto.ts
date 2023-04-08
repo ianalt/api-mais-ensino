@@ -7,6 +7,9 @@ export class KnowledgeAreaDto {
   id: number;
 
   @Expose()
+  active: boolean;
+
+  @Expose()
   name: string;
 
   @Expose()
