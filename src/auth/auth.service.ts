@@ -70,7 +70,7 @@ export class AuthService {
 
   async seeding(body: SignUpDto[]) {
     for (const signUp of body) {
-      const { user, address, phoneNumbers, educationInfoList, financialInfo } =
+      const { user, address, phoneNumbers, educationInfo, financialInfo } =
         signUp;
 
       const newUser = await this.usersService.create(user);
@@ -111,25 +111,22 @@ export class AuthService {
           );
       }
 
-      for (let i = 0; i < educationInfoList.length; ++i) {
-        const newEducationInfo = await this.educationInfoService.create(
-          educationInfoList[i],
-          userId,
-        );
+      const newEducationInfo = await this.educationInfoService.create(
+        educationInfo,
+        userId,
+      );
 
-        if (!newEducationInfo)
-          throw new BadRequestException(
-            'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
-          );
-      }
+      if (!newEducationInfo)
+        throw new BadRequestException(
+          'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
+        );
 
       console.log('Usuário #' + newUser.id + ' = OK');
     }
   }
 
   async signUp(body: SignUpDto) {
-    const { user, address, phoneNumbers, educationInfoList, financialInfo } =
-      body;
+    const { user, address, phoneNumbers, educationInfo, financialInfo } = body;
 
     const newUser = await this.usersService.create(user);
 
@@ -169,17 +166,15 @@ export class AuthService {
         );
     }
 
-    for (let i = 0; i < educationInfoList.length; ++i) {
-      const newEducationInfo = await this.educationInfoService.create(
-        educationInfoList[i],
-        userId,
-      );
+    const newEducationInfo = await this.educationInfoService.create(
+      educationInfo,
+      userId,
+    );
 
-      if (!newEducationInfo)
-        throw new BadRequestException(
-          'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
-        );
-    }
+    if (!newEducationInfo)
+      throw new BadRequestException(
+        'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
+      );
 
     return newUser;
   }

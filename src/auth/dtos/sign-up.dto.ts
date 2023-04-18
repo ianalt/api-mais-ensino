@@ -22,7 +22,7 @@ export class SignUpDto {
 
   @ValidateNested({ each: true })
   @Type(() => CreateEducationInfoDto)
-  educationInfoList: CreateEducationInfoDto[];
+  educationInfo: CreateEducationInfoDto;
 
   @ValidateNested()
   @Type(() => CreateFinancialInfoDto)
