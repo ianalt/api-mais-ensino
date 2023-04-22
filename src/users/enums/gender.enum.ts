@@ -1,9 +1,10 @@
 export enum Gender {
-  'homem cis',
-  'mulher cis',
-  'homem trans',
-  'mulher trans',
-  'não-binário',
-  'gênero fluido',
-  'outro',
+  HOMEM_CIS = 'Homem cisgênero',
+  MULHER_CIS = 'Mulher cisgênero',
+  HOMEM_TRANS = 'Homem transgênero',
+  MULHER_TRANS = 'Mulher transgênero',
+  NAO_BINARIO = 'Não-binário',
+  OUTRO = 'Outro',
 }
+
+// ENUM('Homem cisgênero','Mulher cisgênero','Homem transgênero','Mulher transgênero','Não-binário','Outro')

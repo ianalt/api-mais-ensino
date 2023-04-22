@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   UnauthorizedException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AddressesService } from 'src/addresses/addresses.service';
@@ -128,54 +129,65 @@ export class AuthService {
   async signUp(body: SignUpDto) {
     const { user, address, phoneNumbers, educationInfo, financialInfo } = body;
 
-    const newUser = await this.usersService.create(user);
+    try {
+      const newUser = await this.usersService.create(user);
 
-    if (!newUser)
-      throw new BadRequestException(
-        'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
-      );
-
-    const userId = newUser.id;
-
-    const newAddress = await this.addressesService.create(address, userId);
-
-    if (!newAddress)
-      throw new BadRequestException(
-        'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
-      );
-
-    const newFinancialInfo = await this.financialInfoService.create(
-      financialInfo,
-      userId,
-    );
-
-    if (!newFinancialInfo)
-      throw new BadRequestException(
-        'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
-      );
-
-    for (let i = 0; i < phoneNumbers.length; ++i) {
-      const newPhoneNumber = await this.phoneNumbersService.create(
-        phoneNumbers[i],
-        userId,
-      );
-
-      if (!newPhoneNumber)
+      if (!newUser)
         throw new BadRequestException(
           'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
         );
-    }
 
-    const newEducationInfo = await this.educationInfoService.create(
-      educationInfo,
-      userId,
-    );
+      const userId = newUser.id;
 
-    if (!newEducationInfo)
-      throw new BadRequestException(
-        'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
+      const newAddress = await this.addressesService.create(address, userId);
+
+      const newFinancialInfo = await this.financialInfoService.create(
+        financialInfo,
+        userId,
       );
 
-    return newUser;
+      let phoneNumberError = false;
+      const newPhoneNumbersList = [];
+      for (const phoneNumber of phoneNumbers) {
+        const newPhoneNumber = await this.phoneNumbersService.create(
+          phoneNumber,
+          userId,
+        );
+
+        if (!newPhoneNumber) phoneNumberError = true;
+
+        newPhoneNumbersList.push(newPhoneNumber);
+      }
+
+      const newEducationInfo = await this.educationInfoService.create(
+        educationInfo,
+        userId,
+      );
+
+      if (
+        !newAddress ||
+        !newFinancialInfo ||
+        !newEducationInfo ||
+        phoneNumberError
+      ) {
+        await this.addressesService.remove(newAddress.id);
+        await this.financialInfoService.remove(newFinancialInfo.id);
+        await this.educationInfoService.remove(newEducationInfo.id);
+
+        for (const newPhoneNumber of newPhoneNumbersList) {
+          await this.phoneNumbersService.remove(newPhoneNumber.id);
+        }
+
+        await this.usersService.remove(userId);
+
+        throw new UnprocessableEntityException(
+          'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
+        );
+      }
+
+      return newUser;
+    } catch (error) {
+      console.log(error.message);
+    }
   }
 }

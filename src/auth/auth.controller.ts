@@ -32,7 +32,7 @@ export class AuthController {
 
   @Post('/sign-up')
   async signUp(@Body() body: SignUpDto) {
-    return await this.authService.signUp(body);
+    await this.authService.signUp(body);
   }
 
   @Post('/seeding')

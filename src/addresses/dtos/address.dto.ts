@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { State } from '../enums/state.enum';
+import { Uf } from '../enums/uf.enum';
 
 export class AddressDto {
   @Expose()
@@ -24,5 +24,5 @@ export class AddressDto {
   city: string;
 
   @Expose()
-  state: State;
+  uf: Uf;
 }

@@ -1,4 +1,4 @@
-export enum State {
+export enum Uf {
   AC = 'AC',
   AL = 'AL',
   AP = 'AP',

@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
-import { State } from '../enums/state.enum';
+import { Uf } from '../enums/uf.enum';
 
 export class CreateAddressDto {
   @IsString()
@@ -21,6 +21,6 @@ export class CreateAddressDto {
   @IsString()
   city: string;
 
-  @IsEnum(State)
-  state: State;
+  @IsEnum(Uf)
+  uf: Uf;
 }

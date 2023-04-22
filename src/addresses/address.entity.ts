@@ -6,7 +6,7 @@ import {
   OneToOne,
   JoinColumn,
 } from 'typeorm';
-import { State } from './enums/state.enum';
+import { Uf } from './enums/uf.enum';
 
 @Entity({ name: 'enderecos' })
 export class Address {
@@ -40,8 +40,8 @@ export class Address {
   @Column({ name: 'city' })
   city: string;
 
-  @Column({ name: 'state' })
-  state: State;
+  @Column({ name: 'uf' })
+  uf: Uf;
 
   @OneToOne(() => User, (user) => user.address)
   @JoinColumn({ name: 'id_usuario' })

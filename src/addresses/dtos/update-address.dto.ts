@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
-import { State } from '../enums/state.enum';
+import { Uf } from '../enums/uf.enum';
 
 export class UpdateAddressDto {
   @IsOptional()
@@ -27,6 +27,6 @@ export class UpdateAddressDto {
   city: string;
 
   @IsOptional()
-  @IsEnum(State)
-  state: State;
+  @IsEnum(Uf)
+  uf: Uf;
 }
