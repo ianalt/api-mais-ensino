@@ -129,65 +129,78 @@ export class AuthService {
   async signUp(body: SignUpDto) {
     const { user, address, phoneNumbers, educationInfo, financialInfo } = body;
 
-    try {
-      const newUser = await this.usersService.create(user);
+    const newUser = await this.usersService.create(user);
 
-      if (!newUser)
-        throw new BadRequestException(
-          'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
-        );
+    const userId = newUser.id;
 
-      const userId = newUser.id;
+    const remainingInfo = await Promise.allSettled([
+      this.addressesService.create(address, userId),
 
-      const newAddress = await this.addressesService.create(address, userId);
+      this.financialInfoService.create(financialInfo, userId),
 
-      const newFinancialInfo = await this.financialInfoService.create(
-        financialInfo,
-        userId,
-      );
+      this.educationInfoService.create(educationInfo, userId),
+    ]);
 
-      let phoneNumberError = false;
-      const newPhoneNumbersList = [];
-      for (const phoneNumber of phoneNumbers) {
-        const newPhoneNumber = await this.phoneNumbersService.create(
-          phoneNumber,
-          userId,
-        );
+    const rejectedInfo = remainingInfo.filter(
+      (info) => info.status === 'rejected',
+    );
 
-        if (!newPhoneNumber) phoneNumberError = true;
+    if (rejectedInfo.length > 0) {
+      const [newAddress, newFinancialInfo, newEducationInfo] = remainingInfo;
 
-        newPhoneNumbersList.push(newPhoneNumber);
-      }
+      await Promise.allSettled([
+        this.usersService.remove(newUser.id),
+        newAddress.status === 'fulfilled'
+          ? this.addressesService.remove(newAddress.value.id)
+          : Promise.resolve(),
+        newFinancialInfo.status === 'fulfilled'
+          ? this.financialInfoService.remove(newFinancialInfo.value.id)
+          : Promise.resolve(),
+        newEducationInfo.status === 'fulfilled'
+          ? this.educationInfoService.remove(newEducationInfo.value.id)
+          : Promise.resolve(),
+      ]);
 
-      const newEducationInfo = await this.educationInfoService.create(
-        educationInfo,
-        userId,
-      );
-
-      if (
-        !newAddress ||
-        !newFinancialInfo ||
-        !newEducationInfo ||
-        phoneNumberError
-      ) {
-        await this.addressesService.remove(newAddress.id);
-        await this.financialInfoService.remove(newFinancialInfo.id);
-        await this.educationInfoService.remove(newEducationInfo.id);
-
-        for (const newPhoneNumber of newPhoneNumbersList) {
-          await this.phoneNumbersService.remove(newPhoneNumber.id);
-        }
-
-        await this.usersService.remove(userId);
-
-        throw new UnprocessableEntityException(
-          'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
-        );
-      }
-
-      return newUser;
-    } catch (error) {
-      console.log(error.message);
+      return null;
     }
+
+    const phoneList = await Promise.allSettled(
+      phoneNumbers.map((phoneNumber) => {
+        return this.phoneNumbersService.create(phoneNumber, userId);
+      }),
+    );
+
+    const rejectedPhoneNumbers = phoneList.filter(
+      (phone) => phone.status === 'rejected',
+    );
+
+    const fulfilledPhoneNumbers = phoneList.filter(
+      (phone) => phone.status === 'fulfilled',
+    );
+
+    if (rejectedPhoneNumbers.length > 0 && fulfilledPhoneNumbers.length > 0) {
+      for (const phone of fulfilledPhoneNumbers) {
+        if (phone.status === 'fulfilled')
+          await this.phoneNumbersService.remove(phone.value.id);
+      }
+    }
+
+    const newFinancialInfo = remainingInfo[1];
+
+    const { firstName, email } = newUser;
+
+    if (newFinancialInfo.status === 'fulfilled') {
+      const financialInfo = newFinancialInfo.value;
+
+      const { generalIncome, totalHouseHoldMembers } = financialInfo;
+
+      if (generalIncome > 3000) {
+        await this.usersService.delete(userId);
+
+        return { firstName, email, status: 'Sujeito a avaliação' };
+      }
+    }
+
+    return { firstName, email };
   }
 }

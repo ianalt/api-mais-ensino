@@ -5,6 +5,7 @@ import {
   Request,
   Body,
   UnauthorizedException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { User } from 'src/users/user.entity';
 import { AuthService } from './auth.service';
@@ -32,7 +33,14 @@ export class AuthController {
 
   @Post('/sign-up')
   async signUp(@Body() body: SignUpDto) {
-    await this.authService.signUp(body);
+    const newUser = await this.authService.signUp(body);
+
+    if (!newUser)
+      throw new UnprocessableEntityException(
+        'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
+      );
+
+    return newUser;
   }
 
   @Post('/seeding')
