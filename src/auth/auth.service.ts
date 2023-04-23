@@ -69,63 +69,6 @@ export class AuthService {
     };
   }
 
-  async seeding(body: SignUpDto[]) {
-    for (const signUp of body) {
-      const { user, address, phoneNumbers, educationInfo, financialInfo } =
-        signUp;
-
-      const newUser = await this.usersService.create(user);
-
-      if (!newUser)
-        throw new BadRequestException(
-          'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
-        );
-
-      const userId = newUser.id;
-
-      const newAddress = await this.addressesService.create(address, userId);
-
-      if (!newAddress)
-        throw new BadRequestException(
-          'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
-        );
-
-      const newFinancialInfo = await this.financialInfoService.create(
-        financialInfo,
-        userId,
-      );
-
-      if (!newFinancialInfo)
-        throw new BadRequestException(
-          'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
-        );
-
-      for (let i = 0; i < phoneNumbers.length; ++i) {
-        const newPhoneNumber = await this.phoneNumbersService.create(
-          phoneNumbers[i],
-          userId,
-        );
-
-        if (!newPhoneNumber)
-          throw new BadRequestException(
-            'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
-          );
-      }
-
-      const newEducationInfo = await this.educationInfoService.create(
-        educationInfo,
-        userId,
-      );
-
-      if (!newEducationInfo)
-        throw new BadRequestException(
-          'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
-        );
-
-      console.log('Usuário #' + newUser.id + ' = OK');
-    }
-  }
-
   async signUp(body: SignUpDto) {
     const { user, address, phoneNumbers, educationInfo, financialInfo } = body;
 
@@ -180,9 +123,12 @@ export class AuthService {
 
     if (rejectedPhoneNumbers.length > 0 && fulfilledPhoneNumbers.length > 0) {
       for (const phone of fulfilledPhoneNumbers) {
-        if (phone.status === 'fulfilled')
+        if (phone.status === 'fulfilled') {
           await this.phoneNumbersService.remove(phone.value.id);
+        }
       }
+
+      await this.usersService.remove(userId);
     }
 
     const newFinancialInfo = remainingInfo[1];
@@ -192,7 +138,7 @@ export class AuthService {
     if (newFinancialInfo.status === 'fulfilled') {
       const financialInfo = newFinancialInfo.value;
 
-      const { generalIncome, totalHouseHoldMembers } = financialInfo;
+      const { generalIncome } = financialInfo;
 
       if (generalIncome > 3000) {
         await this.usersService.delete(userId);

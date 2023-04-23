@@ -82,12 +82,19 @@ export class UsersService {
     return users;
   }
 
+  async findByCpf(cpf: string) {
+    if (!cpf) return null;
+
+    return await this.usersRepository.findOne({
+      where: { cpf },
+    });
+  }
+
   async findByEmail(email: string) {
     if (!email) return null;
 
     return await this.usersRepository.findOne({
-      where: { email, active: true },
-      relations: this.allRelations,
+      where: { email },
     });
   }
 
