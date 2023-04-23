@@ -1,5 +1,6 @@
 import {
   IsEnum,
+  IsNotEmpty,
   IsOptional,
   IsString,
   MaxLength,
@@ -8,24 +9,27 @@ import {
 import { SchoolingLevel } from '../enums/schooling-level.enum';
 
 export class CreateEducationInfoDto {
-  @IsEnum(SchoolingLevel)
+  @IsEnum(SchoolingLevel, {
+    message: 'Selecione um nível de escolaridade da lista apresentada',
+  })
   schoolingLevel: SchoolingLevel;
 
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'Digite um nome válido para o curso' })
   courseName: string | null;
 
-  @IsString()
+  @IsString({ message: 'Digite um nome válido para a instituição de ensino' })
   institutionName: string;
 
-  @IsString()
-  @MinLength(4)
-  @MaxLength(4)
+  @IsNotEmpty({ message: 'O campo "Ano de Início" está vazio' })
+  @IsString({ message: 'Digite um ano válido' })
+  @MinLength(4, { message: 'Digite um ano de início válido' })
+  @MaxLength(4, { message: 'Digite um ano de início válido' })
   startYear: string;
 
   @IsOptional()
   @IsString()
-  @MinLength(4)
-  @MaxLength(4)
+  @MinLength(4, { message: 'Digite um ano de conclusão válido' })
+  @MaxLength(4, { message: 'Digite um ano de conclusão válido' })
   conclusionYear: string | null;
 }

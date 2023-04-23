@@ -17,7 +17,9 @@ export class SignUpDto {
 
   @ValidateNested({ each: true })
   @Type(() => CreatePhoneNumberDto)
-  @ArrayMaxSize(2)
+  @ArrayMaxSize(2, {
+    message: 'No máximo 2 números de telefone são permitidos',
+  })
   phoneNumbers: CreatePhoneNumberDto[];
 
   @ValidateNested({ each: true })
