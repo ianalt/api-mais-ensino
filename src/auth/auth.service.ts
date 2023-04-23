@@ -84,51 +84,24 @@ export class AuthService {
       this.educationInfoService.create(educationInfo, userId),
     ]);
 
-    const rejectedInfo = remainingInfo.filter(
-      (info) => info.status === 'rejected',
-    );
-
-    if (rejectedInfo.length > 0) {
-      const [newAddress, newFinancialInfo, newEducationInfo] = remainingInfo;
-
-      await Promise.allSettled([
-        this.usersService.remove(newUser.id),
-        newAddress.status === 'fulfilled'
-          ? this.addressesService.remove(newAddress.value.id)
-          : Promise.resolve(),
-        newFinancialInfo.status === 'fulfilled'
-          ? this.financialInfoService.remove(newFinancialInfo.value.id)
-          : Promise.resolve(),
-        newEducationInfo.status === 'fulfilled'
-          ? this.educationInfoService.remove(newEducationInfo.value.id)
-          : Promise.resolve(),
-      ]);
-
-      return null;
-    }
-
     const phoneList = await Promise.allSettled(
       phoneNumbers.map((phoneNumber) => {
         return this.phoneNumbersService.create(phoneNumber, userId);
       }),
     );
 
+    const rejectedInfo = remainingInfo.filter(
+      (info) => info.status === 'rejected',
+    );
+
     const rejectedPhoneNumbers = phoneList.filter(
       (phone) => phone.status === 'rejected',
     );
 
-    const fulfilledPhoneNumbers = phoneList.filter(
-      (phone) => phone.status === 'fulfilled',
-    );
+    if (rejectedInfo.length > 0 || rejectedPhoneNumbers.length > 0) {
+      await this.usersService.remove(newUser.id);
 
-    if (rejectedPhoneNumbers.length > 0 && fulfilledPhoneNumbers.length > 0) {
-      for (const phone of fulfilledPhoneNumbers) {
-        if (phone.status === 'fulfilled') {
-          await this.phoneNumbersService.remove(phone.value.id);
-        }
-      }
-
-      await this.usersService.remove(userId);
+      return null;
     }
 
     const newFinancialInfo = remainingInfo[1];
@@ -147,6 +120,6 @@ export class AuthService {
       }
     }
 
-    return { firstName, email };
+    return { firstName, email, status: 'Cadastro bem-sucedido' };
   }
 }
