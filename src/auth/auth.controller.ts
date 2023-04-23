@@ -40,17 +40,21 @@ export class AuthController {
     const { cpf, email } = body.user;
 
     const cpfBeingUsed = await this.usersService.findByCpf(cpf);
-
-    if (cpfBeingUsed)
-      throw new UnprocessableEntityException(
-        'Este CPF já está sendo utilziado. Digite um CPF válido',
-      );
-
     const emailBeingUsed = await this.usersService.findByEmail(email);
 
-    if (emailBeingUsed)
+    if (cpfBeingUsed && emailBeingUsed)
       throw new UnprocessableEntityException(
-        'Este e-mail já está sendo utilizado. Digite um e-mail válido',
+        'Ambos CPF e e-mail providos já estão sendo utilizados. Digite um CPF e um e-mail válidos.',
+      );
+
+    if (!emailBeingUsed && cpfBeingUsed)
+      throw new UnprocessableEntityException(
+        'O CPF provido já está sendo utilizado. Digite um CPF válido.',
+      );
+
+    if (!cpfBeingUsed && emailBeingUsed)
+      throw new UnprocessableEntityException(
+        'O e-mail provido já está sendo utilizado. Digite um e-mail válido.',
       );
 
     const newUser = await this.authService.signUp(body);
