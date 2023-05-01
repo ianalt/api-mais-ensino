@@ -104,22 +104,8 @@ export class AuthService {
       return null;
     }
 
-    const newFinancialInfo = remainingInfo[1];
-
     const { firstName, email } = newUser;
 
-    if (newFinancialInfo.status === 'fulfilled') {
-      const financialInfo = newFinancialInfo.value;
-
-      const { generalIncome } = financialInfo;
-
-      if (generalIncome > 3000) {
-        await this.usersService.delete(userId);
-
-        return { firstName, email, status: 'Sujeito a avaliação' };
-      }
-    }
-
-    return { firstName, email, status: 'Cadastro bem-sucedido' };
+    return { firstName, email };
   }
 }
