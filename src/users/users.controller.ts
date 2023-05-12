@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Request,
+  UnprocessableEntityException,
   UseGuards,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
@@ -18,6 +19,12 @@ import { CreateFullUserDto } from './dtos/create-full-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserDto } from './dtos/user.dto';
 import { UsersService } from './users.service';
+import { SignUpDto } from 'src/auth/dtos/sign-up.dto';
+import { AddUserDto } from './dtos/add-user.dto';
+import { AddAdminDto } from './dtos/add-admin.dto';
+import { AddMonitorDto } from './dtos/add-monitor.dto';
+import { AddStudentDto } from './dtos/add-student.dto';
+import { AddTeacherDto } from './dtos/add-teacher.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
@@ -66,11 +73,140 @@ export class UsersController {
     return await this.usersService.findAllTeachers();
   }
 
-  @Roles('estudante', 'monitor', 'professor', 'admin')
-  @Post()
+  @Roles('admin')
+  @Post('/student')
   @Serialize(UserDto)
-  async create(@Body() body: CreateFullUserDto) {
-    return await this.usersService.create(body);
+  async addStudent(@Body() body: AddStudentDto) {
+    const { cpf, email } = body.user;
+
+    const cpfBeingUsed = await this.usersService.findByCpf(cpf);
+    const emailBeingUsed = await this.usersService.findByEmail(email);
+
+    if (cpfBeingUsed && emailBeingUsed)
+      throw new UnprocessableEntityException(
+        'Ambos CPF e e-mail providos já estão sendo utilizados. Digite um CPF e um e-mail válidos.',
+      );
+
+    if (!emailBeingUsed && cpfBeingUsed)
+      throw new UnprocessableEntityException(
+        'O CPF provido já está sendo utilizado. Digite um CPF válido.',
+      );
+
+    if (!cpfBeingUsed && emailBeingUsed)
+      throw new UnprocessableEntityException(
+        'O e-mail provido já está sendo utilizado. Digite um e-mail válido.',
+      );
+
+    const addedStudent = await this.usersService.addStudent(body);
+
+    if (!addedStudent)
+      throw new UnprocessableEntityException(
+        'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
+      );
+
+    return addedStudent;
+  }
+
+  @Roles('admin')
+  @Post('/monitor')
+  @Serialize(UserDto)
+  async addMonitor(@Body() body: AddMonitorDto) {
+    const { cpf, email } = body.user;
+
+    const cpfBeingUsed = await this.usersService.findByCpf(cpf);
+    const emailBeingUsed = await this.usersService.findByEmail(email);
+
+    if (cpfBeingUsed && emailBeingUsed)
+      throw new UnprocessableEntityException(
+        'Ambos CPF e e-mail providos já estão sendo utilizados. Digite um CPF e um e-mail válidos.',
+      );
+
+    if (!emailBeingUsed && cpfBeingUsed)
+      throw new UnprocessableEntityException(
+        'O CPF provido já está sendo utilizado. Digite um CPF válido.',
+      );
+
+    if (!cpfBeingUsed && emailBeingUsed)
+      throw new UnprocessableEntityException(
+        'O e-mail provido já está sendo utilizado. Digite um e-mail válido.',
+      );
+
+    const addedMonitor = await this.usersService.addMonitor(body);
+
+    if (!addedMonitor)
+      throw new UnprocessableEntityException(
+        'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
+      );
+
+    return addedMonitor;
+  }
+
+  @Roles('admin')
+  @Post('/teacher')
+  @Serialize(UserDto)
+  async addTeacher(@Body() body: AddTeacherDto) {
+    const { cpf, email } = body.user;
+
+    const cpfBeingUsed = await this.usersService.findByCpf(cpf);
+    const emailBeingUsed = await this.usersService.findByEmail(email);
+
+    if (cpfBeingUsed && emailBeingUsed)
+      throw new UnprocessableEntityException(
+        'Ambos CPF e e-mail providos já estão sendo utilizados. Digite um CPF e um e-mail válidos.',
+      );
+
+    if (!emailBeingUsed && cpfBeingUsed)
+      throw new UnprocessableEntityException(
+        'O CPF provido já está sendo utilizado. Digite um CPF válido.',
+      );
+
+    if (!cpfBeingUsed && emailBeingUsed)
+      throw new UnprocessableEntityException(
+        'O e-mail provido já está sendo utilizado. Digite um e-mail válido.',
+      );
+
+    const addedTeacher = await this.usersService.addTeacher(body);
+
+    if (!addedTeacher)
+      throw new UnprocessableEntityException(
+        'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
+      );
+
+    return addedTeacher;
+  }
+
+  @Roles('admin')
+  @Post('/admin')
+  @Serialize(UserDto)
+  async addAdmin(@Body() body: AddAdminDto) {
+    const { cpf, email } = body.user;
+
+    const cpfBeingUsed = await this.usersService.findByCpf(cpf);
+    const emailBeingUsed = await this.usersService.findByEmail(email);
+
+    if (cpfBeingUsed && emailBeingUsed)
+      throw new UnprocessableEntityException(
+        'Ambos CPF e e-mail providos já estão sendo utilizados. Digite um CPF e um e-mail válidos.',
+      );
+
+    if (!emailBeingUsed && cpfBeingUsed)
+      throw new UnprocessableEntityException(
+        'O CPF provido já está sendo utilizado. Digite um CPF válido.',
+      );
+
+    if (!cpfBeingUsed && emailBeingUsed)
+      throw new UnprocessableEntityException(
+        'O e-mail provido já está sendo utilizado. Digite um e-mail válido.',
+      );
+
+    const addedAdmin = await this.usersService.addAdmin(body);
+
+    if (!addedAdmin)
+      throw new UnprocessableEntityException(
+        'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
+      );
+
+    return addedAdmin;
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')

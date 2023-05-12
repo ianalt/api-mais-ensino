@@ -4,8 +4,16 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AddressesService } from 'src/addresses/addresses.service';
 import { hashPassword } from 'src/auth/hashing';
+import { EducationInfoService } from 'src/education-info/education-info.service';
+import { FinancialInfoService } from 'src/financial-info/financial-info.service';
+import { PhoneNumbersService } from 'src/phone-numbers/phone-numbers.service';
 import { Repository } from 'typeorm';
+import { AddAdminDto } from './dtos/add-admin.dto';
+import { AddMonitorDto } from './dtos/add-monitor.dto';
+import { AddStudentDto } from './dtos/add-student.dto';
+import { AddTeacherDto } from './dtos/add-teacher.dto';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { User } from './user.entity';
@@ -14,12 +22,26 @@ import { User } from './user.entity';
 export class UsersService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
+
+    private addressesService: AddressesService,
+    private phoneNumbersService: PhoneNumbersService,
+    private educationInfoService: EducationInfoService,
+    private financialInfoService: FinancialInfoService,
   ) {}
 
   private allRelations = [
     'address',
     'financialInfo',
     'tokens',
+    'phoneNumbers',
+    'educationInfoList',
+    'comments',
+    'subject',
+  ];
+
+  private mainRelations = [
+    'address',
+    'financialInfo',
     'phoneNumbers',
     'educationInfoList',
     'comments',
@@ -114,10 +136,200 @@ export class UsersService {
     return this.usersRepository.save(newUser);
   }
 
+  //TODO create DTO, change to return full user
+  //TODO FIX ERROR ON THIS
+  async addStudent(body: AddStudentDto) {
+    const { user, address, phoneNumbers, educationInfo, financialInfo } = body;
+
+    const newUser = await this.create(user);
+
+    const userId = newUser.id;
+
+    const remainingInfo = await Promise.allSettled([
+      this.addressesService.create(address, userId),
+
+      this.financialInfoService.create(financialInfo, userId),
+
+      this.educationInfoService.create(educationInfo, userId),
+    ]);
+
+    const phoneList = await Promise.allSettled(
+      phoneNumbers.map((phoneNumber) => {
+        return this.phoneNumbersService.create(phoneNumber, userId);
+      }),
+    );
+
+    const rejectedInfo = remainingInfo.filter(
+      (info) => info.status === 'rejected',
+    );
+
+    const rejectedPhoneNumbers = phoneList.filter(
+      (phone) => phone.status === 'rejected',
+    );
+
+    if (rejectedInfo.length > 0 || rejectedPhoneNumbers.length > 0) {
+      await this.remove(newUser.id);
+
+      return null;
+    }
+
+    const addedUser = await this.usersRepository.findOne({
+      where: { id: userId },
+      relations: this.mainRelations,
+    });
+
+    if (!addedUser) {
+      await this.remove(newUser.id);
+
+      return null;
+    }
+
+    return addedUser;
+  }
+
+  async addMonitor(body: AddMonitorDto) {
+    const { user, address, phoneNumbers, educationInfo } = body;
+
+    const newUser = await this.create(user);
+
+    const userId = newUser.id;
+
+    const remainingInfo = await Promise.allSettled([
+      this.addressesService.create(address, userId),
+
+      this.educationInfoService.create(educationInfo, userId),
+    ]);
+
+    const phoneList = await Promise.allSettled(
+      phoneNumbers.map((phoneNumber) => {
+        return this.phoneNumbersService.create(phoneNumber, userId);
+      }),
+    );
+
+    const rejectedInfo = remainingInfo.filter(
+      (info) => info.status === 'rejected',
+    );
+
+    const rejectedPhoneNumbers = phoneList.filter(
+      (phone) => phone.status === 'rejected',
+    );
+
+    if (rejectedInfo.length > 0 || rejectedPhoneNumbers.length > 0) {
+      await this.remove(newUser.id);
+
+      return null;
+    }
+
+    const addedUser = await this.usersRepository.findOne({
+      where: { id: userId },
+      relations: this.mainRelations,
+    });
+
+    if (!addedUser) {
+      await this.remove(newUser.id);
+
+      return null;
+    }
+
+    return addedUser;
+  }
+
+  async addTeacher(body: AddTeacherDto) {
+    const { user, address, phoneNumbers, educationInfo } = body;
+
+    const newUser = await this.create(user);
+
+    const userId = newUser.id;
+
+    const remainingInfo = await Promise.allSettled([
+      this.addressesService.create(address, userId),
+
+      this.educationInfoService.create(educationInfo, userId),
+    ]);
+
+    const phoneList = await Promise.allSettled(
+      phoneNumbers.map((phoneNumber) => {
+        return this.phoneNumbersService.create(phoneNumber, userId);
+      }),
+    );
+
+    const rejectedInfo = remainingInfo.filter(
+      (info) => info.status === 'rejected',
+    );
+
+    const rejectedPhoneNumbers = phoneList.filter(
+      (phone) => phone.status === 'rejected',
+    );
+
+    if (rejectedInfo.length > 0 || rejectedPhoneNumbers.length > 0) {
+      await this.remove(newUser.id);
+
+      return null;
+    }
+
+    const addedUser = await this.usersRepository.findOne({
+      where: { id: userId },
+      relations: this.mainRelations,
+    });
+
+    if (!addedUser) {
+      await this.remove(newUser.id);
+
+      return null;
+    }
+
+    return addedUser;
+  }
+
+  async addAdmin(body: AddAdminDto) {
+    const { user, address, phoneNumbers } = body;
+
+    const newUser = await this.create(user);
+
+    const userId = newUser.id;
+
+    const remainingInfo = await Promise.allSettled([
+      this.addressesService.create(address, userId),
+    ]);
+
+    const phoneList = await Promise.allSettled(
+      phoneNumbers.map((phoneNumber) => {
+        return this.phoneNumbersService.create(phoneNumber, userId);
+      }),
+    );
+
+    const rejectedInfo = remainingInfo.filter(
+      (info) => info.status === 'rejected',
+    );
+
+    const rejectedPhoneNumbers = phoneList.filter(
+      (phone) => phone.status === 'rejected',
+    );
+
+    if (rejectedInfo.length > 0 || rejectedPhoneNumbers.length > 0) {
+      await this.remove(newUser.id);
+
+      return null;
+    }
+
+    const addedUser = await this.usersRepository.findOne({
+      where: { id: userId },
+      relations: this.mainRelations,
+    });
+
+    if (!addedUser) {
+      await this.remove(newUser.id);
+
+      return null;
+    }
+
+    return addedUser;
+  }
+
   async update(id: number, body: UpdateUserDto) {
     const user = await this.findById(id);
 
-    if (!user) throw new NotFoundException('User not found.');
+    if (!user) throw new NotFoundException('User not found');
 
     const { password, ...values } = body;
 
@@ -126,7 +338,7 @@ export class UsersService {
     const hashedPassword = await hashPassword(password);
 
     if (!hashedPassword)
-      throw new BadRequestException('An error has occurred. Please try again.');
+      throw new BadRequestException('An error has occurred. Please try again');
 
     user.updatedAt = new Date();
     user.password = hashedPassword;
@@ -139,7 +351,7 @@ export class UsersService {
   async delete(id: number) {
     const user = await this.findById(id);
 
-    if (!user) throw new NotFoundException('User not found.');
+    if (!user) throw new NotFoundException('User not found');
 
     user.updatedAt = new Date();
     user.active = false;
@@ -150,7 +362,7 @@ export class UsersService {
   async remove(id: number) {
     const user = await this.findById(id);
 
-    if (!user) throw new NotFoundException('User not found.');
+    if (!user) throw new NotFoundException('User not found');
 
     return this.usersRepository.remove(user);
   }
