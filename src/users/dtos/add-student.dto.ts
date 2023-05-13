@@ -24,7 +24,7 @@ export class AddStudentDto {
 
   @ValidateNested({ each: true })
   @Type(() => CreateEducationInfoDto)
-  educationInfo: CreateEducationInfoDto;
+  educationInfoList: CreateEducationInfoDto[];
 
   @ValidateNested()
   @Type(() => CreateFinancialInfoDto)

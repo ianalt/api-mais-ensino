@@ -139,9 +139,12 @@ export class UsersService {
   //TODO create DTO, change to return full user
   //TODO FIX ERROR ON THIS
   async addStudent(body: AddStudentDto) {
-    const { user, address, phoneNumbers, educationInfo, financialInfo } = body;
+    const { user, address, phoneNumbers, educationInfoList, financialInfo } =
+      body;
 
     const newUser = await this.create(user);
+
+    console.log(newUser);
 
     const userId = newUser.id;
 
@@ -149,9 +152,17 @@ export class UsersService {
       this.addressesService.create(address, userId),
 
       this.financialInfoService.create(financialInfo, userId),
-
-      this.educationInfoService.create(educationInfo, userId),
     ]);
+
+    const educationList = await Promise.allSettled(
+      educationInfoList.map((educationInfo) => {
+        return this.educationInfoService.create(educationInfo, userId);
+      }),
+    );
+
+    const rejectedEducationInfo = educationList.filter(
+      (info) => info.status === 'rejected',
+    );
 
     const phoneList = await Promise.allSettled(
       phoneNumbers.map((phoneNumber) => {
@@ -163,11 +174,19 @@ export class UsersService {
       (info) => info.status === 'rejected',
     );
 
+    console.log(rejectedInfo);
+
     const rejectedPhoneNumbers = phoneList.filter(
       (phone) => phone.status === 'rejected',
     );
 
-    if (rejectedInfo.length > 0 || rejectedPhoneNumbers.length > 0) {
+    console.log(rejectedPhoneNumbers);
+
+    if (
+      rejectedInfo.length > 0 ||
+      rejectedPhoneNumbers.length > 0 ||
+      rejectedEducationInfo.length > 0
+    ) {
       await this.remove(newUser.id);
 
       return null;
@@ -177,6 +196,8 @@ export class UsersService {
       where: { id: userId },
       relations: this.mainRelations,
     });
+
+    console.log(addedUser);
 
     if (!addedUser) {
       await this.remove(newUser.id);
@@ -188,7 +209,7 @@ export class UsersService {
   }
 
   async addMonitor(body: AddMonitorDto) {
-    const { user, address, phoneNumbers, educationInfo } = body;
+    const { user, address, phoneNumbers, educationInfoList } = body;
 
     const newUser = await this.create(user);
 
@@ -196,9 +217,17 @@ export class UsersService {
 
     const remainingInfo = await Promise.allSettled([
       this.addressesService.create(address, userId),
-
-      this.educationInfoService.create(educationInfo, userId),
     ]);
+
+    const educationList = await Promise.allSettled(
+      educationInfoList.map((educationInfo) => {
+        return this.educationInfoService.create(educationInfo, userId);
+      }),
+    );
+
+    const rejectedEducationInfo = educationList.filter(
+      (info) => info.status === 'rejected',
+    );
 
     const phoneList = await Promise.allSettled(
       phoneNumbers.map((phoneNumber) => {
@@ -214,7 +243,11 @@ export class UsersService {
       (phone) => phone.status === 'rejected',
     );
 
-    if (rejectedInfo.length > 0 || rejectedPhoneNumbers.length > 0) {
+    if (
+      rejectedInfo.length > 0 ||
+      rejectedPhoneNumbers.length > 0 ||
+      rejectedEducationInfo.length > 0
+    ) {
       await this.remove(newUser.id);
 
       return null;
@@ -235,7 +268,7 @@ export class UsersService {
   }
 
   async addTeacher(body: AddTeacherDto) {
-    const { user, address, phoneNumbers, educationInfo } = body;
+    const { user, address, phoneNumbers, educationInfoList } = body;
 
     const newUser = await this.create(user);
 
@@ -243,9 +276,17 @@ export class UsersService {
 
     const remainingInfo = await Promise.allSettled([
       this.addressesService.create(address, userId),
-
-      this.educationInfoService.create(educationInfo, userId),
     ]);
+
+    const educationList = await Promise.allSettled(
+      educationInfoList.map((educationInfo) => {
+        return this.educationInfoService.create(educationInfo, userId);
+      }),
+    );
+
+    const rejectedEducationInfo = educationList.filter(
+      (info) => info.status === 'rejected',
+    );
 
     const phoneList = await Promise.allSettled(
       phoneNumbers.map((phoneNumber) => {
@@ -261,7 +302,11 @@ export class UsersService {
       (phone) => phone.status === 'rejected',
     );
 
-    if (rejectedInfo.length > 0 || rejectedPhoneNumbers.length > 0) {
+    if (
+      rejectedInfo.length > 0 ||
+      rejectedPhoneNumbers.length > 0 ||
+      rejectedEducationInfo.length > 0
+    ) {
       await this.remove(newUser.id);
 
       return null;

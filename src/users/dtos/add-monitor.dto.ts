@@ -23,5 +23,5 @@ export class AddMonitorDto {
 
   @ValidateNested({ each: true })
   @Type(() => CreateEducationInfoDto)
-  educationInfo: CreateEducationInfoDto;
+  educationInfoList: CreateEducationInfoDto[];
 }

@@ -209,6 +209,7 @@ export class UsersController {
     return addedAdmin;
   }
 
+  //TODO para multiplos itens, verifica sem tem id. se tiver, atualiza o que já tem. senão, cria do 0 (id?: number)
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Patch('/:id')
   @Serialize(UserDto)
