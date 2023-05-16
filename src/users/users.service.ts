@@ -144,8 +144,6 @@ export class UsersService {
 
     const newUser = await this.create(user);
 
-    console.log(newUser);
-
     const userId = newUser.id;
 
     const remainingInfo = await Promise.allSettled([
@@ -174,13 +172,9 @@ export class UsersService {
       (info) => info.status === 'rejected',
     );
 
-    console.log(rejectedInfo);
-
     const rejectedPhoneNumbers = phoneList.filter(
       (phone) => phone.status === 'rejected',
     );
-
-    console.log(rejectedPhoneNumbers);
 
     if (
       rejectedInfo.length > 0 ||
@@ -196,8 +190,6 @@ export class UsersService {
       where: { id: userId },
       relations: this.mainRelations,
     });
-
-    console.log(addedUser);
 
     if (!addedUser) {
       await this.remove(newUser.id);
