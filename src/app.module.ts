@@ -36,7 +36,7 @@ import { UsersModule } from './users/users.module';
     CacheModule.register(),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `.env.${process.env.NODE_ENV}`,
+      envFilePath: `.env`,
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],

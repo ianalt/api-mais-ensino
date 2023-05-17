@@ -2,6 +2,7 @@
 api-todo-list.txt
 
 # Environment variables
+.env
 .env.development
 .env.production
 .env.test

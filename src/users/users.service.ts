@@ -136,8 +136,6 @@ export class UsersService {
     return this.usersRepository.save(newUser);
   }
 
-  //TODO create DTO, change to return full user
-  //TODO FIX ERROR ON THIS
   async addStudent(body: AddStudentDto) {
     const { user, address, phoneNumbers, educationInfoList, financialInfo } =
       body;
