@@ -1,43 +1,55 @@
-import { IsDate, IsEmail, IsEnum, IsOptional, IsString } from 'class-validator';
-import { Role } from 'src/auth/enums/role.enum';
+import {
+  IsDateString,
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { Ethnicity } from '../enums/ethnicity.enum';
 import { Gender } from '../enums/gender.enum';
 
 export class UpdateUserDto {
-  @IsOptional()
-  @IsString()
-  role: Role;
-
-  @IsOptional()
-  @IsEmail()
-  email: string;
-
-  @IsOptional()
-  @IsString()
-  password: string;
-
-  @IsOptional()
-  @IsString()
+  @IsNotEmpty({
+    message: 'O campo "Nome" está vazio',
+  })
+  @IsString({
+    message: 'Digite um nome válido',
+  })
   firstName: string;
 
-  @IsOptional()
-  @IsString()
+  @IsNotEmpty({
+    message: 'O campo "Sobrenome" está vazio',
+  })
+  @IsString({
+    message: 'Digite um sobrenome válido',
+  })
   lastName: string;
 
-  @IsOptional()
-  @IsString()
+  @IsNotEmpty({
+    message: 'O campo "CPF" está vazio',
+  })
+  @IsString({
+    message: 'Digite um CPF válido',
+  })
+  @MinLength(11, {
+    message: 'Digite um CPF válido',
+  })
+  @MaxLength(11, {
+    message: 'Digite um CPF válido',
+  })
   cpf: string;
 
-  @IsOptional()
-  @IsString()
-  @IsDate()
+  @IsNotEmpty({ message: 'O campo "Data de Nascimento" está vazio' })
+  @IsDateString({}, { message: 'Digite uma data de nascimento válida' })
   birthDate: Date;
 
-  @IsOptional()
-  @IsEnum(Ethnicity)
+  @IsEnum(Ethnicity, { message: 'Selecione uma etnia da lista apresentada' })
   ethnicity: Ethnicity;
 
-  @IsOptional()
-  @IsEnum(Gender)
+  @IsEnum(Gender, {
+    message: 'Selecione uma identidade de gênero da lista apresentada',
+  })
   gender: Gender;
 }

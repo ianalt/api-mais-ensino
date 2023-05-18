@@ -34,6 +34,14 @@ export class PhoneNumbersService {
     });
   }
 
+  createNewInstance(data: Partial<PhoneNumber>) {
+    const newPhoneNumber = this.phoneNumbersRepository.create({
+      ...data,
+    });
+
+    return newPhoneNumber;
+  }
+
   async create(body: CreatePhoneNumberDto, userId: number) {
     const user = await this.usersRepository.findOne(userId);
 

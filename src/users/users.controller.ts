@@ -25,6 +25,7 @@ import { AddAdminDto } from './dtos/add-admin.dto';
 import { AddMonitorDto } from './dtos/add-monitor.dto';
 import { AddStudentDto } from './dtos/add-student.dto';
 import { AddTeacherDto } from './dtos/add-teacher.dto';
+import { UpdateStudentDto } from './dtos/update-student.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
@@ -213,11 +214,11 @@ export class UsersController {
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Patch('/:id')
   @Serialize(UserDto)
-  async update(
+  async updateStudent(
     @Param('id', ParseIntPipe) id: number,
-    @Body() body: UpdateUserDto,
+    @Body() body: UpdateStudentDto,
   ) {
-    return await this.usersService.update(id, body);
+    return await this.usersService.updateStudent(id, body);
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')

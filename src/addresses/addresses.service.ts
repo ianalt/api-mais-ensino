@@ -51,7 +51,7 @@ export class AddressesService {
   async update(id: number, body: UpdateAddressDto) {
     const address = await this.findById(id);
 
-    if (!address) throw new NotFoundException('Address not found.');
+    if (!address) throw new NotFoundException('Endereço não encontrado');
 
     const attrs: Partial<Address> = body;
 
@@ -65,7 +65,7 @@ export class AddressesService {
   async delete(id: number) {
     const address = await this.findById(id);
 
-    if (!address) throw new NotFoundException('Address not found.');
+    if (!address) throw new NotFoundException('Endereço não encontrado');
 
     address.updatedAt = new Date();
     address.active = false;
@@ -76,7 +76,7 @@ export class AddressesService {
   async remove(id: number) {
     const address = await this.findById(id);
 
-    if (!address) throw new NotFoundException('Address not found.');
+    if (!address) throw new NotFoundException('Endereço não encontrado');
 
     return this.addressesRepository.remove(address);
   }

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
@@ -34,6 +38,14 @@ export class EducationInfoService {
     });
   }
 
+  createNewInstance(values: Partial<EducationInfo>) {
+    const newEducationInfo = this.educationInfoRepository.create({
+      ...values,
+    });
+
+    return newEducationInfo;
+  }
+
   async create(body: CreateEducationInfoDto, userId: number) {
     const user = await this.usersRepository.findOne(userId);
 
@@ -52,7 +64,9 @@ export class EducationInfoService {
     const educationInfo = await this.findById(id);
 
     if (!educationInfo)
-      throw new NotFoundException('Education info not found.');
+      throw new UnprocessableEntityException(
+        'Não foi possível atualizar o usuário',
+      );
 
     const attrs: Partial<EducationInfo> = body;
 

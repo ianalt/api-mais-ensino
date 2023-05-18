@@ -1,24 +1,43 @@
-import { IsOptional, IsString, IsDate } from 'class-validator';
+import {
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsPositive,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { SchoolingLevel } from '../enums/schooling-level.enum';
 
 export class UpdateEducationInfoDto {
+  //TODO opcional pq pode ser item novo ou já existente
   @IsOptional()
-  @IsString()
+  @IsInt()
+  @IsPositive()
+  id?: number;
+
+  @IsEnum(SchoolingLevel, {
+    message: 'Selecione um nível de escolaridade da lista apresentada',
+  })
   schoolingLevel: SchoolingLevel;
 
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'Digite um nome válido para o curso' })
   courseName: string | null;
 
-  @IsOptional()
-  @IsString()
+  @IsString({ message: 'Digite um nome válido para a instituição de ensino' })
   institutionName: string;
 
-  @IsOptional()
-  @IsDate()
+  @IsNotEmpty({ message: 'O campo "Ano de Início" está vazio' })
+  @IsString({ message: 'Digite um ano válido' })
+  @MinLength(4, { message: 'Digite um ano de início válido' })
+  @MaxLength(4, { message: 'Digite um ano de início válido' })
   startYear: string;
 
   @IsOptional()
-  @IsDate()
+  @IsString()
+  @MinLength(4, { message: 'Digite um ano de conclusão válido' })
+  @MaxLength(4, { message: 'Digite um ano de conclusão válido' })
   conclusionYear: string | null;
 }
