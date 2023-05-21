@@ -1,5 +1,6 @@
 import {
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
@@ -48,24 +49,34 @@ export class EducationInfoService {
     });
   }
 
+  //TODO CREATE FOR MANAGE/UPDATE
   async createNewInstance(values: Partial<EducationInfo>, userId: number) {
-    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    const newEducationInfo = this.educationInfoRepository.create({
+      ...values,
+      user: { id: userId },
+    });
+
+    return newEducationInfo;
+  }
+
+  async createForManage(body: CreateEducationInfoDto, userId: number) {
+    const user = await this.usersRepository.findOne(userId);
 
     if (!user) throw new NotFoundException('Usuário não encontrado');
 
     const newEducationInfo = this.educationInfoRepository.create({
-      ...values,
+      ...body,
     });
 
     newEducationInfo.user = user;
 
-    return newEducationInfo;
+    return this.educationInfoRepository.save(newEducationInfo);
   }
 
   async create(body: CreateEducationInfoDto, userId: number) {
     const user = await this.usersRepository.findOne(userId);
 
-    if (!user) throw new NotFoundException('User not found.');
+    if (!user) throw new NotFoundException('Usuário não encontrado');
 
     const newEducationInfo = this.educationInfoRepository.create({
       ...body,
@@ -85,22 +96,9 @@ export class EducationInfoService {
       );
 
     const attrs: Partial<EducationInfo> = body;
-
     educationInfo.updatedAt = new Date();
 
     Object.assign(educationInfo, attrs);
-
-    return this.educationInfoRepository.save(educationInfo);
-  }
-
-  async delete(id: number) {
-    const educationInfo = await this.findById(id);
-
-    if (!educationInfo)
-      throw new NotFoundException('Education info not found.');
-
-    educationInfo.updatedAt = new Date();
-    educationInfo.active = false;
 
     return this.educationInfoRepository.save(educationInfo);
   }
@@ -112,5 +110,22 @@ export class EducationInfoService {
       throw new NotFoundException('Education info not found.');
 
     return this.educationInfoRepository.remove(educationInfo);
+  }
+
+  async removeAllFromUser(userId: number) {
+    const userEducationInfoList = await this.educationInfoRepository.find({
+      where: { user: { id: userId } },
+    });
+
+    if (userEducationInfoList.length > 0) {
+      const infoDeleted = Promise.all(
+        userEducationInfoList.map(async (info) => await this.remove(info.id)),
+      );
+
+      if (!infoDeleted)
+        throw new InternalServerErrorException(
+          'Erro ao remover informações educacionais do usuário',
+        );
+    }
   }
 }

@@ -58,12 +58,6 @@ export class EducationInfoController {
   }
 
   @Roles('admin')
-  @Delete('delete/:id')
-  async delete(@Param('id', ParseIntPipe) id: number) {
-    return await this.educationInfoService.delete(id);
-  }
-
-  @Roles('admin')
   @Delete('/:id')
   async remove(@Param('id', ParseIntPipe) id: number) {
     return await this.educationInfoService.remove(id);

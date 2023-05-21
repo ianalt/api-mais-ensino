@@ -26,6 +26,7 @@ import { AddMonitorDto } from './dtos/add-monitor.dto';
 import { AddStudentDto } from './dtos/add-student.dto';
 import { AddTeacherDto } from './dtos/add-teacher.dto';
 import { UpdateStudentDto } from './dtos/update-student.dto';
+import { UpdateFullUserDto } from './dtos/update-full-user.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
@@ -72,6 +73,12 @@ export class UsersController {
   @Serialize(UserDto)
   async findAllTeachers() {
     return await this.usersService.findAllTeachers();
+  }
+
+  @Roles('admin')
+  @Delete('/:id')
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    return await this.usersService.remove(id);
   }
 
   @Roles('admin')
@@ -221,9 +228,14 @@ export class UsersController {
     return await this.usersService.updateStudent(id, body);
   }
 
+  //TODO para multiplos itens, verifica se tem id. se tiver, atualiza o que já tem. senão, cria do 0 (id?: number)
   @Roles('admin')
-  @Delete('/:id')
-  async delete(@Param('id', ParseIntPipe) id: number) {
-    return await this.usersService.remove(id);
+  @Patch('/edit-user/:id')
+  @Serialize(UserDto)
+  async editUser(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateFullUserDto,
+  ) {
+    return await this.usersService.editUser(body, id);
   }
 }

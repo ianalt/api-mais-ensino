@@ -1,5 +1,6 @@
 import {
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
@@ -77,6 +78,20 @@ export class PhoneNumbersService {
     return this.phoneNumbersRepository.save(newPhoneNumber);
   }
 
+  async createForManage(body: CreatePhoneNumberDto, userId: number) {
+    const user = await this.usersRepository.findOne(userId);
+
+    if (!user) throw new NotFoundException('Usuário não encontrado');
+
+    const newPhoneNumber = this.phoneNumbersRepository.create({
+      ...body,
+    });
+
+    newPhoneNumber.user = user;
+
+    return this.phoneNumbersRepository.save(newPhoneNumber);
+  }
+
   async update(id: number, body: UpdatePhoneNumberDto) {
     const phoneNumber = await this.findById(id);
 
@@ -108,5 +123,22 @@ export class PhoneNumbersService {
     if (!phoneNumber) throw new NotFoundException('Phone number not found.');
 
     return this.phoneNumbersRepository.remove(phoneNumber);
+  }
+
+  async removeAllFromUser(userId: number) {
+    const phoneNumbersList = await this.phoneNumbersRepository.find({
+      where: { user: { id: userId } },
+    });
+
+    if (phoneNumbersList.length > 0) {
+      const infoDeleted = Promise.all(
+        phoneNumbersList.map(async (info) => await this.remove(info.id)),
+      );
+
+      if (!infoDeleted)
+        throw new InternalServerErrorException(
+          'Erro ao remover informações educacionais do usuário',
+        );
+    }
   }
 }

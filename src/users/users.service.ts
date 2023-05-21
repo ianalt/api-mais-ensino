@@ -23,6 +23,7 @@ import { EducationInfo } from 'src/education-info/education-info.entity';
 import { PhoneNumber } from 'src/phone-numbers/phone-number.entity';
 import { Address } from 'src/addresses/address.entity';
 import { FinancialInfo } from 'src/financial-info/financial-info.entity';
+import { UpdateFullUserDto } from './dtos/update-full-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -68,7 +69,7 @@ export class UsersService {
   }
 
   async findById(id: number) {
-    if (!id) return null;
+    if (!id || id <= 0) return null;
 
     const user = await this.usersRepository.findOne({
       where: { id },
@@ -380,6 +381,36 @@ export class UsersService {
     return addedUser;
   }
 
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+
   //TODO UPDATE ESTUDANTE
   async updateStudent(id: number, body: UpdateStudentDto) {
     const student = await this.findById(id);
@@ -387,45 +418,39 @@ export class UsersService {
     const { address, educationInfoList, financialInfo, phoneNumbers, user } =
       body;
 
-    //TODO DADOS EDUCACICIONAIS
     const existingEduInfo = educationInfoList.filter((info) => info.id);
     const newEduInfo = educationInfoList.filter((info) => !info.id);
 
-    //SE N TIVER NADA, TACA ERRO
     if (existingEduInfo.length <= 0 && newEduInfo.length <= 0)
       throw new UnprocessableEntityException(
         'Não foi possível atualizar o usuário (dados educacionais incorretos)',
       );
 
-    //SE SÓ TIVER ITEM NOVO, ACHA O QUE EXISTE E DELETA
-    if (existingEduInfo.length <= 0) {
-      const eduInfoToDelete = await this.educationInfoService.findByUserId(id);
+    if (existingEduInfo.length <= 0)
+      await this.educationInfoService.removeAllFromUser(id);
 
-      if (eduInfoToDelete.length > 0) {
-        for (const item of eduInfoToDelete) {
-          console.log('EDU INFO TO BE DELETED =============');
-          console.log(item);
-
-          //DELETA O QUE TIVER
-          const deletedEduInfos = await Promise.all(
-            eduInfoToDelete.map(async (i) => {
-              return await this.phoneNumbersService.delete(i.id);
-            }),
+    if (newEduInfo.length > 0) {
+      const newEduInfoList = await Promise.all(
+        newEduInfo.map(async (item) => {
+          const newInfo = await this.educationInfoService.createForManage(
+            item,
+            id,
           );
 
-          if (!deletedEduInfos)
+          if (!newInfo)
             throw new UnprocessableEntityException(
               'Não foi possível atualizar o usuário (dados educacionais incorretos)',
             );
-        }
-      }
+        }),
+      );
+
+      if (!newEduInfoList)
+        throw new UnprocessableEntityException(
+          'Não foi possível atualizar o usuário (dados educacionais incorretos)',
+        );
     }
 
-    //SE TIVER ITEM QUE JÁ EXISTA (COM ID), ATUALIZA
     if (existingEduInfo.length > 0) {
-      console.log('existingEduInfo ====================');
-      console.log(existingEduInfo);
-
       const updatedExistingEduList = await Promise.all(
         existingEduInfo.map(async (item) => {
           const { id, ...values } = item;
@@ -448,98 +473,17 @@ export class UsersService {
         );
     }
 
-    //SE ALGUNS TIVER ITEM NOVOS, CRIA
-    if (newEduInfo.length > 0) {
-      console.log('newEduInfo ====================');
-      console.log(newEduInfo);
-
-      const updatedNewEduList = await Promise.all(
-        newEduInfo.map(async (item) => {
-          const newEdu = await this.educationInfoService.createNewInstance(
-            item,
-            id,
-          );
-
-          const newInfo = await this.educationInfoService.create(newEdu, id);
-
-          if (!newInfo)
-            throw new UnprocessableEntityException(
-              'Não foi possível atualizar o usuário (dados educacionais incorretos)',
-            );
-        }),
-      );
-
-      if (!updatedNewEduList)
-        throw new UnprocessableEntityException(
-          'Não foi possível atualizar o usuário (dados educacionais incorretos)',
-        );
-    }
-
     const existingPhones = phoneNumbers.filter((info) => info.id);
     const newPhone = phoneNumbers.filter((info) => !info.id);
 
-    console.log('existingPhones ====================');
-    console.log(existingPhones);
-
-    console.log('newPhone ====================');
-    console.log(newPhone);
-
-    //SE N TIVER NADA, TACA ERRO
     if (existingPhones.length <= 0 && newPhone.length <= 0)
       throw new UnprocessableEntityException(
         'Não foi possível atualizar o usuário (dados para contato incorretos)',
       );
 
-    //SE SÓ TIVER ITEM NOVO, ACHA O QUE EXISTE E DELETA
-    if (existingPhones.length <= 0) {
-      const phonesToDelete = await this.phoneNumbersService.findByUserId(id);
+    if (existingPhones.length <= 0)
+      await this.phoneNumbersService.removeAllFromUser(id);
 
-      if (phonesToDelete.length > 0) {
-        for (const item of phonesToDelete) {
-          console.log('PHONE NUMBER =============');
-          console.log(item);
-
-          //DELETA O QUE TIVER
-          const deletedPhones = await Promise.all(
-            phonesToDelete.map(async (i) => {
-              return await this.phoneNumbersService.delete(i.id);
-            }),
-          );
-
-          if (!deletedPhones)
-            throw new UnprocessableEntityException(
-              'Não foi possível atualizar o usuário (dados para contato incorretos)',
-            );
-        }
-      }
-    }
-
-    //SE TIVER ITEM QUE JÁ EXISTA (COM ID), ATUALIZA
-    if (existingPhones.length > 0) {
-      const updatedExistingPhonesList = await Promise.all(
-        existingPhones.map(async (item) => {
-          const { id, ...values } = item;
-
-          const updatedExistingInfo = await this.phoneNumbersService.update(
-            id,
-            values,
-          );
-
-          if (!updatedExistingInfo)
-            throw new UnprocessableEntityException(
-              'Não foi possível atualizar o usuário (dados para contato incorretos)',
-            );
-        }),
-      );
-
-      if (!updatedExistingPhonesList)
-        throw new UnprocessableEntityException(
-          'Não foi possível atualizar o usuário (dados para contato incorretos)',
-        );
-    }
-
-    //TODO POSSÍVEL ERRO NA HORA DE INSTANCIAR
-    //SE ALGUNS TIVER ITEM NOVOS, CRIA
     if (newPhone.length > 0) {
       const updatedNewPhoneList = await Promise.all(
         newPhone.map(async (item) => {
@@ -563,11 +507,28 @@ export class UsersService {
         );
     }
 
-    console.log('address ====================');
-    console.log(address);
+    if (existingPhones.length > 0) {
+      const updatedExistingPhonesList = await Promise.all(
+        existingPhones.map(async (item) => {
+          const { id, ...values } = item;
 
-    console.log('financialInfo ====================');
-    console.log(financialInfo);
+          const updatedExistingInfo = await this.phoneNumbersService.update(
+            id,
+            values,
+          );
+
+          if (!updatedExistingInfo)
+            throw new UnprocessableEntityException(
+              'Não foi possível atualizar o usuário (dados para contato incorretos)',
+            );
+        }),
+      );
+
+      if (!updatedExistingPhonesList)
+        throw new UnprocessableEntityException(
+          'Não foi possível atualizar o usuário (dados para contato incorretos)',
+        );
+    }
 
     const remainingInfo = await Promise.all([
       await this.addressesService.update(address.id, address),
@@ -579,29 +540,24 @@ export class UsersService {
         'Não foi possível atualizar o usuário (dados pessoais preenchidos incorretamente)',
       );
 
-    console.log('remainingInfo ====================');
-    console.log(remainingInfo[0]);
-    console.log(remainingInfo[1]);
+    try {
+      const updatedUserInfo = await this.editUser(user, id);
 
-    console.log('user ====================');
-    console.log(user);
+      if (!updatedUserInfo)
+        throw new UnprocessableEntityException(
+          'Não foi possível atualizar o usuário (dados pessoais preenchidos incorretamente)',
+        );
 
-    const studentAttrs: Partial<User> = user;
+      console.log('YES!!!!!!!!!!!');
+      console.log('updatedUserInfo =======');
+      console.log(updatedUserInfo);
 
-    student.updatedAt = new Date();
-    Object.assign(student, studentAttrs);
-
-    console.log('student ==============');
-    console.log(student);
-
-    const updatedUserInfo = await this.usersRepository.save(student);
-
-    if (!updatedUserInfo)
-      throw new UnprocessableEntityException(
-        'Não foi possível atualizar o usuário (dados pessoais preenchidos incorretamente)',
-      );
-
-    return await this.findById(id);
+      return updatedUserInfo;
+      // return await this.findById(id);
+    } catch (e: any) {
+      console.log('FUUUUUUUUUUCK');
+      console.log(e.message);
+    }
   }
 
   async delete(id: number) {
@@ -621,5 +577,16 @@ export class UsersService {
     if (!user) throw new NotFoundException('Usuário não encontrado');
 
     return this.usersRepository.remove(user);
+  }
+
+  async editUser(body: UpdateFullUserDto, id: number) {
+    const user = await this.findById(id);
+
+    const attrs: Partial<User> = body;
+
+    user.updatedAt = new Date();
+    Object.assign(user, attrs);
+
+    return await this.usersRepository.save(user);
   }
 }
