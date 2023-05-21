@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
@@ -27,17 +31,34 @@ export class PhoneNumbersService {
     });
   }
 
-  findAll() {
-    return this.phoneNumbersRepository.find({
-      where: { active: true },
+  async findByUserId(userId: number) {
+    if (!userId || userId <= 0)
+      throw new UnprocessableEntityException('ID de usuário inválido');
+
+    return await this.phoneNumbersRepository.find({
+      where: { active: true, user: { id: userId } },
       relations: this.allRelations,
     });
   }
 
-  createNewInstance(data: Partial<PhoneNumber>) {
+  findAll() {
+    return this.phoneNumbersRepository.find({
+      where: { active: true },
+      // relations: this.allRelations,
+      relations: this.allRelations,
+    });
+  }
+
+  async createNewInstance(data: Partial<PhoneNumber>, userId: number) {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+
+    if (!user) throw new NotFoundException('Usuário não encontrado');
+
     const newPhoneNumber = this.phoneNumbersRepository.create({
       ...data,
     });
+
+    newPhoneNumber.user = user;
 
     return newPhoneNumber;
   }

@@ -52,7 +52,7 @@ export class FinancialInfoService {
     const financialInfo = await this.findById(id);
 
     if (!financialInfo)
-      throw new NotFoundException('Financial info not found.');
+      throw new NotFoundException('Informação financeira não encontrada');
 
     const attrs: Partial<FinancialInfo> = body;
 

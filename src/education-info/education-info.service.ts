@@ -31,6 +31,16 @@ export class EducationInfoService {
     });
   }
 
+  async findByUserId(userId: number) {
+    if (!userId || userId <= 0)
+      throw new UnprocessableEntityException('ID de usuário inválido');
+
+    return await this.educationInfoRepository.find({
+      where: { active: true, user: { id: userId } },
+      relations: this.allRelations,
+    });
+  }
+
   findAll() {
     return this.educationInfoRepository.find({
       where: { active: true },
@@ -38,10 +48,16 @@ export class EducationInfoService {
     });
   }
 
-  createNewInstance(values: Partial<EducationInfo>) {
+  async createNewInstance(values: Partial<EducationInfo>, userId: number) {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+
+    if (!user) throw new NotFoundException('Usuário não encontrado');
+
     const newEducationInfo = this.educationInfoRepository.create({
       ...values,
     });
+
+    newEducationInfo.user = user;
 
     return newEducationInfo;
   }

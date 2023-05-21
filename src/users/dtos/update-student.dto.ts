@@ -26,7 +26,7 @@ export class UpdateStudentDto {
   @Type(() => UpdateEducationInfoDto)
   educationInfoList: UpdateEducationInfoDto[];
 
-  @ValidateNested()
+  @ValidateNested({ each: true })
   @Type(() => UpdateFinancialInfoDto)
   financialInfo: UpdateFinancialInfoDto;
 }

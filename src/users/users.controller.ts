@@ -210,9 +210,9 @@ export class UsersController {
     return addedAdmin;
   }
 
-  //TODO para multiplos itens, verifica sem tem id. se tiver, atualiza o que já tem. senão, cria do 0 (id?: number)
-  @Roles('estudante', 'monitor', 'professor', 'admin')
-  @Patch('/:id')
+  //TODO para multiplos itens, verifica se tem id. se tiver, atualiza o que já tem. senão, cria do 0 (id?: number)
+  @Roles('admin')
+  @Patch('/student/:id')
   @Serialize(UserDto)
   async updateStudent(
     @Param('id', ParseIntPipe) id: number,
@@ -221,17 +221,9 @@ export class UsersController {
     return await this.usersService.updateStudent(id, body);
   }
 
-  @Roles('estudante', 'monitor', 'professor', 'admin')
-  @Delete('delete/:id')
-  @Serialize(UserDto)
-  async delete(@Param('id', ParseIntPipe) id: number) {
-    return await this.usersService.delete(id);
-  }
-
-  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Roles('admin')
   @Delete('/:id')
-  @Serialize(UserDto)
-  async remove(@Param('id', ParseIntPipe) id: number) {
+  async delete(@Param('id', ParseIntPipe) id: number) {
     return await this.usersService.remove(id);
   }
 }
