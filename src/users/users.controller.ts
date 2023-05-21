@@ -27,6 +27,9 @@ import { AddStudentDto } from './dtos/add-student.dto';
 import { AddTeacherDto } from './dtos/add-teacher.dto';
 import { UpdateStudentDto } from './dtos/update-student.dto';
 import { UpdateFullUserDto } from './dtos/update-full-user.dto';
+import { UpdateAdminDto } from './dtos/update-admin.dto';
+import { UpdateMonitorDto } from './dtos/update-monitor.dto';
+import { UpdateTeacherDto } from './dtos/update-teacher.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
@@ -217,7 +220,6 @@ export class UsersController {
     return addedAdmin;
   }
 
-  //TODO para multiplos itens, verifica se tem id. se tiver, atualiza o que já tem. senão, cria do 0 (id?: number)
   @Roles('admin')
   @Patch('/student/:id')
   @Serialize(UserDto)
@@ -228,14 +230,33 @@ export class UsersController {
     return await this.usersService.updateStudent(id, body);
   }
 
-  //TODO para multiplos itens, verifica se tem id. se tiver, atualiza o que já tem. senão, cria do 0 (id?: number)
   @Roles('admin')
-  @Patch('/edit-user/:id')
+  @Patch('/monitor/:id')
   @Serialize(UserDto)
-  async editUser(
+  async updateMonitor(
     @Param('id', ParseIntPipe) id: number,
-    @Body() body: UpdateFullUserDto,
+    @Body() body: UpdateMonitorDto,
   ) {
-    return await this.usersService.editUser(body, id);
+    return await this.usersService.updateMonitor(id, body);
+  }
+
+  @Roles('admin')
+  @Patch('/teacher/:id')
+  @Serialize(UserDto)
+  async updateTeacher(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateTeacherDto,
+  ) {
+    return await this.usersService.updateTeacher(id, body);
+  }
+
+  @Roles('admin')
+  @Patch('/admin/:id')
+  @Serialize(UserDto)
+  async updateAdmin(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateAdminDto,
+  ) {
+    return await this.usersService.updateAdmin(id, body);
   }
 }

@@ -24,6 +24,9 @@ import { PhoneNumber } from 'src/phone-numbers/phone-number.entity';
 import { Address } from 'src/addresses/address.entity';
 import { FinancialInfo } from 'src/financial-info/financial-info.entity';
 import { UpdateFullUserDto } from './dtos/update-full-user.dto';
+import { UpdateMonitorDto } from './dtos/update-monitor.dto';
+import { UpdateTeacherDto } from './dtos/update-teacher.dto';
+import { UpdateAdminDto } from './dtos/update-admin.dto';
 
 @Injectable()
 export class UsersService {
@@ -411,10 +414,7 @@ export class UsersService {
   // ------------------------------------------------------------------
   // ------------------------------------------------------------------
 
-  //TODO UPDATE ESTUDANTE
   async updateStudent(id: number, body: UpdateStudentDto) {
-    const student = await this.findById(id);
-
     const { address, educationInfoList, financialInfo, phoneNumbers, user } =
       body;
 
@@ -540,24 +540,361 @@ export class UsersService {
         'Não foi possível atualizar o usuário (dados pessoais preenchidos incorretamente)',
       );
 
-    try {
-      const updatedUserInfo = await this.editUser(user, id);
+    const updatedUserInfo = await this.editUser(user, id);
 
-      if (!updatedUserInfo)
+    if (!updatedUserInfo)
+      throw new UnprocessableEntityException(
+        'Não foi possível atualizar o usuário (dados pessoais preenchidos incorretamente)',
+      );
+
+    return updatedUserInfo;
+  }
+
+  async updateMonitor(id: number, body: UpdateMonitorDto) {
+    const { address, educationInfoList, phoneNumbers, user } = body;
+
+    const existingEduInfo = educationInfoList.filter((info) => info.id);
+    const newEduInfo = educationInfoList.filter((info) => !info.id);
+
+    if (existingEduInfo.length <= 0 && newEduInfo.length <= 0)
+      throw new UnprocessableEntityException(
+        'Não foi possível atualizar o usuário (dados educacionais incorretos)',
+      );
+
+    if (existingEduInfo.length <= 0)
+      await this.educationInfoService.removeAllFromUser(id);
+
+    if (newEduInfo.length > 0) {
+      const newEduInfoList = await Promise.all(
+        newEduInfo.map(async (item) => {
+          const newInfo = await this.educationInfoService.createForManage(
+            item,
+            id,
+          );
+
+          if (!newInfo)
+            throw new UnprocessableEntityException(
+              'Não foi possível atualizar o usuário (dados educacionais incorretos)',
+            );
+        }),
+      );
+
+      if (!newEduInfoList)
         throw new UnprocessableEntityException(
-          'Não foi possível atualizar o usuário (dados pessoais preenchidos incorretamente)',
+          'Não foi possível atualizar o usuário (dados educacionais incorretos)',
         );
-
-      console.log('YES!!!!!!!!!!!');
-      console.log('updatedUserInfo =======');
-      console.log(updatedUserInfo);
-
-      return updatedUserInfo;
-      // return await this.findById(id);
-    } catch (e: any) {
-      console.log('FUUUUUUUUUUCK');
-      console.log(e.message);
     }
+
+    if (existingEduInfo.length > 0) {
+      const updatedExistingEduList = await Promise.all(
+        existingEduInfo.map(async (item) => {
+          const { id, ...values } = item;
+
+          const updatedExistingInfo = await this.educationInfoService.update(
+            id,
+            values,
+          );
+
+          if (!updatedExistingInfo)
+            throw new UnprocessableEntityException(
+              'Não foi possível atualizar o usuário (dados educacionais incorretos)',
+            );
+        }),
+      );
+
+      if (!updatedExistingEduList)
+        throw new UnprocessableEntityException(
+          'Não foi possível atualizar o usuário (dados educacionais incorretos)',
+        );
+    }
+
+    const existingPhones = phoneNumbers.filter((info) => info.id);
+    const newPhone = phoneNumbers.filter((info) => !info.id);
+
+    if (existingPhones.length <= 0 && newPhone.length <= 0)
+      throw new UnprocessableEntityException(
+        'Não foi possível atualizar o usuário (dados para contato incorretos)',
+      );
+
+    if (existingPhones.length <= 0)
+      await this.phoneNumbersService.removeAllFromUser(id);
+
+    if (newPhone.length > 0) {
+      const updatedNewPhoneList = await Promise.all(
+        newPhone.map(async (item) => {
+          const newPhone = await this.phoneNumbersService.createNewInstance(
+            item,
+            id,
+          );
+
+          const newInfo = await this.phoneNumbersService.create(newPhone, id);
+
+          if (!newInfo)
+            throw new UnprocessableEntityException(
+              'Não foi possível atualizar o usuário (dados para contato incorretos)',
+            );
+        }),
+      );
+
+      if (!updatedNewPhoneList)
+        throw new UnprocessableEntityException(
+          'Não foi possível atualizar o usuário (dados para contato incorretos)',
+        );
+    }
+
+    if (existingPhones.length > 0) {
+      const updatedExistingPhonesList = await Promise.all(
+        existingPhones.map(async (item) => {
+          const { id, ...values } = item;
+
+          const updatedExistingInfo = await this.phoneNumbersService.update(
+            id,
+            values,
+          );
+
+          if (!updatedExistingInfo)
+            throw new UnprocessableEntityException(
+              'Não foi possível atualizar o usuário (dados para contato incorretos)',
+            );
+        }),
+      );
+
+      if (!updatedExistingPhonesList)
+        throw new UnprocessableEntityException(
+          'Não foi possível atualizar o usuário (dados para contato incorretos)',
+        );
+    }
+
+    const remainingInfo = await Promise.all([
+      await this.addressesService.update(address.id, address),
+    ]);
+
+    if (!remainingInfo)
+      throw new UnprocessableEntityException(
+        'Não foi possível atualizar o usuário (dados pessoais preenchidos incorretamente)',
+      );
+
+    const updatedUserInfo = await this.editUser(user, id);
+
+    if (!updatedUserInfo)
+      throw new UnprocessableEntityException(
+        'Não foi possível atualizar o usuário (dados pessoais preenchidos incorretamente)',
+      );
+
+    return updatedUserInfo;
+  }
+
+  async updateTeacher(id: number, body: UpdateTeacherDto) {
+    const { address, educationInfoList, phoneNumbers, user } = body;
+
+    const existingEduInfo = educationInfoList.filter((info) => info.id);
+    const newEduInfo = educationInfoList.filter((info) => !info.id);
+
+    if (existingEduInfo.length <= 0 && newEduInfo.length <= 0)
+      throw new UnprocessableEntityException(
+        'Não foi possível atualizar o usuário (dados educacionais incorretos)',
+      );
+
+    if (existingEduInfo.length <= 0)
+      await this.educationInfoService.removeAllFromUser(id);
+
+    if (newEduInfo.length > 0) {
+      const newEduInfoList = await Promise.all(
+        newEduInfo.map(async (item) => {
+          const newInfo = await this.educationInfoService.createForManage(
+            item,
+            id,
+          );
+
+          if (!newInfo)
+            throw new UnprocessableEntityException(
+              'Não foi possível atualizar o usuário (dados educacionais incorretos)',
+            );
+        }),
+      );
+
+      if (!newEduInfoList)
+        throw new UnprocessableEntityException(
+          'Não foi possível atualizar o usuário (dados educacionais incorretos)',
+        );
+    }
+
+    if (existingEduInfo.length > 0) {
+      const updatedExistingEduList = await Promise.all(
+        existingEduInfo.map(async (item) => {
+          const { id, ...values } = item;
+
+          const updatedExistingInfo = await this.educationInfoService.update(
+            id,
+            values,
+          );
+
+          if (!updatedExistingInfo)
+            throw new UnprocessableEntityException(
+              'Não foi possível atualizar o usuário (dados educacionais incorretos)',
+            );
+        }),
+      );
+
+      if (!updatedExistingEduList)
+        throw new UnprocessableEntityException(
+          'Não foi possível atualizar o usuário (dados educacionais incorretos)',
+        );
+    }
+
+    const existingPhones = phoneNumbers.filter((info) => info.id);
+    const newPhone = phoneNumbers.filter((info) => !info.id);
+
+    if (existingPhones.length <= 0 && newPhone.length <= 0)
+      throw new UnprocessableEntityException(
+        'Não foi possível atualizar o usuário (dados para contato incorretos)',
+      );
+
+    if (existingPhones.length <= 0)
+      await this.phoneNumbersService.removeAllFromUser(id);
+
+    if (newPhone.length > 0) {
+      const updatedNewPhoneList = await Promise.all(
+        newPhone.map(async (item) => {
+          const newPhone = await this.phoneNumbersService.createNewInstance(
+            item,
+            id,
+          );
+
+          const newInfo = await this.phoneNumbersService.create(newPhone, id);
+
+          if (!newInfo)
+            throw new UnprocessableEntityException(
+              'Não foi possível atualizar o usuário (dados para contato incorretos)',
+            );
+        }),
+      );
+
+      if (!updatedNewPhoneList)
+        throw new UnprocessableEntityException(
+          'Não foi possível atualizar o usuário (dados para contato incorretos)',
+        );
+    }
+
+    if (existingPhones.length > 0) {
+      const updatedExistingPhonesList = await Promise.all(
+        existingPhones.map(async (item) => {
+          const { id, ...values } = item;
+
+          const updatedExistingInfo = await this.phoneNumbersService.update(
+            id,
+            values,
+          );
+
+          if (!updatedExistingInfo)
+            throw new UnprocessableEntityException(
+              'Não foi possível atualizar o usuário (dados para contato incorretos)',
+            );
+        }),
+      );
+
+      if (!updatedExistingPhonesList)
+        throw new UnprocessableEntityException(
+          'Não foi possível atualizar o usuário (dados para contato incorretos)',
+        );
+    }
+
+    const remainingInfo = await Promise.all([
+      await this.addressesService.update(address.id, address),
+    ]);
+
+    if (!remainingInfo)
+      throw new UnprocessableEntityException(
+        'Não foi possível atualizar o usuário (dados pessoais preenchidos incorretamente)',
+      );
+
+    const updatedUserInfo = await this.editUser(user, id);
+
+    if (!updatedUserInfo)
+      throw new UnprocessableEntityException(
+        'Não foi possível atualizar o usuário (dados pessoais preenchidos incorretamente)',
+      );
+
+    return updatedUserInfo;
+  }
+
+  async updateAdmin(id: number, body: UpdateAdminDto) {
+    const { address, phoneNumbers, user } = body;
+
+    const existingPhones = phoneNumbers.filter((info) => info.id);
+    const newPhone = phoneNumbers.filter((info) => !info.id);
+
+    if (existingPhones.length <= 0 && newPhone.length <= 0)
+      throw new UnprocessableEntityException(
+        'Não foi possível atualizar o usuário (dados para contato incorretos)',
+      );
+
+    if (existingPhones.length <= 0)
+      await this.phoneNumbersService.removeAllFromUser(id);
+
+    if (newPhone.length > 0) {
+      const updatedNewPhoneList = await Promise.all(
+        newPhone.map(async (item) => {
+          const newPhone = await this.phoneNumbersService.createNewInstance(
+            item,
+            id,
+          );
+
+          const newInfo = await this.phoneNumbersService.create(newPhone, id);
+
+          if (!newInfo)
+            throw new UnprocessableEntityException(
+              'Não foi possível atualizar o usuário (dados para contato incorretos)',
+            );
+        }),
+      );
+
+      if (!updatedNewPhoneList)
+        throw new UnprocessableEntityException(
+          'Não foi possível atualizar o usuário (dados para contato incorretos)',
+        );
+    }
+
+    if (existingPhones.length > 0) {
+      const updatedExistingPhonesList = await Promise.all(
+        existingPhones.map(async (item) => {
+          const { id, ...values } = item;
+
+          const updatedExistingInfo = await this.phoneNumbersService.update(
+            id,
+            values,
+          );
+
+          if (!updatedExistingInfo)
+            throw new UnprocessableEntityException(
+              'Não foi possível atualizar o usuário (dados para contato incorretos)',
+            );
+        }),
+      );
+
+      if (!updatedExistingPhonesList)
+        throw new UnprocessableEntityException(
+          'Não foi possível atualizar o usuário (dados para contato incorretos)',
+        );
+    }
+
+    const remainingInfo = await Promise.all([
+      await this.addressesService.update(address.id, address),
+    ]);
+
+    if (!remainingInfo)
+      throw new UnprocessableEntityException(
+        'Não foi possível atualizar o usuário (dados pessoais preenchidos incorretamente)',
+      );
+
+    const updatedUserInfo = await this.editUser(user, id);
+
+    if (!updatedUserInfo)
+      throw new UnprocessableEntityException(
+        'Não foi possível atualizar o usuário (dados pessoais preenchidos incorretamente)',
+      );
+
+    return updatedUserInfo;
   }
 
   async delete(id: number) {
