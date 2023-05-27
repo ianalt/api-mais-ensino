@@ -26,6 +26,7 @@ export class UpdateEducationInfoDto {
   @IsString({ message: 'Digite um nome válido para o curso' })
   courseName: string | null;
 
+  @IsNotEmpty({ message: 'O campo "Nome da instituição" está vazio' })
   @IsString({ message: 'Digite um nome válido para a instituição de ensino' })
   institutionName: string;
 
