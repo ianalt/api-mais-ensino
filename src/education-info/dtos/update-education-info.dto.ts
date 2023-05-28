@@ -11,7 +11,6 @@ import {
 import { SchoolingLevel } from '../enums/schooling-level.enum';
 
 export class UpdateEducationInfoDto {
-  //TODO opcional pq pode ser item novo ou já existente
   @IsOptional()
   @IsInt()
   @IsPositive()
