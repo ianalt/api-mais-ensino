@@ -227,6 +227,26 @@ export class UsersController {
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateStudentDto,
   ) {
+    const { cpf, email } = body.user;
+
+    const cpfBeingUsed = await this.usersService.findByCpf(cpf);
+    const emailBeingUsed = await this.usersService.findByEmail(email);
+
+    if (cpfBeingUsed.id !== id && emailBeingUsed.id !== id)
+      throw new UnprocessableEntityException(
+        'Ambos CPF e e-mail providos já estão sendo utilizados. Digite um CPF e um e-mail válidos.',
+      );
+
+    if (!emailBeingUsed && cpfBeingUsed.id !== id)
+      throw new UnprocessableEntityException(
+        'O CPF provido já está sendo utilizado. Digite um CPF válido.',
+      );
+
+    if (!cpfBeingUsed && emailBeingUsed.id !== id)
+      throw new UnprocessableEntityException(
+        'O e-mail provido já está sendo utilizado. Digite um e-mail válido.',
+      );
+
     return await this.usersService.updateStudent(id, body);
   }
 
@@ -237,6 +257,26 @@ export class UsersController {
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateMonitorDto,
   ) {
+    const { cpf, email } = body.user;
+
+    const cpfBeingUsed = await this.usersService.findByCpf(cpf);
+    const emailBeingUsed = await this.usersService.findByEmail(email);
+
+    if (cpfBeingUsed.id !== id && emailBeingUsed.id !== id)
+      throw new UnprocessableEntityException(
+        'Ambos CPF e e-mail providos já estão sendo utilizados. Digite um CPF e um e-mail válidos.',
+      );
+
+    if (!emailBeingUsed && cpfBeingUsed.id !== id)
+      throw new UnprocessableEntityException(
+        'O CPF provido já está sendo utilizado. Digite um CPF válido.',
+      );
+
+    if (!cpfBeingUsed && emailBeingUsed.id !== id)
+      throw new UnprocessableEntityException(
+        'O e-mail provido já está sendo utilizado. Digite um e-mail válido.',
+      );
+
     return await this.usersService.updateMonitor(id, body);
   }
 
@@ -247,6 +287,26 @@ export class UsersController {
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateTeacherDto,
   ) {
+    const { cpf, email } = body.user;
+
+    const cpfBeingUsed = await this.usersService.findByCpf(cpf);
+    const emailBeingUsed = await this.usersService.findByEmail(email);
+
+    if (cpfBeingUsed.id !== id && emailBeingUsed.id !== id)
+      throw new UnprocessableEntityException(
+        'Ambos CPF e e-mail providos já estão sendo utilizados. Digite um CPF e um e-mail válidos.',
+      );
+
+    if (!emailBeingUsed && cpfBeingUsed.id !== id)
+      throw new UnprocessableEntityException(
+        'O CPF provido já está sendo utilizado. Digite um CPF válido.',
+      );
+
+    if (!cpfBeingUsed && emailBeingUsed.id !== id)
+      throw new UnprocessableEntityException(
+        'O e-mail provido já está sendo utilizado. Digite um e-mail válido.',
+      );
+
     return await this.usersService.updateTeacher(id, body);
   }
 
@@ -257,6 +317,26 @@ export class UsersController {
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateAdminDto,
   ) {
+    const { cpf, email } = body.user;
+
+    const cpfBeingUsed = await this.usersService.findByCpf(cpf);
+    const emailBeingUsed = await this.usersService.findByEmail(email);
+
+    if (cpfBeingUsed.id !== id && emailBeingUsed.id !== id)
+      throw new UnprocessableEntityException(
+        'Ambos CPF e e-mail providos já estão sendo utilizados. Digite um CPF e um e-mail válidos.',
+      );
+
+    if (!emailBeingUsed && cpfBeingUsed.id !== id)
+      throw new UnprocessableEntityException(
+        'O CPF provido já está sendo utilizado. Digite um CPF válido.',
+      );
+
+    if (!cpfBeingUsed && emailBeingUsed.id !== id)
+      throw new UnprocessableEntityException(
+        'O e-mail provido já está sendo utilizado. Digite um e-mail válido.',
+      );
+
     return await this.usersService.updateAdmin(id, body);
   }
 }

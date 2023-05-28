@@ -11,6 +11,11 @@ import { Ethnicity } from '../enums/ethnicity.enum';
 import { Gender } from '../enums/gender.enum';
 
 export class UpdateUserDto {
+  @IsNotEmpty({ message: 'O campo "E-mail" está vazio' })
+  @IsString({ message: 'Digite um e-mail válido' })
+  @IsEmail({}, { message: 'Digite um e-mail válido' })
+  email: string;
+
   @IsNotEmpty({
     message: 'O campo "Nome" está vazio',
   })

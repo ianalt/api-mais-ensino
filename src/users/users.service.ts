@@ -886,6 +886,9 @@ export class UsersService {
 
     const attrs: Partial<User> = body;
 
+    console.log('attrs.email ========');
+    console.log(attrs.email);
+
     user.updatedAt = new Date();
     Object.assign(user, attrs);
 
