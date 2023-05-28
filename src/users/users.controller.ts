@@ -15,40 +15,21 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
-import { CreateFullUserDto } from './dtos/create-full-user.dto';
-import { UpdateUserDto } from './dtos/update-user.dto';
-import { UserDto } from './dtos/user.dto';
-import { UsersService } from './users.service';
-import { SignUpDto } from 'src/auth/dtos/sign-up.dto';
-import { AddUserDto } from './dtos/add-user.dto';
 import { AddAdminDto } from './dtos/add-admin.dto';
 import { AddMonitorDto } from './dtos/add-monitor.dto';
 import { AddStudentDto } from './dtos/add-student.dto';
 import { AddTeacherDto } from './dtos/add-teacher.dto';
-import { UpdateStudentDto } from './dtos/update-student.dto';
-import { UpdateFullUserDto } from './dtos/update-full-user.dto';
 import { UpdateAdminDto } from './dtos/update-admin.dto';
 import { UpdateMonitorDto } from './dtos/update-monitor.dto';
+import { UpdateStudentDto } from './dtos/update-student.dto';
 import { UpdateTeacherDto } from './dtos/update-teacher.dto';
+import { UserDto } from './dtos/user.dto';
+import { UsersService } from './users.service';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
-
-  @Roles('estudante', 'monitor', 'professor', 'admin')
-  @Get('profile')
-  @Serialize(UserDto)
-  async getProfile(@Request() req) {
-    return req.user;
-  }
-
-  @Roles('estudante', 'monitor', 'professor', 'admin')
-  @Get('/:id')
-  @Serialize(UserDto)
-  async findById(@Param('id', ParseIntPipe) id: number) {
-    return await this.usersService.findById(id);
-  }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get()
@@ -58,24 +39,29 @@ export class UsersController {
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
-  @Get()
+  @Get('/profile')
   @Serialize(UserDto)
-  async findAllStudents() {
-    return await this.usersService.findAllStudents();
+  async getProfile(@Request() req) {
+    return req.user;
+  }
+
+  @Roles('admin')
+  @Get('gender-stats')
+  async getGenderStats() {
+    return await this.usersService.getGenderStats();
+  }
+
+  @Roles('admin')
+  @Get('ethnicity-stats')
+  async getEthnicityStats() {
+    return await this.usersService.getEthnicityStats();
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
-  @Get()
+  @Get('/:id')
   @Serialize(UserDto)
-  async findAllMonitors() {
-    return await this.usersService.findAllMonitors();
-  }
-
-  @Roles('estudante', 'monitor', 'professor', 'admin')
-  @Get()
-  @Serialize(UserDto)
-  async findAllTeachers() {
-    return await this.usersService.findAllTeachers();
+  async findById(@Param('id', ParseIntPipe) id: number) {
+    return await this.usersService.findById(id);
   }
 
   @Roles('admin')

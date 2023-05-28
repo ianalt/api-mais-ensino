@@ -886,12 +886,41 @@ export class UsersService {
 
     const attrs: Partial<User> = body;
 
-    console.log('attrs.email ========');
-    console.log(attrs.email);
-
     user.updatedAt = new Date();
     Object.assign(user, attrs);
 
     return await this.usersRepository.save(user);
+  }
+
+  async getGenderStats() {
+    const stats = await this.usersRepository
+      .createQueryBuilder('u')
+      .select('count(u.id)', 'count')
+      .addSelect('u.gender', 'gender')
+      .groupBy('u.gender')
+      .getRawMany();
+
+    return stats.map((item) => {
+      return {
+        ...item,
+        count: parseInt(item.count),
+      };
+    });
+  }
+
+  async getEthnicityStats() {
+    const stats = await this.usersRepository
+      .createQueryBuilder('u')
+      .select('count(u.id)', 'count')
+      .addSelect('u.ethnicity', 'ethnicity')
+      .groupBy('u.ethnicity')
+      .getRawMany();
+
+    return stats.map((item) => {
+      return {
+        ...item,
+        count: parseInt(item.count),
+      };
+    });
   }
 }
