@@ -22,6 +22,7 @@ import { UpdateMonitorDto } from './dtos/update-monitor.dto';
 import { UpdateStudentDto } from './dtos/update-student.dto';
 import { UpdateTeacherDto } from './dtos/update-teacher.dto';
 import { User } from './user.entity';
+import { FinancialInfo } from 'src/financial-info/financial-info.entity';
 
 @Injectable()
 export class UsersService {
@@ -912,8 +913,26 @@ export class UsersService {
     const stats = await this.usersRepository
       .createQueryBuilder('u')
       .select('count(u.id)', 'count')
-      .addSelect('u.ethnicity', 'ethnicity')
+      .addSelect('u.ethnicity', 'name')
+      .where("u.role = 'estudante'")
       .groupBy('u.ethnicity')
+      .getRawMany();
+
+    return stats.map((item) => {
+      return {
+        ...item,
+        count: parseInt(item.count),
+      };
+    });
+  }
+
+  async getIncomeStats() {
+    const stats = await this.usersRepository
+      .createQueryBuilder('u')
+      .select('count(u.id)', 'count')
+      .addSelect('fi.general_income', 'name')
+      .innerJoin(FinancialInfo, 'fi', 'u.id = fi.id_usuario')
+      .groupBy('fi.name')
       .getRawMany();
 
     return stats.map((item) => {

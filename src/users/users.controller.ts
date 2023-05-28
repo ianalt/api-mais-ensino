@@ -57,6 +57,12 @@ export class UsersController {
     return await this.usersService.getEthnicityStats();
   }
 
+  @Roles('admin')
+  @Get('income-stats')
+  async getIncomeStats() {
+    return await this.usersService.getIncomeStats();
+  }
+
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get('/:id')
   @Serialize(UserDto)
