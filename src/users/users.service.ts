@@ -897,7 +897,8 @@ export class UsersService {
     const stats = await this.usersRepository
       .createQueryBuilder('u')
       .select('count(u.id)', 'count')
-      .addSelect('u.gender', 'gender')
+      .addSelect('u.gender', 'name')
+      .where("u.role = 'estudante'")
       .groupBy('u.gender')
       .getRawMany();
 
