@@ -23,6 +23,7 @@ import { UpdateStudentDto } from './dtos/update-student.dto';
 import { UpdateTeacherDto } from './dtos/update-teacher.dto';
 import { User } from './user.entity';
 import { FinancialInfo } from 'src/financial-info/financial-info.entity';
+import { Address } from 'src/addresses/address.entity';
 
 @Injectable()
 export class UsersService {
@@ -933,7 +934,26 @@ export class UsersService {
       .select('count(u.id)', 'count')
       .addSelect('fi.general_income', 'name')
       .innerJoin(FinancialInfo, 'fi', 'u.id = fi.id_usuario')
+      .where("u.role = 'estudante'")
       .groupBy('fi.name')
+      .getRawMany();
+
+    return stats.map((item) => {
+      return {
+        ...item,
+        count: parseInt(item.count),
+      };
+    });
+  }
+
+  async getUfStats() {
+    const stats = await this.usersRepository
+      .createQueryBuilder('u')
+      .select('count(u.id)', 'count')
+      .addSelect('addrs.uf', 'name')
+      .innerJoin(Address, 'addrs', 'u.id = addrs.id_usuario')
+      .where("u.role = 'estudante'")
+      .groupBy('addrs.uf')
       .getRawMany();
 
     return stats.map((item) => {
