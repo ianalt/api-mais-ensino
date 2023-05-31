@@ -928,24 +928,6 @@ export class UsersService {
     });
   }
 
-  async getIncomeStats() {
-    const stats = await this.usersRepository
-      .createQueryBuilder('u')
-      .select('count(u.id)', 'count')
-      .addSelect('fi.general_income', 'name')
-      .innerJoin(FinancialInfo, 'fi', 'u.id = fi.id_usuario')
-      .where("u.role = 'estudante'")
-      .groupBy('fi.name')
-      .getRawMany();
-
-    return stats.map((item) => {
-      return {
-        ...item,
-        count: parseInt(item.count),
-      };
-    });
-  }
-
   async getUfStats() {
     const stats = await this.usersRepository
       .createQueryBuilder('u')

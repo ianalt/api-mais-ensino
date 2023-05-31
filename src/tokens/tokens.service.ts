@@ -4,9 +4,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { CreateTokenDto } from './dtos/create-token.dto';
 import { Token } from './token.entity';
+import { sub } from 'date-fns';
 
 @Injectable()
 export class TokensService {
@@ -32,7 +33,7 @@ export class TokensService {
       relations: this.allRelations,
     });
 
-    if (!tokens) throw new NotFoundException('Tokens not found.');
+    if (!tokens) throw new NotFoundException('Tokens não encontrados');
 
     return tokens;
   }
@@ -42,7 +43,8 @@ export class TokensService {
       ...body,
     });
 
-    if (!newToken) throw new BadRequestException('Could not create new token.');
+    if (!newToken)
+      throw new BadRequestException('Não foi possível criar o token');
 
     return this.tokensRepository.save(newToken);
   }
@@ -50,7 +52,7 @@ export class TokensService {
   async delete(id: number) {
     const token = await this.findById(id);
 
-    if (!token) throw new NotFoundException('Token not found.');
+    if (!token) throw new NotFoundException('Token não encontrado');
 
     token.active = false;
 
@@ -60,8 +62,25 @@ export class TokensService {
   async remove(id: number) {
     const token = await this.findById(id);
 
-    if (!token) throw new NotFoundException('Token not found.');
+    if (!token) throw new NotFoundException('Token não encontrado');
 
     return this.tokensRepository.remove(token);
+  }
+
+  async getAccessCount() {
+    const currentDate = new Date();
+    const yesterday = sub(currentDate, { days: 1 });
+
+    const count = await this.tokensRepository.count({
+      where: {
+        createdAt: Between(yesterday, currentDate),
+        user: { role: 'estudante' },
+      },
+      relations: ['user'],
+    });
+
+    return {
+      count,
+    };
   }
 }

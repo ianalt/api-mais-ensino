@@ -8,6 +8,7 @@ import { PhoneNumbersModule } from '../phone-numbers/phone-numbers.module';
 import { User } from './user.entity';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+import { TokensModule } from 'src/tokens/tokens.module';
 
 @Module({
   providers: [UsersService],
@@ -19,6 +20,7 @@ import { UsersService } from './users.service';
     FinancialInfoModule,
     PhoneNumbersModule,
     CommentsModule,
+    TokensModule,
   ],
   exports: [UsersService],
 })

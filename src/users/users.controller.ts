@@ -25,11 +25,17 @@ import { UpdateStudentDto } from './dtos/update-student.dto';
 import { UpdateTeacherDto } from './dtos/update-teacher.dto';
 import { UserDto } from './dtos/user.dto';
 import { UsersService } from './users.service';
+import { TokensService } from 'src/tokens/tokens.service';
+import { FinancialInfoService } from 'src/financial-info/financial-info.service';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private tokensService: TokensService,
+    private financialInfoService: FinancialInfoService,
+  ) {}
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get()
@@ -60,13 +66,19 @@ export class UsersController {
   @Roles('admin')
   @Get('income-stats')
   async getIncomeStats() {
-    return await this.usersService.getIncomeStats();
+    return await this.financialInfoService.getIncomeStats();
   }
 
   @Roles('admin')
   @Get('uf-stats')
   async getUfStats() {
     return await this.usersService.getUfStats();
+  }
+
+  @Roles('admin')
+  @Get('access-count')
+  async getAccessCount() {
+    return await this.tokensService.getAccessCount();
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')

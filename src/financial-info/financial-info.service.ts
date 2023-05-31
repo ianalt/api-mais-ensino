@@ -83,4 +83,15 @@ export class FinancialInfoService {
 
     return this.financialInfoRepository.remove(financialInfo);
   }
+
+  async getIncomeStats() {
+    const result: { avg: number } = await this.financialInfoRepository
+      .createQueryBuilder('fi')
+      .select('AVG(fi.general_income / fi.total_household_members)', 'avg')
+      .innerJoin(User, 'u', 'fi.id_usuario = u.id')
+      .where("u.role = 'estudante' ")
+      .getRawOne();
+
+    return { avg: parseFloat(result.avg.toFixed(2)) };
+  }
 }
