@@ -108,12 +108,12 @@ export class UsersController {
         'Ambos CPF e e-mail providos já estão sendo utilizados. Digite um CPF e um e-mail válidos.',
       );
 
-    if (!emailBeingUsed && cpfBeingUsed)
+    if (cpfBeingUsed)
       throw new UnprocessableEntityException(
         'O CPF provido já está sendo utilizado. Digite um CPF válido.',
       );
 
-    if (!cpfBeingUsed && emailBeingUsed)
+    if (emailBeingUsed)
       throw new UnprocessableEntityException(
         'O e-mail provido já está sendo utilizado. Digite um e-mail válido.',
       );
@@ -142,12 +142,12 @@ export class UsersController {
         'Ambos CPF e e-mail providos já estão sendo utilizados. Digite um CPF e um e-mail válidos.',
       );
 
-    if (!emailBeingUsed && cpfBeingUsed)
+    if (cpfBeingUsed)
       throw new UnprocessableEntityException(
         'O CPF provido já está sendo utilizado. Digite um CPF válido.',
       );
 
-    if (!cpfBeingUsed && emailBeingUsed)
+    if (emailBeingUsed)
       throw new UnprocessableEntityException(
         'O e-mail provido já está sendo utilizado. Digite um e-mail válido.',
       );
@@ -176,12 +176,12 @@ export class UsersController {
         'Ambos CPF e e-mail providos já estão sendo utilizados. Digite um CPF e um e-mail válidos.',
       );
 
-    if (!emailBeingUsed && cpfBeingUsed)
+    if (cpfBeingUsed)
       throw new UnprocessableEntityException(
         'O CPF provido já está sendo utilizado. Digite um CPF válido.',
       );
 
-    if (!cpfBeingUsed && emailBeingUsed)
+    if (emailBeingUsed)
       throw new UnprocessableEntityException(
         'O e-mail provido já está sendo utilizado. Digite um e-mail válido.',
       );
@@ -210,12 +210,12 @@ export class UsersController {
         'Ambos CPF e e-mail providos já estão sendo utilizados. Digite um CPF e um e-mail válidos.',
       );
 
-    if (!emailBeingUsed && cpfBeingUsed)
+    if (cpfBeingUsed)
       throw new UnprocessableEntityException(
         'O CPF provido já está sendo utilizado. Digite um CPF válido.',
       );
 
-    if (!cpfBeingUsed && emailBeingUsed)
+    if (emailBeingUsed)
       throw new UnprocessableEntityException(
         'O e-mail provido já está sendo utilizado. Digite um e-mail válido.',
       );
