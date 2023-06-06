@@ -242,17 +242,22 @@ export class UsersController {
     const cpfBeingUsed = await this.usersService.findByCpf(cpf);
     const emailBeingUsed = await this.usersService.findByEmail(email);
 
-    if (cpfBeingUsed.id !== id && emailBeingUsed.id !== id)
+    if (
+      cpfBeingUsed &&
+      emailBeingUsed &&
+      cpfBeingUsed.id !== id &&
+      emailBeingUsed.id !== id
+    )
       throw new UnprocessableEntityException(
         'Ambos CPF e e-mail providos já estão sendo utilizados. Digite um CPF e um e-mail válidos.',
       );
 
-    if (!emailBeingUsed && cpfBeingUsed.id !== id)
+    if (cpfBeingUsed && cpfBeingUsed.id !== id)
       throw new UnprocessableEntityException(
         'O CPF provido já está sendo utilizado. Digite um CPF válido.',
       );
 
-    if (!cpfBeingUsed && emailBeingUsed.id !== id)
+    if (emailBeingUsed && emailBeingUsed.id !== id)
       throw new UnprocessableEntityException(
         'O e-mail provido já está sendo utilizado. Digite um e-mail válido.',
       );
@@ -272,17 +277,22 @@ export class UsersController {
     const cpfBeingUsed = await this.usersService.findByCpf(cpf);
     const emailBeingUsed = await this.usersService.findByEmail(email);
 
-    if (cpfBeingUsed.id !== id && emailBeingUsed.id !== id)
+    if (
+      cpfBeingUsed &&
+      emailBeingUsed &&
+      cpfBeingUsed.id !== id &&
+      emailBeingUsed.id !== id
+    )
       throw new UnprocessableEntityException(
         'Ambos CPF e e-mail providos já estão sendo utilizados. Digite um CPF e um e-mail válidos.',
       );
 
-    if (!emailBeingUsed && cpfBeingUsed.id !== id)
+    if (cpfBeingUsed && cpfBeingUsed.id !== id)
       throw new UnprocessableEntityException(
         'O CPF provido já está sendo utilizado. Digite um CPF válido.',
       );
 
-    if (!cpfBeingUsed && emailBeingUsed.id !== id)
+    if (emailBeingUsed && emailBeingUsed.id !== id)
       throw new UnprocessableEntityException(
         'O e-mail provido já está sendo utilizado. Digite um e-mail válido.',
       );
@@ -302,17 +312,22 @@ export class UsersController {
     const cpfBeingUsed = await this.usersService.findByCpf(cpf);
     const emailBeingUsed = await this.usersService.findByEmail(email);
 
-    if (cpfBeingUsed.id !== id && emailBeingUsed.id !== id)
+    if (
+      cpfBeingUsed &&
+      emailBeingUsed &&
+      cpfBeingUsed.id !== id &&
+      emailBeingUsed.id !== id
+    )
       throw new UnprocessableEntityException(
         'Ambos CPF e e-mail providos já estão sendo utilizados. Digite um CPF e um e-mail válidos.',
       );
 
-    if (!emailBeingUsed && cpfBeingUsed.id !== id)
+    if (cpfBeingUsed && cpfBeingUsed.id !== id)
       throw new UnprocessableEntityException(
         'O CPF provido já está sendo utilizado. Digite um CPF válido.',
       );
 
-    if (!cpfBeingUsed && emailBeingUsed.id !== id)
+    if (emailBeingUsed && emailBeingUsed.id !== id)
       throw new UnprocessableEntityException(
         'O e-mail provido já está sendo utilizado. Digite um e-mail válido.',
       );
@@ -332,17 +347,22 @@ export class UsersController {
     const cpfBeingUsed = await this.usersService.findByCpf(cpf);
     const emailBeingUsed = await this.usersService.findByEmail(email);
 
-    if (cpfBeingUsed.id !== id && emailBeingUsed.id !== id)
+    if (
+      cpfBeingUsed &&
+      emailBeingUsed &&
+      cpfBeingUsed.id !== id &&
+      emailBeingUsed.id !== id
+    )
       throw new UnprocessableEntityException(
         'Ambos CPF e e-mail providos já estão sendo utilizados. Digite um CPF e um e-mail válidos.',
       );
 
-    if (!emailBeingUsed && cpfBeingUsed.id !== id)
+    if (cpfBeingUsed && cpfBeingUsed.id !== id)
       throw new UnprocessableEntityException(
         'O CPF provido já está sendo utilizado. Digite um CPF válido.',
       );
 
-    if (!cpfBeingUsed && emailBeingUsed.id !== id)
+    if (emailBeingUsed && emailBeingUsed.id !== id)
       throw new UnprocessableEntityException(
         'O e-mail provido já está sendo utilizado. Digite um e-mail válido.',
       );
