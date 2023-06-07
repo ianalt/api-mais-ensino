@@ -28,7 +28,7 @@ export class KnowledgeAreasService {
       relations: this.allRelations,
     });
 
-    if (!knowledgeAreas) return null;
+    if (!knowledgeAreas || knowledgeAreas.length <= 0) return [];
 
     return knowledgeAreas;
   }
