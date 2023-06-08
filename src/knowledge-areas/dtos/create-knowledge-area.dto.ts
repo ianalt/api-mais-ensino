@@ -1,10 +1,11 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateKnowledgeAreaDto {
-  @IsString()
+  @IsNotEmpty({ message: 'O campo "Nome" está vazio' })
+  @IsString({ message: 'Digite um nome válido' })
   name: string;
 
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'Digite uma descrição válida' })
   description?: string;
 }

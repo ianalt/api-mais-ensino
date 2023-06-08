@@ -36,6 +36,7 @@ export class KnowledgeAreasService {
   create(body: CreateKnowledgeAreaDto) {
     const newKnowledgeArea = this.knowledgeAreasRepository.create({
       ...body,
+      active: true,
     });
 
     return this.knowledgeAreasRepository.save(newKnowledgeArea);
