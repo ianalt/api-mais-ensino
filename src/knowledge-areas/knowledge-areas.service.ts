@@ -46,7 +46,7 @@ export class KnowledgeAreasService {
     const knowledgeArea = await this.findById(id);
 
     if (!knowledgeArea)
-      throw new NotFoundException('Knowledge area not found.');
+      throw new NotFoundException('Área de conhecimento não encontrada');
 
     const attrs: Partial<KnowledgeArea> = body;
 
@@ -61,7 +61,7 @@ export class KnowledgeAreasService {
     const knowledgeArea = await this.findById(id);
 
     if (!knowledgeArea)
-      throw new NotFoundException('Knowledge area not found.');
+      throw new NotFoundException('Área de conhecimento não encontrada');
 
     knowledgeArea.updatedAt = new Date();
     knowledgeArea.active = false;
@@ -73,7 +73,7 @@ export class KnowledgeAreasService {
     const knowledgeArea = await this.findById(id);
 
     if (!knowledgeArea)
-      throw new NotFoundException('Knowledge area not found.');
+      throw new NotFoundException('Área de conhecimento não encontrada');
 
     return this.knowledgeAreasRepository.remove(knowledgeArea);
   }
