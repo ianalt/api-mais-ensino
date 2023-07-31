@@ -6,7 +6,4 @@ export class BaseKnowledgeAreaDto {
 
   @Expose()
   name: string;
-
-  @Expose()
-  description: string;
 }

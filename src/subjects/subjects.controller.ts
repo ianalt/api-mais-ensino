@@ -30,7 +30,7 @@ export class SubjectsController {
   async findById(@Param('id', ParseIntPipe) id: number) {
     const subject = await this.subjectsService.findById(id);
 
-    if (!subject) throw new NotFoundException('Subject not found.');
+    if (!subject) throw new NotFoundException('Disciplina não encontrada');
 
     return subject;
   }
