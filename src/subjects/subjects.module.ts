@@ -4,10 +4,11 @@ import { KnowledgeArea } from 'src/knowledge-areas/knowledge-area.entity';
 import { Subject } from 'src/subjects/subject.entity';
 import { SubjectsController } from './subjects.controller';
 import { SubjectsService } from './subjects.service';
+import { User } from 'src/users/user.entity';
 
 @Module({
   providers: [SubjectsService],
-  imports: [TypeOrmModule.forFeature([Subject, KnowledgeArea])],
+  imports: [TypeOrmModule.forFeature([Subject, KnowledgeArea, User])],
   controllers: [SubjectsController],
 })
 export class SubjectsModule {}

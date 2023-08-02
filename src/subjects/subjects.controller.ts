@@ -18,11 +18,19 @@ import { CreateSubjectDto } from './dtos/create-subject.dto';
 import { SubjectDto } from './dtos/subject.dto';
 import { UpdateSubjectDto } from './dtos/update-subject.dto';
 import { SubjectsService } from './subjects.service';
+import { CreateSubjectOptionsDto } from './dtos/create-subject-options.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('subjects')
 export class SubjectsController {
   constructor(private subjectsService: SubjectsService) {}
+
+  @Roles('professor', 'admin')
+  @Get('/create-options')
+  @Serialize(CreateSubjectOptionsDto)
+  async getCreateSubjectOptions() {
+    return await this.subjectsService.getCreateSubjectOptions();
+  }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get('/:id')

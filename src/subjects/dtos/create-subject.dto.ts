@@ -11,4 +11,12 @@ export class CreateSubjectDto {
   @IsInt()
   @IsPositive()
   knowledgeAreaId: number;
+
+  @IsInt()
+  @IsPositive()
+  teacherId: number;
+
+  @IsInt({ each: true })
+  @IsPositive({ each: true })
+  monitorsIds: number[];
 }

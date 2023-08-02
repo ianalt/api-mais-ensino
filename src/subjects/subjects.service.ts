@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { CreateSubjectDto } from './dtos/create-subject.dto';
 import { UpdateSubjectDto } from './dtos/update-subject.dto';
 import { Subject } from './subject.entity';
+import { User } from 'src/users/user.entity';
+import { Role } from 'src/auth/enums/role.enum';
 
 @Injectable()
 export class SubjectsService {
@@ -14,6 +16,9 @@ export class SubjectsService {
 
     @InjectRepository(KnowledgeArea)
     private knowledgeAreasRepository: Repository<KnowledgeArea>,
+
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
   ) {}
 
   private allRelations = ['users', 'knowledgeArea', 'categories'];
@@ -35,6 +40,29 @@ export class SubjectsService {
     if (!subjects) return null;
 
     return subjects;
+  }
+
+  async getCreateSubjectOptions() {
+    const options = await Promise.all([
+      this.knowledgeAreasRepository.find({ where: { active: true } }),
+      this.usersRepository.find({ where: { active: true } }),
+    ]);
+
+    const knowledgeAreaOptions = options[0];
+
+    const teacherOptions = options[1].filter(
+      (user) => user.role === Role.PROFESSOR,
+    );
+
+    const monitorsOptions = options[1].filter(
+      (user) => user.role === Role.MONITOR,
+    );
+
+    return {
+      knowledgeAreaOptions,
+      teacherOptions,
+      monitorsOptions,
+    };
   }
 
   async create(body: CreateSubjectDto) {
