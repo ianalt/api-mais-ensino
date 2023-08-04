@@ -83,14 +83,6 @@ export class KnowledgeAreasController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
-  @Delete('delete/:id')
-  @Serialize(KnowledgeAreaDto)
-  async delete(@Param('id', ParseIntPipe) id: number) {
-    return await this.knowledgeAreasService.delete(id);
-  }
-
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
   @Delete('/:id')
   @Serialize(KnowledgeAreaDto)
   async remove(@Param('id', ParseIntPipe) id: number) {

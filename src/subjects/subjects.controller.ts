@@ -73,16 +73,9 @@ export class SubjectsController {
   }
 
   @Roles('admin')
-  @Delete('delete/:id')
-  @Serialize(SubjectDto)
-  async delete(@Param('id', ParseIntPipe) id: number) {
-    return await this.subjectsService.delete(id);
-  }
-
-  @Roles('admin')
   @Delete('/:id')
   @Serialize(SubjectDto)
-  async remove(@Param('id', ParseIntPipe) id: number) {
+  async delete(@Param('id', ParseIntPipe) id: number) {
     return await this.subjectsService.remove(id);
   }
 }

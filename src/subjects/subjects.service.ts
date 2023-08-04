@@ -179,7 +179,7 @@ export class SubjectsService {
   async remove(id: number) {
     const subject = await this.findById(id);
 
-    if (!subject) throw new NotFoundException('Subject not found.');
+    if (!subject) throw new NotFoundException('Disciplina não encontrada');
 
     return this.subjectsRepository.remove(subject);
   }
