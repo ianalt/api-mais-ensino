@@ -67,7 +67,7 @@ export class KnowledgeAreasController {
   @Post()
   @Serialize(KnowledgeAreaDto)
   async create(@Body() body: CreateKnowledgeAreaDto) {
-    return this.knowledgeAreasService.create(body);
+    return await this.knowledgeAreasService.create(body);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

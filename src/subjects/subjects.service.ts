@@ -1,7 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { KnowledgeArea } from 'src/knowledge-areas/knowledge-area.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateSubjectDto } from './dtos/create-subject.dto';
 import { UpdateSubjectDto } from './dtos/update-subject.dto';
 import { Subject } from './subject.entity';
@@ -45,17 +49,17 @@ export class SubjectsService {
   async getCreateSubjectOptions() {
     const options = await Promise.all([
       this.knowledgeAreasRepository.find({ where: { active: true } }),
-      this.usersRepository.find({ where: { active: true } }),
+      this.usersRepository.find({ where: { active: true, subject: null } }),
     ]);
 
     const knowledgeAreaOptions = options[0];
 
     const teacherOptions = options[1].filter(
-      (user) => user.role === Role.PROFESSOR,
+      (user) => user.role === Role.PROFESSOR && !user.subject,
     );
 
     const monitorsOptions = options[1].filter(
-      (user) => user.role === Role.MONITOR,
+      (user) => user.role === Role.MONITOR && !user.subject,
     );
 
     return {
@@ -66,7 +70,16 @@ export class SubjectsService {
   }
 
   async create(body: CreateSubjectDto) {
-    const { knowledgeAreaId, ...attrs } = body;
+    const { knowledgeAreaId, teacherId, monitorsIds, ...attrs } = body;
+
+    const subjectWithName = await this.subjectsRepository.findOne({
+      where: { name: attrs.name },
+    });
+
+    if (subjectWithName)
+      throw new UnprocessableEntityException(
+        'Uma disciplina com este nome já existe',
+      );
 
     const knowledgeArea = await this.knowledgeAreasRepository.findOne({
       where: {
@@ -75,8 +88,38 @@ export class SubjectsService {
       },
     });
 
+    const teacher = await this.usersRepository.findOne({
+      where: {
+        active: true,
+        id: teacherId,
+        role: Role.PROFESSOR,
+        subject: null,
+      },
+    });
+
+    const monitors =
+      monitorsIds.length === 0
+        ? []
+        : await this.usersRepository.find({
+            where: {
+              active: true,
+              id: In(monitorsIds),
+              role: Role.MONITOR,
+              subject: null,
+            },
+          });
+
     if (!knowledgeArea)
-      throw new NotFoundException('Knowledge area not found.');
+      throw new NotFoundException('Área de conhecimento não encontrada');
+
+    if (!teacher) throw new NotFoundException('Professor(a) não encontrado(a)');
+
+    if (!monitors)
+      throw new NotFoundException(
+        'Um(a) ou mais monitores(as) não encontrados(as)',
+      );
+
+    const users = monitors.length > 0 ? [teacher, ...monitors] : [teacher];
 
     const newSubject = this.subjectsRepository.create({
       ...attrs,
@@ -84,7 +127,15 @@ export class SubjectsService {
 
     newSubject.knowledgeArea = knowledgeArea;
 
-    return this.subjectsRepository.save(newSubject);
+    const createdSubject = await this.subjectsRepository.save(newSubject);
+
+    for (const user of users) {
+      user.subject = createdSubject;
+
+      await this.usersRepository.save(user);
+    }
+
+    return createdSubject;
   }
 
   async update(id: number, body: UpdateSubjectDto) {

@@ -13,22 +13,21 @@ export class CreateSubjectDto {
   name: string;
 
   @IsOptional()
-  @IsString({ message: 'Digite um descrição válida' })
+  @IsString({ message: 'Digite uma descrição válida' })
   description?: string;
 
   @IsNotEmpty({ message: 'Selecione uma área de conhecimento válida' })
-  @IsInt()
-  @IsPositive()
+  @IsInt({ message: 'Selecione uma área de conhecimento para a disciplina' })
+  @IsPositive({
+    message: 'Selecione uma área de conhecimento para a disciplina',
+  })
   knowledgeAreaId: number;
 
   @IsNotEmpty({ message: 'Selecione um professor para a disciplina' })
-  @IsInt()
-  @IsPositive()
+  @IsInt({ message: 'Selecione um professor para a disciplina' })
+  @IsPositive({ message: 'Selecione um professor para a disciplina' })
   teacherId: number;
 
-  @ArrayNotEmpty({
-    message: 'Selecione um ou mais monitores para a disciplina',
-  })
   @IsInt({ each: true })
   @IsPositive({ each: true })
   monitorsIds: number[];
