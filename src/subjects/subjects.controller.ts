@@ -19,6 +19,8 @@ import { SubjectDto } from './dtos/subject.dto';
 import { UpdateSubjectDto } from './dtos/update-subject.dto';
 import { SubjectsService } from './subjects.service';
 import { CreateSubjectOptionsDto } from './dtos/create-subject-options.dto';
+import { SubjectIdDto } from './dtos/subject-id.dto';
+import { UpdateSubjectOptionsDto } from './dtos/update-subject-options.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('subjects')
@@ -32,27 +34,27 @@ export class SubjectsController {
     return await this.subjectsService.getCreateSubjectOptions();
   }
 
+  @Roles('professor', 'admin')
+  @Get('/update-options/:subjectId')
+  @Serialize(UpdateSubjectOptionsDto)
+  async getUpdateSubjectOptions(
+    @Param('subjectId', ParseIntPipe) subjectId: number,
+  ) {
+    return await this.subjectsService.getUpdateSubjectOptions(subjectId);
+  }
+
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get('/:id')
   @Serialize(SubjectDto)
   async findById(@Param('id', ParseIntPipe) id: number) {
-    const subject = await this.subjectsService.findById(id);
-
-    if (!subject) throw new NotFoundException('Disciplina não encontrada');
-
-    return subject;
+    return await this.subjectsService.findById(id);
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get()
   @Serialize(SubjectDto)
   async findAll() {
-    const subjects = await this.subjectsService.findAll();
-
-    if (!subjects)
-      throw new NotFoundException('Não foi possível encontrar disciplinas');
-
-    return subjects;
+    return await this.subjectsService.findAll();
   }
 
   @Roles('admin')

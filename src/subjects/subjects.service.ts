@@ -27,13 +27,17 @@ export class SubjectsService {
 
   private allRelations = ['users', 'knowledgeArea', 'categories'];
 
-  findById(id: number) {
-    if (!id) return null;
+  async findById(id: number) {
+    if (!id || id < 0) throw new NotFoundException('Disciplina não encontrada');
 
-    return this.subjectsRepository.findOne({
+    const subject = await this.subjectsRepository.findOne({
       where: { id, active: true },
       relations: this.allRelations,
     });
+
+    if (!subject) throw new NotFoundException('Disciplina não encontrada');
+
+    return subject;
   }
 
   async findAll() {
@@ -41,7 +45,7 @@ export class SubjectsService {
       relations: this.allRelations,
     });
 
-    if (!subjects) return null;
+    if (!subjects || subjects.length <= 0) return [];
 
     return subjects;
   }
@@ -136,6 +140,36 @@ export class SubjectsService {
     }
 
     return createdSubject;
+  }
+
+  async getUpdateSubjectOptions(subjectId: number) {
+    await this.findById(subjectId);
+
+    //should change to allSettled in the future
+    const options = await Promise.all([
+      this.knowledgeAreasRepository.find({ where: { active: true } }),
+      this.usersRepository.find({ where: { active: true } }),
+    ]);
+
+    const knowledgeAreaOptions = options[0];
+
+    const teacherOptions = options[1].filter(
+      (user) =>
+        user.role === Role.PROFESSOR &&
+        (!user.subject || user.subject.id === subjectId),
+    );
+
+    const monitorsOptions = options[1].filter(
+      (user) =>
+        user.role === Role.MONITOR &&
+        (!user.subject || user.subject.id === subjectId),
+    );
+
+    return {
+      knowledgeAreaOptions,
+      teacherOptions,
+      monitorsOptions,
+    };
   }
 
   async update(id: number, body: UpdateSubjectDto) {
