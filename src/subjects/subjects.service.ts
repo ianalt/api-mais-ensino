@@ -85,67 +85,61 @@ export class SubjectsService {
         'Uma disciplina com este nome já existe',
       );
 
-    const knowledgeArea = await this.knowledgeAreasRepository.findOne({
-      where: {
-        active: true,
-        id: knowledgeAreaId,
-      },
-    });
+    const [knowledgeArea, teacher, monitors] = await Promise.allSettled([
+      this.knowledgeAreasRepository.findOne({
+        where: {
+          active: true,
+          id: knowledgeAreaId,
+        },
+      }),
 
-    const teacher = await this.usersRepository.findOne({
-      where: {
-        active: true,
-        id: teacherId,
-        role: Role.PROFESSOR,
-        subject: null,
-      },
-    });
+      this.usersRepository.findOne({
+        where: {
+          active: true,
+          id: teacherId,
+          role: Role.PROFESSOR,
+          subject: null,
+        },
+      }),
 
-    const monitors =
       monitorsIds.length === 0
         ? []
-        : await this.usersRepository.find({
+        : this.usersRepository.find({
             where: {
               active: true,
               id: In(monitorsIds),
               role: Role.MONITOR,
               subject: null,
             },
-          });
+          }),
+    ]);
 
-    if (!knowledgeArea)
+    if (knowledgeArea.status === 'rejected')
       throw new NotFoundException('Área de conhecimento não encontrada');
 
-    if (!teacher) throw new NotFoundException('Professor(a) não encontrado(a)');
+    if (teacher.status === 'rejected')
+      throw new NotFoundException('Professor(a) não encontrado(a)');
 
-    if (!monitors)
+    if (monitors.status === 'rejected')
       throw new NotFoundException(
         'Um(a) ou mais monitores(as) não encontrados(as)',
       );
 
-    const users = monitors.length > 0 ? [teacher, ...monitors] : [teacher];
+    const users = [teacher.value, ...monitors.value];
 
     const newSubject = this.subjectsRepository.create({
       ...attrs,
     });
 
-    newSubject.knowledgeArea = knowledgeArea;
+    newSubject.knowledgeArea = knowledgeArea.value;
+    newSubject.users = users;
 
-    const createdSubject = await this.subjectsRepository.save(newSubject);
-
-    for (const user of users) {
-      user.subject = createdSubject;
-
-      await this.usersRepository.save(user);
-    }
-
-    return createdSubject;
+    return await this.subjectsRepository.save(newSubject);
   }
 
   async getUpdateSubjectOptions(subjectId: number) {
     await this.findById(subjectId);
 
-    //should change to allSettled in the future
     const options = await Promise.all([
       this.knowledgeAreasRepository.find({ where: { active: true } }),
       this.usersRepository.find({ where: { active: true } }),
@@ -175,34 +169,71 @@ export class SubjectsService {
   async update(id: number, body: UpdateSubjectDto) {
     const subject = await this.findById(id);
 
-    if (!subject) throw new NotFoundException('Subject not found.');
+    if (!subject) throw new NotFoundException('Disciplina não encontrada');
 
-    const { knowledgeAreaId, ...values } = body;
+    const { knowledgeAreaId, teacherId, monitorsIds, ...values } = body;
 
-    const knowledgeArea = await this.knowledgeAreasRepository.findOne({
-      where: {
-        active: true,
-        id: knowledgeAreaId,
-      },
+    const subjectWithName = await this.subjectsRepository.findOne({
+      where: { name: values.name },
     });
 
-    if (!knowledgeArea)
-      throw new NotFoundException('Knowledge area not found.');
+    if (subjectWithName && subjectWithName.id !== id)
+      throw new UnprocessableEntityException(
+        'Uma disciplina com este nome já existe',
+      );
+
+    const [knowledgeArea, teacher, monitors] = await Promise.allSettled([
+      this.knowledgeAreasRepository.findOne({
+        where: {
+          active: true,
+          id: knowledgeAreaId,
+        },
+      }),
+      this.usersRepository.findOne({
+        where: {
+          active: true,
+          id: teacherId,
+          role: Role.PROFESSOR,
+        },
+      }),
+
+      monitorsIds.length === 0
+        ? []
+        : this.usersRepository.find({
+            where: {
+              active: true,
+              id: In(monitorsIds),
+              role: Role.MONITOR,
+            },
+          }),
+    ]);
+
+    if (knowledgeArea.status === 'rejected')
+      throw new NotFoundException('Área de conhecimento não encontrada');
+
+    if (teacher.status === 'rejected')
+      throw new NotFoundException('Professor(a) não encontrado(a)');
+
+    if (monitors.status === 'rejected')
+      throw new NotFoundException(
+        'Um(a) ou mais monitores(as) não encontrados(as)',
+      );
 
     const attrs: Partial<Subject> = values;
 
     subject.updatedAt = new Date();
-    subject.knowledgeArea = knowledgeArea;
+    subject.knowledgeArea = knowledgeArea.value;
+    subject.users = [teacher.value, ...monitors.value];
 
     Object.assign(subject, attrs);
 
-    return this.subjectsRepository.save(subject);
+    return await this.subjectsRepository.save(subject);
   }
 
   async delete(id: number) {
     const subject = await this.findById(id);
 
-    if (!subject) throw new NotFoundException('Subject not found.');
+    if (!subject) throw new NotFoundException('Disciplina não encontrada');
 
     subject.updatedAt = new Date();
     subject.active = false;

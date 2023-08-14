@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
@@ -14,13 +13,12 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { CreateSubjectOptionsDto } from './dtos/create-subject-options.dto';
 import { CreateSubjectDto } from './dtos/create-subject.dto';
 import { SubjectDto } from './dtos/subject.dto';
+import { UpdateSubjectOptionsDto } from './dtos/update-subject-options.dto';
 import { UpdateSubjectDto } from './dtos/update-subject.dto';
 import { SubjectsService } from './subjects.service';
-import { CreateSubjectOptionsDto } from './dtos/create-subject-options.dto';
-import { SubjectIdDto } from './dtos/subject-id.dto';
-import { UpdateSubjectOptionsDto } from './dtos/update-subject-options.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('subjects')
