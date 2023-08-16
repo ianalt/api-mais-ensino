@@ -31,7 +31,7 @@ export class SubjectsService {
     if (!id || id < 0) throw new NotFoundException('Disciplina não encontrada');
 
     const subject = await this.subjectsRepository.findOne({
-      where: { id, active: true },
+      where: { id },
       relations: this.allRelations,
     });
 
@@ -189,6 +189,7 @@ export class SubjectsService {
           id: knowledgeAreaId,
         },
       }),
+
       this.usersRepository.findOne({
         where: {
           active: true,

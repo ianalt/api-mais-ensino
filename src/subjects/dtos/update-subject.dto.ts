@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsInt,
   IsNotEmpty,
   IsOptional,
@@ -10,6 +11,9 @@ export class UpdateSubjectDto {
   @IsNotEmpty({ message: 'O campo "Nome" está vazio' })
   @IsString({ message: 'Digite um nome válido' })
   name: string;
+
+  @IsBoolean()
+  active: boolean;
 
   @IsOptional()
   @IsString({ message: 'Digite uma descrição válida' })
