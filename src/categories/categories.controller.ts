@@ -18,11 +18,19 @@ import { CategoriesService } from './categories.service';
 import { CategoryDto } from './dtos/category.dto';
 import { CreateCategoryDto } from './dtos/create-category.dto';
 import { UpdateCategoryDto } from './dtos/update-category.dto';
+import { CategoryOptionsDto } from './dtos/category-options.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('categories')
 export class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
+
+  @Roles('professor', 'admin')
+  @Get('/options')
+  @Serialize(CategoryOptionsDto)
+  async getCategoryOptions() {
+    return await this.categoriesService.getCategoryOptions();
+  }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get('/:id')
@@ -38,7 +46,7 @@ export class CategoriesController {
     return await this.categoriesService.findAll();
   }
 
-  @Roles('professor', 'admin')
+  @Roles('admin')
   @Post()
   @Serialize(CategoryDto)
   async create(@Body() body: CreateCategoryDto) {
