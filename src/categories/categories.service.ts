@@ -81,7 +81,7 @@ export class CategoriesService {
 
     newCategory.subject = subject;
 
-    return await this.subjectsRepository.save(newCategory);
+    return await this.categoriesRepository.save(newCategory);
   }
 
   async update(id: number, body: UpdateCategoryDto) {
