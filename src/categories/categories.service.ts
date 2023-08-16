@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Subject } from 'src/subjects/subject.entity';
 import { Repository } from 'typeorm';
@@ -41,17 +45,35 @@ export class CategoriesService {
     return categories;
   }
 
+  async getCategoryOptions() {
+    const options = await Promise.all([
+      this.subjectsRepository.find({ where: { active: true } }),
+    ]);
+
+    const subjectOptions = options[0];
+
+    return {
+      subjectOptions,
+    };
+  }
+
   async create(body: CreateCategoryDto) {
     const { subjectId, ...attrs } = body;
 
-    const subject = await this.subjectsRepository.findOne({
-      where: {
-        active: true,
-        id: subjectId,
-      },
+    const categoryWithName = await this.categoriesRepository.findOne({
+      where: { name: attrs.name, subject: { id: subjectId } },
     });
 
-    if (!subject) throw new NotFoundException('Subject not found.');
+    if (categoryWithName)
+      throw new UnprocessableEntityException(
+        'Uma categoria com este nome já existe na disciplina selecionada',
+      );
+
+    const subject = await this.subjectsRepository.findOne({
+      where: { id: subjectId, active: true },
+    });
+
+    if (!subject) throw new NotFoundException('Disciplina não encontrada');
 
     const newCategory = this.categoriesRepository.create({
       ...attrs,
@@ -59,7 +81,7 @@ export class CategoriesService {
 
     newCategory.subject = subject;
 
-    return this.categoriesRepository.save(newCategory);
+    return await this.categoriesRepository.save(newCategory);
   }
 
   async update(id: number, body: UpdateCategoryDto) {
