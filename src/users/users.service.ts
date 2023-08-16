@@ -24,6 +24,7 @@ import { UpdateTeacherDto } from './dtos/update-teacher.dto';
 import { User } from './user.entity';
 import { FinancialInfo } from 'src/financial-info/financial-info.entity';
 import { Address } from 'src/addresses/address.entity';
+import { Role } from 'src/auth/enums/role.enum';
 
 @Injectable()
 export class UsersService {
@@ -93,7 +94,7 @@ export class UsersService {
 
   async findAllStudents() {
     const users = await this.usersRepository.find({
-      where: { active: true, role: 'estudante' },
+      where: { active: true, role: Role.ESTUDANTE },
       relations: this.allRelations,
     });
 
@@ -104,7 +105,7 @@ export class UsersService {
 
   async findAllMonitors() {
     const users = await this.usersRepository.find({
-      where: { active: true, role: 'monitor' },
+      where: { active: true, role: Role.MONITOR },
       relations: this.allRelations,
     });
 
@@ -115,7 +116,7 @@ export class UsersService {
 
   async findAllTeachers() {
     const users = await this.usersRepository.find({
-      where: { active: true, role: 'professor' },
+      where: { active: true, role: Role.PROFESSOR },
       relations: this.allRelations,
     });
 
