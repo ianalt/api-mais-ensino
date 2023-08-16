@@ -49,7 +49,6 @@ export class EducationInfoService {
     });
   }
 
-  //TODO CREATE FOR MANAGE/UPDATE
   async createNewInstance(values: Partial<EducationInfo>, userId: number) {
     const newEducationInfo = this.educationInfoRepository.create({
       ...values,

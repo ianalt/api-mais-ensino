@@ -9,7 +9,6 @@ import {
 } from 'class-validator';
 
 export class UpdatePhoneNumberDto {
-  //TODO talvez opcional pq pode add novo número
   @IsOptional()
   @IsInt()
   @IsPositive()

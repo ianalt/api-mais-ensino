@@ -28,23 +28,14 @@ export class CategoriesController {
   @Get('/:id')
   @Serialize(CategoryDto)
   async findById(@Param('id', ParseIntPipe) id: number) {
-    const category = await this.categoriesService.findById(id);
-
-    if (!category) throw new NotFoundException('Category not found.');
-
-    return category;
+    return await this.categoriesService.findById(id);
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get()
   @Serialize(CategoryDto)
   async findAll() {
-    const categories = await this.categoriesService.findAll();
-
-    if (!categories)
-      throw new NotFoundException('Não foi possível encontrar categorias.');
-
-    return categories;
+    return await this.categoriesService.findAll();
   }
 
   @Roles('professor', 'admin')

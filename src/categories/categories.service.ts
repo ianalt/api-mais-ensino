@@ -18,13 +18,17 @@ export class CategoriesService {
 
   private allRelations = ['topics', 'subject'];
 
-  findById(id: number) {
-    if (!id) return null;
+  async findById(id: number) {
+    if (!id || id < 0) throw new NotFoundException('Categoria não encontrada');
 
-    return this.categoriesRepository.findOne({
-      where: { id, active: true },
+    const category = await this.categoriesRepository.findOne({
+      where: { id },
       relations: this.allRelations,
     });
+
+    if (!category) throw new NotFoundException('Categoria não encontrada');
+
+    return category;
   }
 
   async findAll() {
@@ -32,7 +36,7 @@ export class CategoriesService {
       relations: this.allRelations,
     });
 
-    if (!categories) return null;
+    if (!categories || categories.length <= 0) return [];
 
     return categories;
   }
