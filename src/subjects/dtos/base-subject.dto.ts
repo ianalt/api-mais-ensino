@@ -6,7 +6,4 @@ export class BaseSubjectDto {
 
   @Expose()
   name: string;
-
-  @Expose()
-  description: string;
 }
