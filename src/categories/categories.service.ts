@@ -130,7 +130,7 @@ export class CategoriesService {
   async remove(id: number) {
     const category = await this.findById(id);
 
-    if (!category) throw new NotFoundException('Category not found.');
+    if (!category) throw new NotFoundException('Categoria não encontrada');
 
     return this.categoriesRepository.remove(category);
   }
