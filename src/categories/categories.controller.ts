@@ -64,16 +64,9 @@ export class CategoriesController {
   }
 
   @Roles('professor', 'admin')
-  @Delete('delete/:id')
-  @Serialize(CategoryDto)
-  async delete(@Param('id', ParseIntPipe) id: number) {
-    return await this.categoriesService.delete(id);
-  }
-
-  @Roles('admin')
   @Delete('/:id')
   @Serialize(CategoryDto)
-  async remove(@Param('id', ParseIntPipe) id: number) {
+  async delete(@Param('id', ParseIntPipe) id: number) {
     return await this.categoriesService.remove(id);
   }
 }
