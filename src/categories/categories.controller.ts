@@ -46,14 +46,14 @@ export class CategoriesController {
     return await this.categoriesService.findAll();
   }
 
-  @Roles('admin')
+  @Roles('professor', 'admin')
   @Post()
   @Serialize(CategoryDto)
   async create(@Body() body: CreateCategoryDto) {
     return await this.categoriesService.create(body);
   }
 
-  @Roles('professor', 'admin')
+  @Roles('admin')
   @Patch('/:id')
   @Serialize(CategoryDto)
   async update(

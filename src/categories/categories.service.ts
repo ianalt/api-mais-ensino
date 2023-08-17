@@ -87,18 +87,24 @@ export class CategoriesService {
   async update(id: number, body: UpdateCategoryDto) {
     const category = await this.findById(id);
 
-    if (!category) throw new NotFoundException('Category not found.');
+    if (!category) throw new NotFoundException('Categoria não encontrada');
 
     const { subjectId, ...values } = body;
 
-    const subject = await this.subjectsRepository.findOne({
-      where: {
-        active: true,
-        id: subjectId,
-      },
+    const categoryWithName = await this.categoriesRepository.findOne({
+      where: { name: values.name },
     });
 
-    if (!subject) throw new NotFoundException('Subject not found.');
+    if (categoryWithName && categoryWithName.id !== id)
+      throw new UnprocessableEntityException(
+        'Uma disciplina com este nome já existe',
+      );
+
+    const subject = await this.subjectsRepository.findOne({
+      where: { id: subjectId, active: true },
+    });
+
+    if (!subject) throw new NotFoundException('Disciplina não encontrada');
 
     const attrs: Partial<Category> = values;
 
@@ -107,7 +113,7 @@ export class CategoriesService {
 
     Object.assign(category, attrs);
 
-    return this.categoriesRepository.save(category);
+    return await this.categoriesRepository.save(category);
   }
 
   async delete(id: number) {
