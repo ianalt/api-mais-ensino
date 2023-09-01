@@ -946,4 +946,26 @@ export class UsersService {
       };
     });
   }
+
+  async editProfile(id: number, role: Role, body: any) {
+    if (role === Role.ADMIN) {
+      const data: UpdateAdminDto = { ...body };
+      return await this.updateAdmin(id, data);
+    }
+
+    if (role === Role.PROFESSOR) {
+      const data: UpdateTeacherDto = { ...body };
+      return await this.updateTeacher(id, data);
+    }
+
+    if (role === Role.MONITOR) {
+      const data = { ...body };
+      return await this.updateMonitor(id, data);
+    }
+
+    if (role === Role.ESTUDANTE) {
+      const data = { ...body };
+      return await this.updateStudent(id, data);
+    }
+  }
 }
