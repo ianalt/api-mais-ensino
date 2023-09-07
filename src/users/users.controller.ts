@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
@@ -27,6 +29,9 @@ import { UserDto } from './dtos/user.dto';
 import { UsersService } from './users.service';
 import { TokensService } from 'src/tokens/tokens.service';
 import { FinancialInfoService } from 'src/financial-info/financial-info.service';
+import { Role } from 'src/auth/enums/role.enum';
+import { ChangePasswordDto } from './dtos/change-password.dto';
+import { User } from './user.entity';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
@@ -368,5 +373,71 @@ export class UsersController {
       );
 
     return await this.usersService.updateAdmin(id, body);
+  }
+
+  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Patch('/profile')
+  @Serialize(UserDto)
+  async editProfile(
+    @Request() req,
+    @Body()
+    body:
+      | UpdateAdminDto
+      | UpdateTeacherDto
+      | UpdateMonitorDto
+      | UpdateStudentDto,
+  ) {
+    const userId = req.user.id;
+    const userRole = req.user.role;
+
+    if (!userId || userId < 0 || !userRole)
+      throw new UnprocessableEntityException(
+        'Não foi possível completar a solicitação',
+      );
+
+    const { cpf, email } = body.user;
+
+    const cpfBeingUsed = await this.usersService.findByCpf(cpf);
+    const emailBeingUsed = await this.usersService.findByEmail(email);
+
+    if (
+      cpfBeingUsed &&
+      emailBeingUsed &&
+      cpfBeingUsed.id !== userId &&
+      emailBeingUsed.id !== userId
+    )
+      throw new UnprocessableEntityException(
+        'Ambos CPF e e-mail providos já estão sendo utilizados. Digite um CPF e um e-mail válidos.',
+      );
+
+    if (cpfBeingUsed && cpfBeingUsed.id !== userId)
+      throw new UnprocessableEntityException(
+        'O CPF provido já está sendo utilizado. Digite um CPF válido.',
+      );
+
+    if (emailBeingUsed && emailBeingUsed.id !== userId)
+      throw new UnprocessableEntityException(
+        'O e-mail provido já está sendo utilizado. Digite um e-mail válido.',
+      );
+
+    return await this.usersService.editProfile(userId, userRole, body);
+  }
+
+  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Patch('/profile/change-password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async changePassword(
+    @Request() req,
+    @Body()
+    body: ChangePasswordDto,
+  ) {
+    const user: User = req.user;
+
+    if (!user || !user.id || user.id < 0)
+      throw new UnprocessableEntityException(
+        'Não foi possível alterar a senha',
+      );
+
+    await this.usersService.changePassword(user, body);
   }
 }

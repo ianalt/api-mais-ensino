@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AddressesService } from 'src/addresses/addresses.service';
-import { hashPassword } from 'src/auth/hashing';
+import { comparePasswords, hashPassword } from 'src/auth/hashing';
 import { EducationInfoService } from 'src/education-info/education-info.service';
 import { FinancialInfoService } from 'src/financial-info/financial-info.service';
 import { PhoneNumbersService } from 'src/phone-numbers/phone-numbers.service';
@@ -25,6 +25,7 @@ import { User } from './user.entity';
 import { FinancialInfo } from 'src/financial-info/financial-info.entity';
 import { Address } from 'src/addresses/address.entity';
 import { Role } from 'src/auth/enums/role.enum';
+import { ChangePasswordDto } from './dtos/change-password.dto';
 
 @Injectable()
 export class UsersService {
@@ -945,5 +946,66 @@ export class UsersService {
         count: parseInt(item.count),
       };
     });
+  }
+
+  async editProfile(id: number, role: Role, body: any) {
+    if (role === Role.ADMIN) {
+      const data: UpdateAdminDto = { ...body };
+      return await this.updateAdmin(id, data);
+    }
+
+    if (role === Role.PROFESSOR) {
+      const data: UpdateTeacherDto = { ...body };
+      return await this.updateTeacher(id, data);
+    }
+
+    if (role === Role.MONITOR) {
+      const data = { ...body };
+      return await this.updateMonitor(id, data);
+    }
+
+    if (role === Role.ESTUDANTE) {
+      const data = { ...body };
+      return await this.updateStudent(id, data);
+    }
+
+    throw new UnprocessableEntityException(
+      'Não foi possível editar os dados de perfil',
+    );
+  }
+
+  async changePassword(user: User, body: ChangePasswordDto) {
+    const { currentPassword, newPassword, newPasswordConfirmation } = body;
+
+    const passwordMatches = await comparePasswords(
+      user.password,
+      currentPassword,
+    );
+
+    if (!passwordMatches)
+      throw new UnprocessableEntityException(
+        'A senha atual fornecida é inválida',
+      );
+
+    if (newPassword !== newPasswordConfirmation)
+      throw new UnprocessableEntityException(
+        'Confirme a senha tal qual no primeiro campo',
+      );
+
+    const hashedPassword = await hashPassword(newPassword);
+
+    if (!hashedPassword)
+      throw new UnprocessableEntityException(
+        'Não foi possível alterar a senha',
+      );
+
+    user.password = hashedPassword;
+
+    const updatedUser = await this.usersRepository.save(user);
+
+    if (!updatedUser)
+      throw new UnprocessableEntityException(
+        'Não foi possível alterar a senha',
+      );
   }
 }

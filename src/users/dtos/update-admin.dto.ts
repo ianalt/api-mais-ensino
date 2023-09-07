@@ -1,8 +1,6 @@
 import { Type } from 'class-transformer';
 import { ArrayMaxSize, ValidateNested } from 'class-validator';
 import { UpdateAddressDto } from 'src/addresses/dtos/update-address.dto';
-import { UpdateEducationInfoDto } from 'src/education-info/dtos/update-education-info.dto';
-import { UpdateFinancialInfoDto } from 'src/financial-info/dtos/update-financial-info.dto';
 import { UpdatePhoneNumberDto } from 'src/phone-numbers/dtos/update-phone-number.dto';
 import { UpdateFullUserDto } from './update-full-user.dto';
 
