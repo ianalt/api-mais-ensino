@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -24,6 +25,13 @@ import { SubjectsService } from './subjects.service';
 @Controller('subjects')
 export class SubjectsController {
   constructor(private subjectsService: SubjectsService) {}
+
+  @Roles('monitor', 'professor')
+  @Get('/user')
+  @Serialize(SubjectDto)
+  async findForTeacherOrMonitor(@Request() req) {
+    return await this.subjectsService.findForTeacherOrMonitor(req.user.id);
+  }
 
   @Roles('professor', 'admin')
   @Get('/create-options')
