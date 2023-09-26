@@ -53,7 +53,7 @@ export class CategoriesController {
     return await this.categoriesService.create(body);
   }
 
-  @Roles('admin')
+  @Roles('monito', 'professor', 'admin')
   @Patch('/:id')
   @Serialize(CategoryDto)
   async update(
