@@ -249,4 +249,33 @@ export class SubjectsService {
 
     return this.subjectsRepository.remove(subject);
   }
+
+  async findForTeacherOrMonitor(userId: number) {
+    const user = await this.usersRepository.findOne({
+      where: {
+        id: userId,
+      },
+      relations: ['subject'],
+    });
+
+    if (!user) throw new NotFoundException('Usuário não encontrado');
+
+    const subjectId = user.subject.id;
+
+    const subject = await this.subjectsRepository.findOne({
+      where: {
+        id: subjectId,
+      },
+      relations: [
+        'knowledgeArea',
+        'categories',
+        'users',
+        //TODO include topics
+      ],
+    });
+
+    if (!subject) throw new NotFoundException('Disciplina não encontrada');
+
+    return subject;
+  }
 }

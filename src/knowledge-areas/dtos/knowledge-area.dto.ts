@@ -7,6 +7,12 @@ export class KnowledgeAreaDto {
   id: number;
 
   @Expose()
+  createdAt: Date;
+
+  @Expose()
+  updatedAt: Date;
+
+  @Expose()
   active: boolean;
 
   @Expose()
