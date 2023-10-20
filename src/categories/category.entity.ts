@@ -1,13 +1,13 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  OneToMany,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Classes } from 'src/classes/classes.entity';
 import { Subject } from 'src/subjects/subject.entity';
-import { Topic } from 'src/topics/topic.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({ name: 'categorias' })
 export class Category {
@@ -30,6 +30,6 @@ export class Category {
   @JoinColumn({ name: 'id_disciplina' })
   subject: Subject;
 
-  @OneToMany(() => Topic, (topic) => topic.category)
-  topics: Topic[];
+  @OneToMany(() => Classes, (oneClass) => oneClass.category)
+  classes: Classes[];
 }

@@ -44,8 +44,11 @@ export class UsersService {
     'tokens',
     'phoneNumbers',
     'educationInfoList',
-    'comments',
     'subject',
+    'createdClasses',
+    'createdQuestions',
+    'createdAnswers',
+    'verifiedAnswers',
   ];
 
   private mainRelations = [
@@ -53,7 +56,6 @@ export class UsersService {
     'financialInfo',
     'phoneNumbers',
     'educationInfoList',
-    'comments',
     'subject',
   ];
 

@@ -16,22 +16,21 @@ import {
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { FinancialInfoService } from 'src/financial-info/financial-info.service';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { TokensService } from 'src/tokens/tokens.service';
 import { AddAdminDto } from './dtos/add-admin.dto';
 import { AddMonitorDto } from './dtos/add-monitor.dto';
 import { AddStudentDto } from './dtos/add-student.dto';
 import { AddTeacherDto } from './dtos/add-teacher.dto';
+import { ChangePasswordDto } from './dtos/change-password.dto';
 import { UpdateAdminDto } from './dtos/update-admin.dto';
 import { UpdateMonitorDto } from './dtos/update-monitor.dto';
 import { UpdateStudentDto } from './dtos/update-student.dto';
 import { UpdateTeacherDto } from './dtos/update-teacher.dto';
 import { UserDto } from './dtos/user.dto';
-import { UsersService } from './users.service';
-import { TokensService } from 'src/tokens/tokens.service';
-import { FinancialInfoService } from 'src/financial-info/financial-info.service';
-import { Role } from 'src/auth/enums/role.enum';
-import { ChangePasswordDto } from './dtos/change-password.dto';
 import { User } from './user.entity';
+import { UsersService } from './users.service';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')

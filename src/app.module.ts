@@ -9,10 +9,6 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CategoriesModule } from './categories/categories.module';
 import { Category } from './categories/category.entity';
-import { CommentFile } from './comment-files/comment-file.entity';
-import { CommentFilesModule } from './comment-files/comment-files.module';
-import { Comment } from './comments/comment.entity';
-import { CommentsModule } from './comments/comments.module';
 import { EducationInfo } from './education-info/education-info.entity';
 import { EducationInfoModule } from './education-info/education-info.module';
 import { FinancialInfo } from './financial-info/financial-info.entity';
@@ -24,12 +20,16 @@ import { PhoneNumbersModule } from './phone-numbers/phone-numbers.module';
 import { SubjectsModule } from './subjects/subjects.module';
 import { Token } from './tokens/token.entity';
 import { TokensModule } from './tokens/tokens.module';
-import { TopicFile } from './topic-files/topic-file.entity';
-import { TopicFilesModule } from './topic-files/topic-files.module';
-import { Topic } from './topics/topic.entity';
-import { TopicsModule } from './topics/topics.module';
 import { User } from './users/user.entity';
 import { UsersModule } from './users/users.module';
+import { ClassesModule } from './classes/classes.module';
+import { ClassFilesModule } from './class-files/class-files.module';
+import { QuestionsModule } from './questions/questions.module';
+import { AnswersModule } from './answers/answers.module';
+import { Classes } from './classes/classes.entity';
+import { ClassFile } from './class-files/class-file.entity';
+import { Question } from './questions/question.entity';
+import { Answer } from './answers/answer.entity';
 
 @Module({
   imports: [
@@ -58,10 +58,10 @@ import { UsersModule } from './users/users.module';
             Subject,
             KnowledgeArea,
             Category,
-            Topic,
-            TopicFile,
-            Comment,
-            CommentFile,
+            Classes,
+            ClassFile,
+            Question,
+            Answer,
           ],
           synchronize: false,
         };
@@ -77,10 +77,10 @@ import { UsersModule } from './users/users.module';
     SubjectsModule,
     KnowledgeAreasModule,
     CategoriesModule,
-    TopicsModule,
-    TopicFilesModule,
-    CommentsModule,
-    CommentFilesModule,
+    ClassesModule,
+    ClassFilesModule,
+    QuestionsModule,
+    AnswersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
