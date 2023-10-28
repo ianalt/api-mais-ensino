@@ -39,6 +39,6 @@ export class Classes {
   createdBy: User;
 
   @ManyToOne(() => Category, (category) => category.classes)
-  @JoinColumn({ name: 'id_aula' })
+  @JoinColumn({ name: 'id_categoria' })
   category?: Category;
 }
