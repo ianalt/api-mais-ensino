@@ -13,6 +13,7 @@ import { UpdateClassDto } from './dto/update-classes.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { ClassesDto } from './dto/classes.dto';
+import { ClassOptionsDto } from './dto/class-options.dto';
 
 @Controller('classes')
 export class ClassesController {
@@ -28,6 +29,13 @@ export class ClassesController {
   @Serialize(ClassesDto)
   findAll() {
     return this.classesService.findAll();
+  }
+
+  @Roles('professor', 'admin')
+  @Get('/options')
+  @Serialize(ClassOptionsDto)
+  async getClassOptions() {
+    return await this.classesService.getClassOptions();
   }
 
   @Get('/:id')
