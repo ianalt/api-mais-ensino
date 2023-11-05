@@ -6,6 +6,7 @@ import { Classes } from './classes.entity';
 import { Repository } from 'typeorm';
 import { Subject } from 'src/subjects/subject.entity';
 import { Category } from 'src/categories/category.entity';
+import { Request } from 'express';
 
 @Injectable()
 export class ClassesService {
@@ -35,8 +36,17 @@ export class ClassesService {
     };
   }
 
-  create(createClassDto: CreateClassDto) {
-    return 'This action adds a new class';
+  create(
+    body: CreateClassDto,
+    videoClassFile: Express.Multer.File[],
+    extraFiles: Express.Multer.File[],
+    req: Request,
+  ) {
+    return {
+      body,
+      videoClassFile,
+      extraFiles,
+    };
   }
 
   async findAll() {
