@@ -1,56 +1,28 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseInterceptors,
-  UploadedFile,
-  Req,
-  UploadedFiles,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { ClassesService } from './classes.service';
+import { ClassOptionsDto } from './dto/class-options.dto';
+import { ClassesDto } from './dto/classes.dto';
 import { CreateClassDto } from './dto/create-classes.dto';
 import { UpdateClassDto } from './dto/update-classes.dto';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Serialize } from 'src/interceptors/serialize.interceptor';
-import { ClassesDto } from './dto/classes.dto';
-import { ClassOptionsDto } from './dto/class-options.dto';
-import {
-  FileFieldsInterceptor,
-  FileInterceptor,
-} from '@nestjs/platform-express/multer';
 
-import { Request } from 'express';
-import classFilesUploadConfig from 'src/config/class-files-upload.config';
-
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('classes')
 export class ClassesController {
   constructor(private readonly classesService: ClassesService) {}
-
-  //TODO finish creation, add pipes
-  @Roles('professor', 'admin')
-  @Post()
-  @UseInterceptors(
-    FileFieldsInterceptor(
-      [{ name: 'videoClassFile' }, { name: 'extraFiles' }],
-      classFilesUploadConfig,
-    ),
-  )
-  create(
-    @Body() body: CreateClassDto,
-    @UploadedFiles() classFiles: Express.Multer.File[],
-    @Req() req: Request,
-  ) {
-    return this.classesService.create(
-      body,
-      classFiles['videoClassFile'],
-      classFiles['extraFiles'],
-      req,
-    );
-  }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get()
@@ -69,6 +41,14 @@ export class ClassesController {
   @Get('/:id')
   findOne(@Param('id') id: string) {
     return this.classesService.findOne(+id);
+  }
+
+  //TODO aparentemente, fazer rotas diferentes e executar as 3 no front (é o jeito)
+  //TODO finish creation, add pipes
+  @Roles('professor', 'admin')
+  @Post()
+  async create(@Body() body: CreateClassDto, @Request() req: any) {
+    return await this.classesService.create(body, req.user.id);
   }
 
   @Patch('/:id')

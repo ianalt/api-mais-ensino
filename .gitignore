@@ -1,7 +1,7 @@
 # TODO list
 api-todo-list.txt
 
-/uploads/class-files
+/uploads/class-files/*
 
 # Environment variables
 .env

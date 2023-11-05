@@ -23,7 +23,7 @@ export class ClassFile {
   fileName: string;
 
   @Column({ name: 'content_length' })
-  contentLength: string;
+  contentLength: number;
 
   @Column({ name: 'content_type' })
   contentType: string;

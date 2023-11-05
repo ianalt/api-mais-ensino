@@ -2,9 +2,9 @@ import { diskStorage } from 'multer';
 import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
-const classFilesUploadConfig = {
+const extraClassFilesUploadConfig = {
   storage: diskStorage({
-    destination: './uploads/class-files',
+    destination: './uploads/extra-files',
     filename: (req, file, cb) => {
       const fileName =
         path.parse(file.originalname).name.replace(/\s/g, '') + '-' + uuidv4();
@@ -15,4 +15,4 @@ const classFilesUploadConfig = {
   }),
 };
 
-export default classFilesUploadConfig;
+export default extraClassFilesUploadConfig;

@@ -1,16 +1,32 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Request,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UploadedFiles,
+  UseInterceptors,
+  Req,
+  ParseIntPipe,
+  UnprocessableEntityException,
+  UseGuards,
+} from '@nestjs/common';
 import { ClassFilesService } from './class-files.service';
-import { CreateClassFileDto } from './dto/create-class-file.dto';
 import { UpdateClassFileDto } from './dto/update-class-file.dto';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { FileFieldsInterceptor } from '@nestjs/platform-express/multer/interceptors/file-fields.interceptor';
+import videoClassFileUploadConfig from 'src/config/video-class-file-upload.config';
+import extraClassFilesUploadConfig from 'src/config/extra-class-files-upload.config';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('class-files')
 export class ClassFilesController {
   constructor(private readonly classFilesService: ClassFilesService) {}
-
-  @Post()
-  create(@Body() createClassFileDto: CreateClassFileDto) {
-    return this.classFilesService.create(createClassFileDto);
-  }
 
   @Get()
   findAll() {
@@ -22,8 +38,59 @@ export class ClassFilesController {
     return this.classFilesService.findOne(+id);
   }
 
+  @Roles('professor', 'admin')
+  @Post('/:classId/video-class')
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [{ name: 'videoClassFile', maxCount: 1 }],
+      videoClassFileUploadConfig,
+    ),
+  )
+  async uploadVideoClassFile(
+    @Param('classId', ParseIntPipe) classId: number,
+    @UploadedFiles()
+    file: Express.Multer.File,
+  ) {
+    const videoClass = await this.classFilesService.uploadVideoClassFile(
+      file['videoClassFile'],
+      classId,
+    );
+
+    if (!videoClass)
+      throw new UnprocessableEntityException(
+        'Não foi possível registrar a videoaula',
+      );
+  }
+
+  @Roles('professor', 'admin')
+  @Post('/:classId/extra-files')
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [{ name: 'extraFiles' }],
+      extraClassFilesUploadConfig,
+    ),
+  )
+  async uploadExtraClassFiles(
+    @Param('classId', ParseIntPipe) classId: number,
+    @UploadedFiles()
+    files: Express.Multer.File[],
+  ) {
+    const extraFiles = await this.classFilesService.uploadExtraClassFiles(
+      files['extraFiles'],
+      classId,
+    );
+
+    if (!extraFiles)
+      throw new UnprocessableEntityException(
+        'Não foi possível registrar arquivos complementares',
+      );
+  }
+
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateClassFileDto: UpdateClassFileDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateClassFileDto: UpdateClassFileDto,
+  ) {
     return this.classFilesService.update(+id, updateClassFileDto);
   }
 

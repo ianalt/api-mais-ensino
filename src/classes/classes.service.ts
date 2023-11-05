@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { CreateClassDto } from './dto/create-classes.dto';
 import { UpdateClassDto } from './dto/update-classes.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,6 +11,9 @@ import { Repository } from 'typeorm';
 import { Subject } from 'src/subjects/subject.entity';
 import { Category } from 'src/categories/category.entity';
 import { Request } from 'express';
+import { User } from 'src/users/user.entity';
+import { FileType } from 'src/class-files/enums/file-type.enum';
+import { ClassFilesService } from 'src/class-files/class-files.service';
 
 @Injectable()
 export class ClassesService {
@@ -19,6 +26,11 @@ export class ClassesService {
 
     @InjectRepository(Category)
     private categoriesRepository: Repository<Category>,
+
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+
+    private classFilesService: ClassFilesService,
   ) {}
 
   private allRelations = ['questions', 'classFiles', 'createdBy', 'category'];
@@ -36,17 +48,39 @@ export class ClassesService {
     };
   }
 
-  create(
-    body: CreateClassDto,
-    videoClassFile: Express.Multer.File[],
-    extraFiles: Express.Multer.File[],
-    req: Request,
-  ) {
-    return {
-      body,
-      videoClassFile,
-      extraFiles,
-    };
+  async create(body: CreateClassDto, creatorId: number) {
+    const { categoryId, ...data } = body;
+
+    const [category, user] = await Promise.allSettled([
+      this.categoriesRepository.findOne({
+        where: { id: categoryId, active: true },
+      }),
+
+      this.usersRepository.findOne({
+        where: { id: creatorId, active: true },
+      }),
+    ]);
+
+    if (!category || category.status === 'rejected')
+      throw new UnprocessableEntityException(`Categoria não encontrada`);
+
+    if (!user || user.status === 'rejected')
+      throw new UnprocessableEntityException(`Usuário não encontrado`);
+
+    const createdClass = this.classesRepository.create({
+      ...data,
+      category: category.value,
+      createdBy: user.value,
+    });
+
+    const newClass = await this.classesRepository.save(createdClass);
+
+    if (!newClass)
+      throw new UnprocessableEntityException(
+        'Não foi possível criar nova aula',
+      );
+
+    return await this.findOne(newClass.id);
   }
 
   async findAll() {
@@ -59,8 +93,17 @@ export class ClassesService {
     return classes;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} class`;
+  async findOne(id: number) {
+    if (!id || id < 0) return null;
+
+    const oneClass = await this.classesRepository.findOne({
+      where: { id },
+      relations: this.allRelations,
+    });
+
+    if (!oneClass) return null;
+
+    return oneClass;
   }
 
   update(id: number, updateClassDto: UpdateClassDto) {
