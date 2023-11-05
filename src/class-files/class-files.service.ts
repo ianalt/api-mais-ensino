@@ -1,4 +1,8 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { CreateClassFileDto } from './dto/create-class-file.dto';
 import { UpdateClassFileDto } from './dto/update-class-file.dto';
 import { FileType } from './enums/file-type.enum';
@@ -6,6 +10,7 @@ import { ClassFile } from './class-file.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Classes } from 'src/classes/classes.entity';
+import * as fs from 'fs';
 
 @Injectable()
 export class ClassFilesService {
@@ -87,7 +92,19 @@ export class ClassFilesService {
     return `This action updates a #${id} classFile`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} classFile`;
+  async remove(fileName: string) {
+    const file = await this.classFilesRepository.findOne({
+      where: { fileName },
+    });
+
+    if (!file) new NotFoundException('Arquivo não encontrado');
+
+    fs.unlink(`./uploads/video-classes/${fileName}`, (err) => {
+      if (err) {
+        throw err;
+      }
+
+      console.log('Delete File successfully.');
+    });
   }
 }

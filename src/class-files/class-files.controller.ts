@@ -94,8 +94,8 @@ export class ClassFilesController {
     return this.classFilesService.update(+id, updateClassFileDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.classFilesService.remove(+id);
+  @Delete('/:fileName')
+  remove(@Param('fileName') fileName: string) {
+    return this.classFilesService.remove(fileName);
   }
 }
