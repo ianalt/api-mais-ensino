@@ -74,6 +74,11 @@ export class ClassFilesController {
     @UploadedFiles()
     files: Express.Multer.File[],
   ) {
+    console.log('files ===');
+    console.log(!files ? 'HMMMMMMMMMMMMM' : 'num é');
+    console.log(files.length);
+    //TODO problema aqui
+
     const extraFiles = await this.classFilesService.uploadExtraClassFiles(
       files['extraFiles'],
       classId,
