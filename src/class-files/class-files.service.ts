@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnprocessableEntityException,
@@ -57,13 +58,13 @@ export class ClassFilesService {
 
     if (!foundClass)
       throw new UnprocessableEntityException(
-        'Não foi possível armazenar videoaula',
+        'Não foi possível armazenar arquivos complementares',
       );
 
     const fileInstances = files.map((file) => {
       const createdFile = this.classFilesRepository.create({
         fileName: file.filename,
-        fileType: FileType.VIDEOAULA,
+        fileType: FileType.MATERIAL,
         contentLength: file.size,
         contentType: file.mimetype,
         path: `${process.env.HOST_METHOD}://${process.env.HOST}:${process.env.PORT}/class-files/${file.filename}`,
@@ -97,14 +98,13 @@ export class ClassFilesService {
       where: { fileName },
     });
 
-    if (!file) new NotFoundException('Arquivo não encontrado');
+    if (!file) throw new NotFoundException('Arquivo não encontrado');
 
-    fs.unlink(`./uploads/video-classes/${fileName}`, (err) => {
-      if (err) {
-        throw err;
-      }
-
-      console.log('Delete File successfully.');
-    });
+    fs.unlink(
+      `./uploads/${
+        file.fileType === FileType.VIDEOAULA ? 'video-classes' : 'extra-files'
+      }/${fileName}`,
+      (err) => {},
+    );
   }
 }

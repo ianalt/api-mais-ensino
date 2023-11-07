@@ -3,7 +3,9 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Request,
@@ -39,8 +41,13 @@ export class ClassesController {
   }
 
   @Get('/:id')
-  findOne(@Param('id') id: string) {
-    return this.classesService.findOne(+id);
+  @Serialize(ClassesDto)
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    const foundClass = await this.classesService.findOne(id);
+
+    if (!foundClass) throw new NotFoundException('Aula não encontrada');
+
+    return foundClass;
   }
 
   //TODO aparentemente, fazer rotas diferentes e executar as 3 no front (é o jeito)
@@ -57,7 +64,7 @@ export class ClassesController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.classesService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.classesService.remove(id);
   }
 }

@@ -1,27 +1,25 @@
 import {
   Body,
-  Request,
   Controller,
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
-  UploadedFiles,
-  UseInterceptors,
-  Req,
-  ParseIntPipe,
   UnprocessableEntityException,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { ClassFilesService } from './class-files.service';
-import { UpdateClassFileDto } from './dto/update-class-file.dto';
-import { Roles } from 'src/auth/decorators/roles.decorator';
 import { FileFieldsInterceptor } from '@nestjs/platform-express/multer/interceptors/file-fields.interceptor';
-import videoClassFileUploadConfig from 'src/config/video-class-file-upload.config';
-import extraClassFilesUploadConfig from 'src/config/extra-class-files-upload.config';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import extraClassFilesUploadConfig from 'src/config/extra-class-files-upload.config';
+import videoClassFileUploadConfig from 'src/config/video-class-file-upload.config';
+import { ClassFilesService } from './class-files.service';
+import { UpdateClassFileDto } from './dto/update-class-file.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('class-files')
@@ -56,10 +54,11 @@ export class ClassFilesController {
       classId,
     );
 
-    if (!videoClass)
+    if (!videoClass) {
       throw new UnprocessableEntityException(
         'Não foi possível registrar a videoaula',
       );
+    }
   }
 
   @Roles('professor', 'admin')
@@ -80,10 +79,11 @@ export class ClassFilesController {
       classId,
     );
 
-    if (!extraFiles)
+    if (!extraFiles) {
       throw new UnprocessableEntityException(
         'Não foi possível registrar arquivos complementares',
       );
+    }
   }
 
   @Patch(':id')

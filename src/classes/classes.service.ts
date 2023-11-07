@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnprocessableEntityException,
@@ -110,7 +111,26 @@ export class ClassesService {
     return `This action updates a #${id} class`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} class`;
+  async remove(id: number) {
+    const foundClass = await this.findOne(id);
+
+    if (!foundClass) throw new NotFoundException('Aula não encontrada');
+
+    if (foundClass && foundClass.classFiles.length > 0) {
+      const { classFiles } = foundClass;
+
+      const removedFiles = await Promise.all(
+        classFiles.map((classFile) => {
+          return this.classFilesService.remove(classFile.fileName);
+        }),
+      );
+
+      if (!removedFiles || removedFiles.length < 0)
+        throw new BadRequestException(
+          'Não foi possível remover arquivos da aula',
+        );
+    }
+
+    await this.classesRepository.remove(foundClass);
   }
 }
