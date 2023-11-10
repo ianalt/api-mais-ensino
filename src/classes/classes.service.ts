@@ -34,7 +34,13 @@ export class ClassesService {
     private classFilesService: ClassFilesService,
   ) {}
 
-  private allRelations = ['questions', 'classFiles', 'createdBy', 'category'];
+  private allRelations = [
+    'questions',
+    'classFiles',
+    'createdBy',
+    'category',
+    'category.subject',
+  ];
 
   async getClassOptions() {
     const subjects = await this.subjectsRepository.find({

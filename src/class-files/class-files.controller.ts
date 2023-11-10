@@ -36,6 +36,7 @@ export class ClassFilesController {
     return this.classFilesService.findOne(+id);
   }
 
+  //TODO add validation pipe
   @Roles('professor', 'admin')
   @Post('/:classId/video-class')
   @UseInterceptors(

@@ -50,8 +50,6 @@ export class ClassesController {
     return foundClass;
   }
 
-  //TODO aparentemente, fazer rotas diferentes e executar as 3 no front (é o jeito)
-  //TODO finish creation, add pipes
   @Roles('professor', 'admin')
   @Post()
   async create(@Body() body: CreateClassDto, @Request() req: any) {

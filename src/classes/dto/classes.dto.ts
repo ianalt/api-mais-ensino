@@ -33,11 +33,11 @@ export class ClassesDto {
 
   @Expose()
   @Type(() => BaseUserDto)
-  @ValidateNested({ each: true })
+  @ValidateNested()
   createdBy: BaseUserDto;
 
   @Expose()
   @Type(() => CategoryWithSubjectDto)
-  @ValidateNested({ each: true })
+  @ValidateNested()
   category?: CategoryWithSubjectDto;
 }

@@ -19,7 +19,7 @@ export class CategoryWithSubjectDto {
   name: string;
 
   @Expose()
-  @ValidateNested({ each: true })
+  @ValidateNested()
   @Type(() => BaseSubjectDto)
   subject: BaseSubjectDto;
 }
