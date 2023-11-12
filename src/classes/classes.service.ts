@@ -90,6 +90,23 @@ export class ClassesService {
     return await this.findOne(newClass.id);
   }
 
+  async findAllFromSubject(subjectId: number) {
+    const classes = await this.classesRepository.find({
+      relations: this.allRelations,
+      where: {
+        category: {
+          subject: {
+            id: subjectId,
+          },
+        },
+      },
+    });
+
+    if (!classes || classes.length <= 0) return [];
+
+    return classes;
+  }
+
   async findAll() {
     const classes = await this.classesRepository.find({
       relations: this.allRelations,

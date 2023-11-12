@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -31,6 +32,13 @@ export class ClassesController {
   @Serialize(ClassesDto)
   findAll() {
     return this.classesService.findAll();
+  }
+
+  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Get()
+  @Serialize(ClassesDto)
+  findAllFromSubject(@Query('subjectId', ParseIntPipe) subjectId: number) {
+    return this.classesService.findAllFromSubject(subjectId);
   }
 
   @Roles('professor', 'admin')
