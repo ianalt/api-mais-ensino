@@ -7,12 +7,15 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Res,
+  StreamableFile,
   UnprocessableEntityException,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express/multer/interceptors/file-fields.interceptor';
+import { Response } from 'express';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
@@ -84,6 +87,23 @@ export class ClassFilesController {
         'Não foi possível registrar arquivos complementares',
       );
     }
+  }
+
+  @Get('/:classFileId/download')
+  async downloadClassFile(
+    @Param('classFileId', ParseIntPipe) classFileId: number,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const fileInfo = await this.classFilesService.downloadClassFile(
+      classFileId,
+    );
+
+    res.set({
+      'Content-Type': 'application/json',
+      'Content-Disposition': `'attachment; filename=${fileInfo.fileName}`,
+    });
+
+    return new StreamableFile(fileInfo.classFile);
   }
 
   @Patch(':id')

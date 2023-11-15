@@ -12,6 +12,8 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Classes } from 'src/classes/classes.entity';
 import * as fs from 'fs';
+import { createReadStream } from 'fs';
+import { join } from 'path';
 
 @Injectable()
 export class ClassFilesService {
@@ -85,8 +87,34 @@ export class ClassFilesService {
     return `This action returns all classFiles`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} classFile`;
+  async findOne(id: number) {
+    if (!id || id < 0)
+      throw new BadRequestException('O ID fornecido é inválido');
+
+    const classFile = await this.classFilesRepository.findOne({
+      where: { id: id },
+    });
+
+    if (!classFile) throw new NotFoundException('Arquivo não encontrado');
+
+    return classFile;
+  }
+
+  async downloadClassFile(id: number) {
+    const foundFile = await this.findOne(id);
+
+    const { fileName, fileType } = foundFile;
+
+    const filePath = `${process.cwd()}/uploads/${
+      fileType === FileType.VIDEOAULA ? 'video-classes' : 'extra-files'
+    }/`;
+
+    const classFile = createReadStream(join(filePath, `${fileName}`));
+
+    return {
+      fileName,
+      classFile,
+    };
   }
 
   update(id: number, updateClassFileDto: UpdateClassFileDto) {
