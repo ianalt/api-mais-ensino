@@ -15,6 +15,8 @@ import { Request } from 'express';
 import { User } from 'src/users/user.entity';
 import { FileType } from 'src/class-files/enums/file-type.enum';
 import { ClassFilesService } from 'src/class-files/class-files.service';
+import { UpdateClassTitleDto } from './dto/update-class-title.dto';
+import { UpdateClassCategoryDto } from './dto/update-class-category.dto';
 
 @Injectable()
 export class ClassesService {
@@ -132,6 +134,43 @@ export class ClassesService {
 
   update(id: number, updateClassDto: UpdateClassDto) {
     return `This action updates a #${id} class`;
+  }
+
+  async updateClassTitle(id: number, body: UpdateClassTitleDto) {
+    if (!id || id < 0) throw new BadRequestException('ID de aula inválido');
+
+    const foundClass = await this.findOne(id);
+
+    if (!foundClass) throw new NotFoundException('Aula não encontrada');
+
+    const attrs: Partial<Classes> = body;
+
+    foundClass.updatedAt = new Date();
+
+    Object.assign(foundClass, attrs);
+
+    return await this.classesRepository.save(foundClass);
+  }
+
+  async updateClassCategory(id: number, body: UpdateClassCategoryDto) {
+    if (!id || id < 0) throw new BadRequestException('ID de aula inválido');
+
+    const foundClass = await this.findOne(id);
+
+    if (!foundClass) throw new NotFoundException('Aula não encontrada');
+
+    const category = await this.categoriesRepository.findOne({
+      where: {
+        id: body.categoryId,
+      },
+    });
+
+    if (!category) throw new NotFoundException('Categoria não encontrada');
+
+    foundClass.updatedAt = new Date();
+    foundClass.category = category;
+
+    return await this.classesRepository.save(foundClass);
   }
 
   async remove(id: number) {

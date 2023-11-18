@@ -21,6 +21,8 @@ import { ClassOptionsDto } from './dto/class-options.dto';
 import { ClassesDto } from './dto/classes.dto';
 import { CreateClassDto } from './dto/create-classes.dto';
 import { UpdateClassDto } from './dto/update-classes.dto';
+import { UpdateClassTitleDto } from './dto/update-class-title.dto';
+import { UpdateClassCategoryDto } from './dto/update-class-category.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('classes')
@@ -67,6 +69,26 @@ export class ClassesController {
   @Patch('/:id')
   update(@Param('id') id: string, @Body() updateClassDto: UpdateClassDto) {
     return this.classesService.update(+id, updateClassDto);
+  }
+
+  @Roles('professor', 'admin')
+  @Patch('/:id/class-title')
+  @Serialize(ClassesDto)
+  async updateClassTitle(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateClassTitleDto,
+  ) {
+    return await this.classesService.updateClassTitle(id, body);
+  }
+
+  @Roles('professor', 'admin')
+  @Patch('/:id/class-category')
+  @Serialize(ClassesDto)
+  async updateClassCategory(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateClassCategoryDto,
+  ) {
+    return await this.classesService.updateClassCategory(id, body);
   }
 
   @Delete(':id')
