@@ -53,6 +53,78 @@ export class ClassFilesService {
     return newClassFile;
   }
 
+  //TODO UPDATE VIDEO CLASS
+  async updateVideoClassFile(file: Express.Multer.File, classId: number) {
+    const foundClass = await this.classesRepository.findOne({
+      where: { id: classId, active: true },
+    });
+
+    if (!foundClass)
+      throw new UnprocessableEntityException(
+        'Não foi possível armazenar videoaula',
+      );
+
+    const videoClassFile = file[0];
+
+    const foundVideoFiles = await this.classFilesRepository.find({
+      where: {
+        fileType: FileType.VIDEOAULA,
+        class: {
+          id: classId,
+        },
+      },
+      relations: ['class'],
+    });
+
+    if (foundVideoFiles && foundVideoFiles.length > 0) {
+      for (const file of foundVideoFiles) {
+        const { fileName } = file;
+
+        await this.classFilesRepository.remove(file);
+
+        fs.unlink(`./uploads/video-classes/${fileName}`, (err) => {});
+      }
+    }
+
+    const createdFile = this.classFilesRepository.create({
+      fileName: videoClassFile.filename,
+      fileType: FileType.VIDEOAULA,
+      contentLength: videoClassFile.size,
+      contentType: videoClassFile.mimetype,
+      path: `${process.env.HOST_METHOD}://${process.env.HOST}:${process.env.PORT}/class-files/${videoClassFile.filename}`,
+      class: foundClass,
+    });
+
+    const newClassFile = await this.classFilesRepository.save(createdFile);
+
+    if (!newClassFile)
+      throw new UnprocessableEntityException(
+        'Não foi possível armazenar videoaula',
+      );
+
+    const classToUpdate = await this.classesRepository.findOne({
+      where: {
+        id: classId,
+        active: true,
+      },
+      relations: [
+        'questions',
+        'classFiles',
+        'createdBy',
+        'category',
+        'category.subject',
+      ],
+    });
+
+    if (!classToUpdate)
+      throw new UnprocessableEntityException('Erro ao armazenar videoaula');
+
+    classToUpdate.updatedAt = new Date();
+
+    return await this.classesRepository.save(classToUpdate);
+  }
+  //UPDATE VIDEO CLASS
+
   async uploadExtraClassFiles(files: Express.Multer.File[], classId: number) {
     const foundClass = await this.classesRepository.findOne({
       where: { id: classId, active: true },

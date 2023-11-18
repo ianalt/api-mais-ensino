@@ -23,6 +23,8 @@ import extraClassFilesUploadConfig from 'src/config/extra-class-files-upload.con
 import videoClassFileUploadConfig from 'src/config/video-class-file-upload.config';
 import { ClassFilesService } from './class-files.service';
 import { UpdateClassFileDto } from './dto/update-class-file.dto';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { ClassesDto } from 'src/classes/dto/classes.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('class-files')
@@ -62,6 +64,34 @@ export class ClassFilesController {
         'Não foi possível registrar a videoaula',
       );
     }
+  }
+
+  @Roles('professor', 'admin')
+  @Patch('/:classId/video-class/update')
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [{ name: 'videoClassFile', maxCount: 1 }],
+      videoClassFileUploadConfig,
+    ),
+  )
+  @Serialize(ClassesDto)
+  async updateVideoClassFile(
+    @Param('classId', ParseIntPipe) classId: number,
+    @UploadedFiles()
+    file: Express.Multer.File,
+  ) {
+    const updatedClass = await this.classFilesService.updateVideoClassFile(
+      file['videoClassFile'],
+      classId,
+    );
+
+    if (!updatedClass) {
+      throw new UnprocessableEntityException(
+        'Não foi possível atualizar a videoaula',
+      );
+    }
+
+    return updatedClass;
   }
 
   @Roles('professor', 'admin')
