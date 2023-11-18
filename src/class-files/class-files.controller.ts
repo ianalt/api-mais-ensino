@@ -89,13 +89,13 @@ export class ClassFilesController {
     }
   }
 
-  @Get('/:classFileId/download')
+  @Get('/:classFileName/download')
   async downloadClassFile(
-    @Param('classFileId', ParseIntPipe) classFileId: number,
+    @Param('classFileName') classFileName: string,
     @Res({ passthrough: true }) res: Response,
   ) {
     const fileInfo = await this.classFilesService.downloadClassFile(
-      classFileId,
+      classFileName,
     );
 
     res.set({

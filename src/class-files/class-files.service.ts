@@ -100,10 +100,14 @@ export class ClassFilesService {
     return classFile;
   }
 
-  async downloadClassFile(id: number) {
-    const foundFile = await this.findOne(id);
+  async downloadClassFile(fileName: string) {
+    const foundFile = await this.classFilesRepository.findOne({
+      where: { fileName },
+    });
 
-    const { fileName, fileType } = foundFile;
+    if (!foundFile) throw new NotFoundException('Arquivo não encontrado');
+
+    const { fileType } = foundFile;
 
     const filePath = `${process.cwd()}/uploads/${
       fileType === FileType.VIDEOAULA ? 'video-classes' : 'extra-files'
