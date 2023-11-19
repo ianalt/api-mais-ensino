@@ -1,7 +1,7 @@
 import { Expose, Type } from 'class-transformer';
 import { ValidateNested } from 'class-validator';
+import { BaseClassesDto } from 'src/classes/dto/base-classes.dto';
 import { BaseSubjectDto } from 'src/subjects/dtos/base-subject.dto';
-import { BaseTopicDto } from 'src/topics/dtos/base-topic.dto';
 
 export class CategoryDto {
   @Expose()
@@ -26,6 +26,6 @@ export class CategoryDto {
 
   @Expose()
   @ValidateNested({ each: true })
-  @Type(() => BaseTopicDto)
-  topics: BaseTopicDto[];
+  @Type(() => BaseClassesDto)
+  classes: BaseClassesDto[];
 }

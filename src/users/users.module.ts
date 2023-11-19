@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CommentsModule } from 'src/comments/comments.module';
 import { AddressesModule } from '../addresses/addresses.module';
 import { EducationInfoModule } from '../education-info/education-info.module';
 import { FinancialInfoModule } from '../financial-info/financial-info.module';
@@ -19,7 +18,6 @@ import { TokensModule } from 'src/tokens/tokens.module';
     EducationInfoModule,
     FinancialInfoModule,
     PhoneNumbersModule,
-    CommentsModule,
     TokensModule,
   ],
   exports: [UsersService],

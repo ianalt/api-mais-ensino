@@ -260,6 +260,8 @@ export class SubjectsService {
 
     if (!user) throw new NotFoundException('Usuário não encontrado');
 
+    if (user.subject === null) return null;
+
     const subjectId = user.subject.id;
 
     const subject = await this.subjectsRepository.findOne({
@@ -270,11 +272,11 @@ export class SubjectsService {
         'knowledgeArea',
         'categories',
         'users',
-        //TODO include topics
+        //TODO include classes
       ],
     });
 
-    if (!subject) throw new NotFoundException('Disciplina não encontrada');
+    if (!subject) return null;
 
     return subject;
   }

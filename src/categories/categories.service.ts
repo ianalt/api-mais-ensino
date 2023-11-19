@@ -20,7 +20,7 @@ export class CategoriesService {
     private subjectsRepository: Repository<Subject>,
   ) {}
 
-  private allRelations = ['topics', 'subject'];
+  private allRelations = ['subject', 'classes'];
 
   async findById(id: number) {
     if (!id || id < 0) throw new NotFoundException('Categoria não encontrada');

@@ -1,6 +1,5 @@
 import { Address } from 'src/addresses/address.entity';
 import { Role } from 'src/auth/enums/role.enum';
-import { Comment } from 'src/comments/comment.entity';
 import { EducationInfo } from 'src/education-info/education-info.entity';
 import { FinancialInfo } from 'src/financial-info/financial-info.entity';
 import { PhoneNumber } from 'src/phone-numbers/phone-number.entity';
@@ -17,6 +16,9 @@ import {
 } from 'typeorm';
 import { Ethnicity } from './enums/ethnicity.enum';
 import { Gender } from './enums/gender.enum';
+import { Classes } from 'src/classes/classes.entity';
+import { Question } from 'src/questions/question.entity';
+import { Answer } from 'src/answers/answer.entity';
 
 @Entity({ name: 'usuarios' })
 export class User {
@@ -74,8 +76,17 @@ export class User {
   @OneToMany(() => EducationInfo, (educationInfo) => educationInfo.user)
   educationInfoList: EducationInfo[];
 
-  @OneToMany(() => Comment, (comment) => comment.user)
-  comments: Comment[];
+  @OneToMany(() => Classes, (oneClass) => oneClass.createdBy)
+  createdClasses: Classes[];
+
+  @OneToMany(() => Question, (question) => question.createdBy)
+  createdQuestions: Question[];
+
+  @OneToMany(() => Answer, (answer) => answer.createdBy)
+  createdAnswers: Answer[];
+
+  @OneToMany(() => Answer, (answer) => answer.createdBy)
+  verifiedAnswers: Answer[];
 
   @ManyToOne(() => Subject, (subject) => subject.users, { nullable: true })
   @JoinColumn({ name: 'id_disciplina' })

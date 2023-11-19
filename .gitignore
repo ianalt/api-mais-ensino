@@ -1,6 +1,8 @@
 # TODO list
 api-todo-list.txt
 
+/uploads/*
+
 # Environment variables
 .env
 .env.development

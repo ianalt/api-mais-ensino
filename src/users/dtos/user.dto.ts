@@ -2,13 +2,14 @@ import { Expose, Type } from 'class-transformer';
 import { ValidateNested } from 'class-validator';
 import { AddressDto } from 'src/addresses/dtos/address.dto';
 import { Role } from 'src/auth/enums/role.enum';
-import { CommentDto } from 'src/comments/dtos/comment.dto';
 import { EducationInfoDto } from 'src/education-info/dtos/education-info.dto';
 import { FinancialInfoDto } from 'src/financial-info/dtos/financial-info.dto';
 import { PhoneNumberDto } from 'src/phone-numbers/dtos/phone-number.dto';
 import { BaseSubjectDto } from 'src/subjects/dtos/base-subject.dto';
 import { Ethnicity } from '../enums/ethnicity.enum';
 import { Gender } from '../enums/gender.enum';
+import { BaseQuestionDto } from 'src/questions/dto/base-question.dto';
+import { BaseAnswerDto } from 'src/answers/dto/base-answer.dto';
 
 export class UserDto {
   @Expose()
@@ -68,12 +69,17 @@ export class UserDto {
   educationInfoList: EducationInfoDto[];
 
   @Expose()
-  @ValidateNested({ each: true })
-  @Type(() => CommentDto)
-  comments: CommentDto[];
-
-  @Expose()
   @ValidateNested()
   @Type(() => BaseSubjectDto)
   subject: BaseSubjectDto;
+
+  @Expose()
+  @ValidateNested()
+  @Type(() => BaseQuestionDto)
+  createdQuestions: BaseQuestionDto[];
+
+  @Expose()
+  @ValidateNested()
+  @Type(() => BaseAnswerDto)
+  createdAnswers: BaseAnswerDto[];
 }
