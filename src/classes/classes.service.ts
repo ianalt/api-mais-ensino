@@ -195,4 +195,19 @@ export class ClassesService {
 
     await this.classesRepository.remove(foundClass);
   }
+
+  async findMostRecent() {
+    const classes = await this.classesRepository.find({
+      relations: ['createdBy', 'category', 'category.subject'],
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+
+    if (!classes || classes.length <= 0) return [];
+
+    const mostRecentClasses = classes.slice(0, 4);
+
+    return mostRecentClasses;
+  }
 }

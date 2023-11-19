@@ -23,6 +23,7 @@ import { CreateClassDto } from './dto/create-classes.dto';
 import { UpdateClassDto } from './dto/update-classes.dto';
 import { UpdateClassTitleDto } from './dto/update-class-title.dto';
 import { UpdateClassCategoryDto } from './dto/update-class-category.dto';
+import { BasicClassInfoDto } from './dto/basic-class-info.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('classes')
@@ -34,6 +35,13 @@ export class ClassesController {
   @Serialize(ClassesDto)
   findAll() {
     return this.classesService.findAll();
+  }
+
+  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Get('/recent')
+  @Serialize(BasicClassInfoDto)
+  async findMostRecent() {
+    return await this.classesService.findMostRecent();
   }
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
