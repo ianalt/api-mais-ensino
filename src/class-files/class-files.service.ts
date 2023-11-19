@@ -125,6 +125,124 @@ export class ClassFilesService {
   }
   //UPDATE VIDEO CLASS
 
+  //TODO UPDATE EXTRA FILES
+  async updateClassExtraFiles(files: Express.Multer.File[], classId: number) {
+    const foundClass = await this.classesRepository.findOne({
+      where: { id: classId, active: true },
+    });
+
+    if (!foundClass)
+      throw new UnprocessableEntityException(
+        'Não foi possível armazenar videoaula',
+      );
+
+    const foundExtraFiles = await this.classFilesRepository.find({
+      where: {
+        fileType: FileType.MATERIAL,
+        class: {
+          id: classId,
+        },
+      },
+      relations: ['class'],
+    });
+
+    if (foundExtraFiles && foundExtraFiles.length > 0) {
+      for (const file of foundExtraFiles) {
+        const { fileName } = file;
+
+        await this.classFilesRepository.remove(file);
+
+        fs.unlink(`./uploads/extra-files/${fileName}`, (err) => {});
+      }
+    }
+
+    for (const file of files) {
+      const createdFile = this.classFilesRepository.create({
+        fileName: file.filename,
+        fileType: FileType.MATERIAL,
+        contentLength: file.size,
+        contentType: file.mimetype,
+        path: `${process.env.HOST_METHOD}://${process.env.HOST}:${process.env.PORT}/class-files/${file.filename}`,
+        class: foundClass,
+      });
+
+      const newClassFile = await this.classFilesRepository.save(createdFile);
+
+      if (!newClassFile)
+        throw new UnprocessableEntityException(
+          'Não foi possível armazenar videoaula',
+        );
+    }
+
+    const classToUpdate = await this.classesRepository.findOne({
+      where: {
+        id: classId,
+        active: true,
+      },
+      relations: [
+        'questions',
+        'classFiles',
+        'createdBy',
+        'category',
+        'category.subject',
+      ],
+    });
+
+    if (!classToUpdate)
+      throw new UnprocessableEntityException(
+        'Erro ao armazenar arquivos complementares',
+      );
+
+    classToUpdate.updatedAt = new Date();
+
+    return await this.classesRepository.save(classToUpdate);
+  }
+
+  async removeClassExtraFiles(classId: number) {
+    const foundExtraFiles = await this.classFilesRepository.find({
+      where: {
+        fileType: FileType.MATERIAL,
+        class: {
+          id: classId,
+        },
+      },
+      relations: ['class'],
+    });
+
+    if (foundExtraFiles && foundExtraFiles.length > 0) {
+      for (const file of foundExtraFiles) {
+        const { fileName } = file;
+
+        await this.classFilesRepository.remove(file);
+
+        fs.unlink(`./uploads/extra-files/${fileName}`, (err) => {});
+      }
+    }
+
+    const classToUpdate = await this.classesRepository.findOne({
+      where: {
+        id: classId,
+        active: true,
+      },
+      relations: [
+        'questions',
+        'classFiles',
+        'createdBy',
+        'category',
+        'category.subject',
+      ],
+    });
+
+    if (!classToUpdate)
+      throw new UnprocessableEntityException(
+        'Erro ao armazenar arquivos complementares',
+      );
+
+    classToUpdate.updatedAt = new Date();
+
+    return await this.classesRepository.save(classToUpdate);
+  }
+
   async uploadExtraClassFiles(files: Express.Multer.File[], classId: number) {
     const foundClass = await this.classesRepository.findOne({
       where: { id: classId, active: true },

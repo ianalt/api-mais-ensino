@@ -119,6 +119,51 @@ export class ClassFilesController {
     }
   }
 
+  @Roles('professor', 'admin')
+  @Patch('/:classId/extra-files/update')
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [{ name: 'extraFiles' }],
+      extraClassFilesUploadConfig,
+    ),
+  )
+  @Serialize(ClassesDto)
+  async updateClassExtraFiles(
+    @Param('classId', ParseIntPipe) classId: number,
+    @UploadedFiles()
+    files: Express.Multer.File[],
+  ) {
+    const updatedClass = await this.classFilesService.updateClassExtraFiles(
+      files['extraFiles'],
+      classId,
+    );
+
+    if (!updatedClass) {
+      throw new UnprocessableEntityException(
+        'Não foi possível atualizar arquivos complementares',
+      );
+    }
+    3;
+    return updatedClass;
+  }
+
+  @Roles('professor', 'admin')
+  @Delete('/:classId/extra-files/remove')
+  @Serialize(ClassesDto)
+  async removeClassExtraFiles(@Param('classId', ParseIntPipe) classId: number) {
+    const updatedClass = await this.classFilesService.removeClassExtraFiles(
+      classId,
+    );
+
+    if (!updatedClass) {
+      throw new UnprocessableEntityException(
+        'Não foi possível atualizar arquivos complementares',
+      );
+    }
+
+    return updatedClass;
+  }
+
   @Get('/:classFileName/download')
   async downloadClassFile(
     @Param('classFileName') classFileName: string,
