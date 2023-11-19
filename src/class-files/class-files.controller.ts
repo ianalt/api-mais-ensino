@@ -26,21 +26,21 @@ import { UpdateClassFileDto } from './dto/update-class-file.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { ClassesDto } from 'src/classes/dto/classes.dto';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('class-files')
 export class ClassFilesController {
   constructor(private readonly classFilesService: ClassFilesService) {}
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   findAll() {
     return this.classFilesService.findAll();
   }
-
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.classFilesService.findOne(+id);
   }
-
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('professor', 'admin')
   @Post('/:classId/video-class')
   @UseInterceptors(
@@ -65,7 +65,7 @@ export class ClassFilesController {
       );
     }
   }
-
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('professor', 'admin')
   @Patch('/:classId/video-class/update')
   @UseInterceptors(
@@ -93,7 +93,7 @@ export class ClassFilesController {
 
     return updatedClass;
   }
-
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('professor', 'admin')
   @Post('/:classId/extra-files')
   @UseInterceptors(
@@ -118,7 +118,7 @@ export class ClassFilesController {
       );
     }
   }
-
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('professor', 'admin')
   @Patch('/:classId/extra-files/update')
   @UseInterceptors(
@@ -146,7 +146,7 @@ export class ClassFilesController {
     3;
     return updatedClass;
   }
-
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('professor', 'admin')
   @Delete('/:classId/extra-files/remove')
   @Serialize(ClassesDto)
@@ -180,7 +180,7 @@ export class ClassFilesController {
 
     return new StreamableFile(fileInfo.classFile);
   }
-
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -188,7 +188,7 @@ export class ClassFilesController {
   ) {
     return this.classFilesService.update(+id, updateClassFileDto);
   }
-
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete('/:fileName')
   remove(@Param('fileName') fileName: string) {
     return this.classFilesService.remove(fileName);
