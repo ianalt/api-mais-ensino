@@ -25,7 +25,13 @@ export class SubjectsService {
     private usersRepository: Repository<User>,
   ) {}
 
-  private allRelations = ['users', 'knowledgeArea', 'categories'];
+  //TODO no errors please
+  private allRelations = [
+    'users',
+    'knowledgeArea',
+    'categories',
+    'categories.classes',
+  ];
 
   async findById(id: number) {
     if (!id || id < 0) throw new NotFoundException('Disciplina não encontrada');
