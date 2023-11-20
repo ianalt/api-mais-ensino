@@ -20,6 +20,7 @@ import { SubjectDto } from './dtos/subject.dto';
 import { UpdateSubjectOptionsDto } from './dtos/update-subject-options.dto';
 import { UpdateSubjectDto } from './dtos/update-subject.dto';
 import { SubjectsService } from './subjects.service';
+import { FullSubjectInfoDto } from './dtos/full-subject-info.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('subjects')
@@ -51,7 +52,7 @@ export class SubjectsController {
 
   @Roles('estudante', 'monitor', 'professor', 'admin')
   @Get('/:id')
-  @Serialize(SubjectDto)
+  @Serialize(FullSubjectInfoDto)
   async findById(@Param('id', ParseIntPipe) id: number) {
     return await this.subjectsService.findById(id);
   }
