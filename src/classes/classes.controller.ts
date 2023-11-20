@@ -30,21 +30,21 @@ import { BasicClassInfoDto } from './dto/basic-class-info.dto';
 export class ClassesController {
   constructor(private readonly classesService: ClassesService) {}
 
-  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Roles('estudante', 'professor', 'admin')
   @Get()
   @Serialize(ClassesDto)
   findAll() {
     return this.classesService.findAll();
   }
 
-  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Roles('estudante', 'professor', 'admin')
   @Get('/recent')
   @Serialize(BasicClassInfoDto)
   async findMostRecent() {
     return await this.classesService.findMostRecent();
   }
 
-  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Roles('estudante', 'professor', 'admin')
   @Get()
   @Serialize(ClassesDto)
   findAllFromSubject(@Query('subjectId', ParseIntPipe) subjectId: number) {

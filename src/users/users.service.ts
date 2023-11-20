@@ -12,17 +12,15 @@ import { FinancialInfoService } from 'src/financial-info/financial-info.service'
 import { PhoneNumbersService } from 'src/phone-numbers/phone-numbers.service';
 import { Repository } from 'typeorm';
 import { AddAdminDto } from './dtos/add-admin.dto';
-import { AddMonitorDto } from './dtos/add-monitor.dto';
+
 import { AddStudentDto } from './dtos/add-student.dto';
 import { AddTeacherDto } from './dtos/add-teacher.dto';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateAdminDto } from './dtos/update-admin.dto';
 import { UpdateFullUserDto } from './dtos/update-full-user.dto';
-import { UpdateMonitorDto } from './dtos/update-monitor.dto';
 import { UpdateStudentDto } from './dtos/update-student.dto';
 import { UpdateTeacherDto } from './dtos/update-teacher.dto';
 import { User } from './user.entity';
-import { FinancialInfo } from 'src/financial-info/financial-info.entity';
 import { Address } from 'src/addresses/address.entity';
 import { Role } from 'src/auth/enums/role.enum';
 import { ChangePasswordDto } from './dtos/change-password.dto';
@@ -46,9 +44,6 @@ export class UsersService {
     'educationInfoList',
     'subject',
     'createdClasses',
-    'createdQuestions',
-    'createdAnswers',
-    'verifiedAnswers',
   ];
 
   private mainRelations = [
@@ -102,17 +97,6 @@ export class UsersService {
     });
 
     if (!users) throw new NotFoundException('Students not found.');
-
-    return users;
-  }
-
-  async findAllMonitors() {
-    const users = await this.usersRepository.find({
-      where: { active: true, role: Role.MONITOR },
-      relations: this.allRelations,
-    });
-
-    if (!users) throw new NotFoundException('Monitors not found.');
 
     return users;
   }
@@ -172,65 +156,6 @@ export class UsersService {
       this.addressesService.create(address, userId),
 
       this.financialInfoService.create(financialInfo, userId),
-    ]);
-
-    const educationList = await Promise.allSettled(
-      educationInfoList.map((educationInfo) => {
-        return this.educationInfoService.create(educationInfo, userId);
-      }),
-    );
-
-    const rejectedEducationInfo = educationList.filter(
-      (info) => info.status === 'rejected',
-    );
-
-    const phoneList = await Promise.allSettled(
-      phoneNumbers.map((phoneNumber) => {
-        return this.phoneNumbersService.create(phoneNumber, userId);
-      }),
-    );
-
-    const rejectedInfo = remainingInfo.filter(
-      (info) => info.status === 'rejected',
-    );
-
-    const rejectedPhoneNumbers = phoneList.filter(
-      (phone) => phone.status === 'rejected',
-    );
-
-    if (
-      rejectedInfo.length > 0 ||
-      rejectedPhoneNumbers.length > 0 ||
-      rejectedEducationInfo.length > 0
-    ) {
-      await this.remove(newUser.id);
-
-      return null;
-    }
-
-    const addedUser = await this.usersRepository.findOne({
-      where: { id: userId },
-      relations: this.mainRelations,
-    });
-
-    if (!addedUser) {
-      await this.remove(newUser.id);
-
-      return null;
-    }
-
-    return addedUser;
-  }
-
-  async addMonitor(body: AddMonitorDto) {
-    const { user, address, phoneNumbers, educationInfoList } = body;
-
-    const newUser = await this.create(user);
-
-    const userId = newUser.id;
-
-    const remainingInfo = await Promise.allSettled([
-      this.addressesService.create(address, userId),
     ]);
 
     const educationList = await Promise.allSettled(
@@ -504,140 +429,6 @@ export class UsersService {
     const remainingInfo = await Promise.all([
       await this.addressesService.update(address.id, address),
       await this.financialInfoService.update(financialInfo.id, financialInfo),
-    ]);
-
-    if (!remainingInfo)
-      throw new UnprocessableEntityException(
-        'Não foi possível atualizar o usuário (dados pessoais preenchidos incorretamente)',
-      );
-
-    const updatedUserInfo = await this.editUser(user, id);
-
-    if (!updatedUserInfo)
-      throw new UnprocessableEntityException(
-        'Não foi possível atualizar o usuário (dados pessoais preenchidos incorretamente)',
-      );
-
-    return updatedUserInfo;
-  }
-
-  async updateMonitor(id: number, body: UpdateMonitorDto) {
-    const { address, educationInfoList, phoneNumbers, user } = body;
-
-    const existingEduInfo = educationInfoList.filter((info) => info.id);
-    const newEduInfo = educationInfoList.filter((info) => !info.id);
-
-    if (existingEduInfo.length <= 0 && newEduInfo.length <= 0)
-      throw new UnprocessableEntityException(
-        'Não foi possível atualizar o usuário (dados educacionais incorretos)',
-      );
-
-    if (existingEduInfo.length <= 0)
-      await this.educationInfoService.removeAllFromUser(id);
-
-    if (newEduInfo.length > 0) {
-      const newEduInfoList = await Promise.all(
-        newEduInfo.map(async (item) => {
-          const newInfo = await this.educationInfoService.createForManage(
-            item,
-            id,
-          );
-
-          if (!newInfo)
-            throw new UnprocessableEntityException(
-              'Não foi possível atualizar o usuário (dados educacionais incorretos)',
-            );
-        }),
-      );
-
-      if (!newEduInfoList)
-        throw new UnprocessableEntityException(
-          'Não foi possível atualizar o usuário (dados educacionais incorretos)',
-        );
-    }
-
-    if (existingEduInfo.length > 0) {
-      const updatedExistingEduList = await Promise.all(
-        existingEduInfo.map(async (item) => {
-          const { id, ...values } = item;
-
-          const updatedExistingInfo = await this.educationInfoService.update(
-            id,
-            values,
-          );
-
-          if (!updatedExistingInfo)
-            throw new UnprocessableEntityException(
-              'Não foi possível atualizar o usuário (dados educacionais incorretos)',
-            );
-        }),
-      );
-
-      if (!updatedExistingEduList)
-        throw new UnprocessableEntityException(
-          'Não foi possível atualizar o usuário (dados educacionais incorretos)',
-        );
-    }
-
-    const existingPhones = phoneNumbers.filter((info) => info.id);
-    const newPhone = phoneNumbers.filter((info) => !info.id);
-
-    if (existingPhones.length <= 0 && newPhone.length <= 0)
-      throw new UnprocessableEntityException(
-        'Não foi possível atualizar o usuário (dados para contato incorretos)',
-      );
-
-    if (existingPhones.length <= 0)
-      await this.phoneNumbersService.removeAllFromUser(id);
-
-    if (newPhone.length > 0) {
-      const updatedNewPhoneList = await Promise.all(
-        newPhone.map(async (item) => {
-          const newPhone = await this.phoneNumbersService.createNewInstance(
-            item,
-            id,
-          );
-
-          const newInfo = await this.phoneNumbersService.create(newPhone, id);
-
-          if (!newInfo)
-            throw new UnprocessableEntityException(
-              'Não foi possível atualizar o usuário (dados para contato incorretos)',
-            );
-        }),
-      );
-
-      if (!updatedNewPhoneList)
-        throw new UnprocessableEntityException(
-          'Não foi possível atualizar o usuário (dados para contato incorretos)',
-        );
-    }
-
-    if (existingPhones.length > 0) {
-      const updatedExistingPhonesList = await Promise.all(
-        existingPhones.map(async (item) => {
-          const { id, ...values } = item;
-
-          const updatedExistingInfo = await this.phoneNumbersService.update(
-            id,
-            values,
-          );
-
-          if (!updatedExistingInfo)
-            throw new UnprocessableEntityException(
-              'Não foi possível atualizar o usuário (dados para contato incorretos)',
-            );
-        }),
-      );
-
-      if (!updatedExistingPhonesList)
-        throw new UnprocessableEntityException(
-          'Não foi possível atualizar o usuário (dados para contato incorretos)',
-        );
-    }
-
-    const remainingInfo = await Promise.all([
-      await this.addressesService.update(address.id, address),
     ]);
 
     if (!remainingInfo)
@@ -959,11 +750,6 @@ export class UsersService {
     if (role === Role.PROFESSOR) {
       const data: UpdateTeacherDto = { ...body };
       return await this.updateTeacher(id, data);
-    }
-
-    if (role === Role.MONITOR) {
-      const data = { ...body };
-      return await this.updateMonitor(id, data);
     }
 
     if (role === Role.ESTUDANTE) {

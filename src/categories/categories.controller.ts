@@ -32,14 +32,14 @@ export class CategoriesController {
     return await this.categoriesService.getCategoryOptions();
   }
 
-  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Roles('estudante', 'professor', 'admin')
   @Get('/:id')
   @Serialize(CategoryDto)
   async findById(@Param('id', ParseIntPipe) id: number) {
     return await this.categoriesService.findById(id);
   }
 
-  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Roles('estudante', 'professor', 'admin')
   @Get()
   @Serialize(CategoryDto)
   async findAll() {

@@ -8,8 +8,6 @@ import { PhoneNumberDto } from 'src/phone-numbers/dtos/phone-number.dto';
 import { BaseSubjectDto } from 'src/subjects/dtos/base-subject.dto';
 import { Ethnicity } from '../enums/ethnicity.enum';
 import { Gender } from '../enums/gender.enum';
-import { BaseQuestionDto } from 'src/questions/dto/base-question.dto';
-import { BaseAnswerDto } from 'src/answers/dto/base-answer.dto';
 
 export class UserDto {
   @Expose()
@@ -72,14 +70,4 @@ export class UserDto {
   @ValidateNested()
   @Type(() => BaseSubjectDto)
   subject: BaseSubjectDto;
-
-  @Expose()
-  @ValidateNested()
-  @Type(() => BaseQuestionDto)
-  createdQuestions: BaseQuestionDto[];
-
-  @Expose()
-  @ValidateNested()
-  @Type(() => BaseAnswerDto)
-  createdAnswers: BaseAnswerDto[];
 }

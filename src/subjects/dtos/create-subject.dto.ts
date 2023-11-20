@@ -27,8 +27,4 @@ export class CreateSubjectDto {
   @IsInt({ message: 'Selecione um professor para a disciplina' })
   @IsPositive({ message: 'Selecione um professor para a disciplina' })
   teacherId: number;
-
-  @IsInt({ each: true })
-  @IsPositive({ each: true })
-  monitorsIds: number[];
 }

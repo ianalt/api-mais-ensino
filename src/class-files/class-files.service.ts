@@ -107,13 +107,7 @@ export class ClassFilesService {
         id: classId,
         active: true,
       },
-      relations: [
-        'questions',
-        'classFiles',
-        'createdBy',
-        'category',
-        'category.subject',
-      ],
+      relations: ['classFiles', 'createdBy', 'category', 'category.subject'],
     });
 
     if (!classToUpdate)
@@ -179,13 +173,7 @@ export class ClassFilesService {
         id: classId,
         active: true,
       },
-      relations: [
-        'questions',
-        'classFiles',
-        'createdBy',
-        'category',
-        'category.subject',
-      ],
+      relations: ['classFiles', 'createdBy', 'category', 'category.subject'],
     });
 
     if (!classToUpdate)
@@ -224,13 +212,7 @@ export class ClassFilesService {
         id: classId,
         active: true,
       },
-      relations: [
-        'questions',
-        'classFiles',
-        'createdBy',
-        'category',
-        'category.subject',
-      ],
+      relations: ['classFiles', 'createdBy', 'category', 'category.subject'],
     });
 
     if (!classToUpdate)

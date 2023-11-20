@@ -2,7 +2,6 @@ import { Expose, Type } from 'class-transformer';
 import { ValidateNested } from 'class-validator';
 import { CategoryWithSubjectDto } from 'src/categories/dtos/category-with-subject.dto';
 import { ClassFileDto } from 'src/class-files/dto/class-file.dto';
-import { QuestionDto } from 'src/questions/dto/question.dto';
 import { BaseUserDto } from 'src/users/dtos/base-user.dto';
 
 export class ClassesDto {
@@ -20,11 +19,6 @@ export class ClassesDto {
 
   @Expose()
   title: string;
-
-  @Expose()
-  @Type(() => QuestionDto)
-  @ValidateNested({ each: true })
-  questions: QuestionDto[];
 
   @Expose()
   @Type(() => ClassFileDto)

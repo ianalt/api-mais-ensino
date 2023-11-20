@@ -17,8 +17,6 @@ import {
 import { Ethnicity } from './enums/ethnicity.enum';
 import { Gender } from './enums/gender.enum';
 import { Classes } from 'src/classes/classes.entity';
-import { Question } from 'src/questions/question.entity';
-import { Answer } from 'src/answers/answer.entity';
 
 @Entity({ name: 'usuarios' })
 export class User {
@@ -78,15 +76,6 @@ export class User {
 
   @OneToMany(() => Classes, (oneClass) => oneClass.createdBy)
   createdClasses: Classes[];
-
-  @OneToMany(() => Question, (question) => question.createdBy)
-  createdQuestions: Question[];
-
-  @OneToMany(() => Answer, (answer) => answer.createdBy)
-  createdAnswers: Answer[];
-
-  @OneToMany(() => Answer, (answer) => answer.createdBy)
-  verifiedAnswers: Answer[];
 
   @ManyToOne(() => Subject, (subject) => subject.users, { nullable: true })
   @JoinColumn({ name: 'id_disciplina' })

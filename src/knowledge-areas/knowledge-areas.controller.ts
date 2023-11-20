@@ -35,7 +35,7 @@ export class KnowledgeAreasController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Roles('estudante', 'professor', 'admin')
   @Get('/:id')
   @Serialize(KnowledgeAreaDto)
   async findById(@Param('id', ParseIntPipe) id: number) {
@@ -48,7 +48,7 @@ export class KnowledgeAreasController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Roles('estudante', 'professor', 'admin')
   @Get()
   @Serialize(KnowledgeAreaDto)
   async findAll() {

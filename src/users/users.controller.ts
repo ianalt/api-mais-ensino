@@ -20,12 +20,10 @@ import { FinancialInfoService } from 'src/financial-info/financial-info.service'
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { TokensService } from 'src/tokens/tokens.service';
 import { AddAdminDto } from './dtos/add-admin.dto';
-import { AddMonitorDto } from './dtos/add-monitor.dto';
 import { AddStudentDto } from './dtos/add-student.dto';
 import { AddTeacherDto } from './dtos/add-teacher.dto';
 import { ChangePasswordDto } from './dtos/change-password.dto';
 import { UpdateAdminDto } from './dtos/update-admin.dto';
-import { UpdateMonitorDto } from './dtos/update-monitor.dto';
 import { UpdateStudentDto } from './dtos/update-student.dto';
 import { UpdateTeacherDto } from './dtos/update-teacher.dto';
 import { UserDto } from './dtos/user.dto';
@@ -41,14 +39,14 @@ export class UsersController {
     private financialInfoService: FinancialInfoService,
   ) {}
 
-  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Roles('estudante', 'professor', 'admin')
   @Get()
   @Serialize(UserDto)
   async findAll() {
     return await this.usersService.findAll();
   }
 
-  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Roles('estudante', 'professor', 'admin')
   @Get('/profile')
   @Serialize(UserDto)
   async getProfile(@Request() req) {
@@ -85,7 +83,7 @@ export class UsersController {
     return await this.tokensService.getAccessCount();
   }
 
-  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Roles('estudante', 'professor', 'admin')
   @Get('/:id')
   @Serialize(UserDto)
   async findById(@Param('id', ParseIntPipe) id: number) {
@@ -130,40 +128,6 @@ export class UsersController {
       );
 
     return addedStudent;
-  }
-
-  @Roles('admin')
-  @Post('/monitor')
-  @Serialize(UserDto)
-  async addMonitor(@Body() body: AddMonitorDto) {
-    const { cpf, email } = body.user;
-
-    const cpfBeingUsed = await this.usersService.findByCpf(cpf);
-    const emailBeingUsed = await this.usersService.findByEmail(email);
-
-    if (cpfBeingUsed && emailBeingUsed)
-      throw new UnprocessableEntityException(
-        'Ambos CPF e e-mail providos já estão sendo utilizados. Digite um CPF e um e-mail válidos.',
-      );
-
-    if (cpfBeingUsed)
-      throw new UnprocessableEntityException(
-        'O CPF provido já está sendo utilizado. Digite um CPF válido.',
-      );
-
-    if (emailBeingUsed)
-      throw new UnprocessableEntityException(
-        'O e-mail provido já está sendo utilizado. Digite um e-mail válido.',
-      );
-
-    const addedMonitor = await this.usersService.addMonitor(body);
-
-    if (!addedMonitor)
-      throw new UnprocessableEntityException(
-        'Um erro surgiu enquanto o cadastro era realizado. Por favor, tente novamente.',
-      );
-
-    return addedMonitor;
   }
 
   @Roles('admin')
@@ -270,41 +234,6 @@ export class UsersController {
   }
 
   @Roles('admin')
-  @Patch('/monitor/:id')
-  @Serialize(UserDto)
-  async updateMonitor(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() body: UpdateMonitorDto,
-  ) {
-    const { cpf, email } = body.user;
-
-    const cpfBeingUsed = await this.usersService.findByCpf(cpf);
-    const emailBeingUsed = await this.usersService.findByEmail(email);
-
-    if (
-      cpfBeingUsed &&
-      emailBeingUsed &&
-      cpfBeingUsed.id !== id &&
-      emailBeingUsed.id !== id
-    )
-      throw new UnprocessableEntityException(
-        'Ambos CPF e e-mail providos já estão sendo utilizados. Digite um CPF e um e-mail válidos.',
-      );
-
-    if (cpfBeingUsed && cpfBeingUsed.id !== id)
-      throw new UnprocessableEntityException(
-        'O CPF provido já está sendo utilizado. Digite um CPF válido.',
-      );
-
-    if (emailBeingUsed && emailBeingUsed.id !== id)
-      throw new UnprocessableEntityException(
-        'O e-mail provido já está sendo utilizado. Digite um e-mail válido.',
-      );
-
-    return await this.usersService.updateMonitor(id, body);
-  }
-
-  @Roles('admin')
   @Patch('/teacher/:id')
   @Serialize(UserDto)
   async updateTeacher(
@@ -374,17 +303,13 @@ export class UsersController {
     return await this.usersService.updateAdmin(id, body);
   }
 
-  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Roles('estudante', 'professor', 'admin')
   @Patch('/profile')
   @Serialize(UserDto)
   async editProfile(
     @Request() req,
     @Body()
-    body:
-      | UpdateAdminDto
-      | UpdateTeacherDto
-      | UpdateMonitorDto
-      | UpdateStudentDto,
+    body: UpdateAdminDto | UpdateTeacherDto | UpdateStudentDto,
   ) {
     const userId = req.user.id;
     const userRole = req.user.role;
@@ -422,7 +347,7 @@ export class UsersController {
     return await this.usersService.editProfile(userId, userRole, body);
   }
 
-  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Roles('estudante', 'professor', 'admin')
   @Patch('/profile/change-password')
   @HttpCode(HttpStatus.NO_CONTENT)
   async changePassword(
