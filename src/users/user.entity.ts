@@ -41,7 +41,7 @@ export class User {
   @Column({ name: 'password' })
   password: string;
 
-  @Column({ name: 'name' })
+  @Column({ name: 'first_name' })
   firstName: string;
 
   @Column({ name: 'last_name' })
