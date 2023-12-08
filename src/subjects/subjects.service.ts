@@ -25,7 +25,6 @@ export class SubjectsService {
     private usersRepository: Repository<User>,
   ) {}
 
-  //TODO no errors please
   private allRelations = [
     'users',
     'knowledgeArea',
@@ -68,19 +67,14 @@ export class SubjectsService {
       (user) => user.role === Role.PROFESSOR && !user.subject,
     );
 
-    const monitorsOptions = options[1].filter(
-      (user) => user.role === Role.MONITOR && !user.subject,
-    );
-
     return {
       knowledgeAreaOptions,
       teacherOptions,
-      monitorsOptions,
     };
   }
 
   async create(body: CreateSubjectDto) {
-    const { knowledgeAreaId, teacherId, monitorsIds, ...attrs } = body;
+    const { knowledgeAreaId, teacherId, ...attrs } = body;
 
     const subjectWithName = await this.subjectsRepository.findOne({
       where: { name: attrs.name },
@@ -91,7 +85,7 @@ export class SubjectsService {
         'Uma disciplina com este nome já existe',
       );
 
-    const [knowledgeArea, teacher, monitors] = await Promise.allSettled([
+    const [knowledgeArea, teacher] = await Promise.allSettled([
       this.knowledgeAreasRepository.findOne({
         where: {
           active: true,
@@ -107,17 +101,6 @@ export class SubjectsService {
           subject: null,
         },
       }),
-
-      monitorsIds.length === 0
-        ? []
-        : this.usersRepository.find({
-            where: {
-              active: true,
-              id: In(monitorsIds),
-              role: Role.MONITOR,
-              subject: null,
-            },
-          }),
     ]);
 
     if (knowledgeArea.status === 'rejected')
@@ -126,12 +109,7 @@ export class SubjectsService {
     if (teacher.status === 'rejected')
       throw new NotFoundException('Professor(a) não encontrado(a)');
 
-    if (monitors.status === 'rejected')
-      throw new NotFoundException(
-        'Um(a) ou mais monitores(as) não encontrados(as)',
-      );
-
-    const users = [teacher.value, ...monitors.value];
+    const users = [teacher.value];
 
     const newSubject = this.subjectsRepository.create({
       ...attrs,
@@ -159,16 +137,9 @@ export class SubjectsService {
         (!user.subject || user.subject.id === subjectId),
     );
 
-    const monitorsOptions = options[1].filter(
-      (user) =>
-        user.role === Role.MONITOR &&
-        (!user.subject || user.subject.id === subjectId),
-    );
-
     return {
       knowledgeAreaOptions,
       teacherOptions,
-      monitorsOptions,
     };
   }
 
@@ -177,7 +148,7 @@ export class SubjectsService {
 
     if (!subject) throw new NotFoundException('Disciplina não encontrada');
 
-    const { knowledgeAreaId, teacherId, monitorsIds, ...values } = body;
+    const { knowledgeAreaId, teacherId, ...values } = body;
 
     const subjectWithName = await this.subjectsRepository.findOne({
       where: { name: values.name },
@@ -188,7 +159,7 @@ export class SubjectsService {
         'Uma disciplina com este nome já existe',
       );
 
-    const [knowledgeArea, teacher, monitors] = await Promise.allSettled([
+    const [knowledgeArea, teacher] = await Promise.allSettled([
       this.knowledgeAreasRepository.findOne({
         where: {
           active: true,
@@ -203,16 +174,6 @@ export class SubjectsService {
           role: Role.PROFESSOR,
         },
       }),
-
-      monitorsIds.length === 0
-        ? []
-        : this.usersRepository.find({
-            where: {
-              active: true,
-              id: In(monitorsIds),
-              role: Role.MONITOR,
-            },
-          }),
     ]);
 
     if (knowledgeArea.status === 'rejected')
@@ -221,16 +182,11 @@ export class SubjectsService {
     if (teacher.status === 'rejected')
       throw new NotFoundException('Professor(a) não encontrado(a)');
 
-    if (monitors.status === 'rejected')
-      throw new NotFoundException(
-        'Um(a) ou mais monitores(as) não encontrados(as)',
-      );
-
     const attrs: Partial<Subject> = values;
 
     subject.updatedAt = new Date();
     subject.knowledgeArea = knowledgeArea.value;
-    subject.users = [teacher.value, ...monitors.value];
+    subject.users = [teacher.value];
 
     Object.assign(subject, attrs);
 
@@ -256,7 +212,7 @@ export class SubjectsService {
     return this.subjectsRepository.remove(subject);
   }
 
-  async findForTeacherOrMonitor(userId: number) {
+  async findForTeacher(userId: number) {
     const user = await this.usersRepository.findOne({
       where: {
         id: userId,
@@ -274,12 +230,7 @@ export class SubjectsService {
       where: {
         id: subjectId,
       },
-      relations: [
-        'knowledgeArea',
-        'categories',
-        'users',
-        //TODO include classes
-      ],
+      relations: ['knowledgeArea', 'categories', 'users'],
     });
 
     if (!subject) return null;

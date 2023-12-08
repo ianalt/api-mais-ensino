@@ -1,6 +1,5 @@
 import { Category } from 'src/categories/category.entity';
 import { ClassFile } from 'src/class-files/class-file.entity';
-import { Question } from 'src/questions/question.entity';
 import { User } from 'src/users/user.entity';
 import {
   Column,
@@ -27,9 +26,6 @@ export class Classes {
 
   @Column({ name: 'title' })
   title: string;
-
-  @OneToMany(() => Question, (question) => question.class)
-  questions: Question[];
 
   @OneToMany(() => ClassFile, (classFile) => classFile.class)
   classFiles: ClassFile[];

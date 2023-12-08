@@ -48,7 +48,7 @@ export class FinancialInfoController {
     return this.financialInfoService.create(body, userId);
   }
 
-  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Roles('estudante', 'professor', 'admin')
   @Patch('/:id')
   async update(
     @Param('id', ParseIntPipe) id: number,

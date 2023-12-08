@@ -27,11 +27,11 @@ import { FullSubjectInfoDto } from './dtos/full-subject-info.dto';
 export class SubjectsController {
   constructor(private subjectsService: SubjectsService) {}
 
-  @Roles('monitor', 'professor')
+  @Roles('professor')
   @Get('/user')
   @Serialize(SubjectDto)
-  async findForTeacherOrMonitor(@Request() req) {
-    return await this.subjectsService.findForTeacherOrMonitor(req.user.id);
+  async findForTeacher(@Request() req) {
+    return await this.subjectsService.findForTeacher(req.user.id);
   }
 
   @Roles('professor', 'admin')
@@ -50,14 +50,14 @@ export class SubjectsController {
     return await this.subjectsService.getUpdateSubjectOptions(subjectId);
   }
 
-  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Roles('estudante', 'professor', 'admin')
   @Get('/:id')
   @Serialize(FullSubjectInfoDto)
   async findById(@Param('id', ParseIntPipe) id: number) {
     return await this.subjectsService.findById(id);
   }
 
-  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Roles('estudante', 'professor', 'admin')
   @Get()
   @Serialize(SubjectDto)
   async findAll() {

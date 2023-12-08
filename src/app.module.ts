@@ -24,12 +24,9 @@ import { User } from './users/user.entity';
 import { UsersModule } from './users/users.module';
 import { ClassesModule } from './classes/classes.module';
 import { ClassFilesModule } from './class-files/class-files.module';
-import { QuestionsModule } from './questions/questions.module';
-import { AnswersModule } from './answers/answers.module';
+
 import { Classes } from './classes/classes.entity';
 import { ClassFile } from './class-files/class-file.entity';
-import { Question } from './questions/question.entity';
-import { Answer } from './answers/answer.entity';
 
 @Module({
   imports: [
@@ -60,8 +57,6 @@ import { Answer } from './answers/answer.entity';
             Category,
             Classes,
             ClassFile,
-            Question,
-            Answer,
           ],
           synchronize: false,
         };
@@ -79,8 +74,6 @@ import { Answer } from './answers/answer.entity';
     CategoriesModule,
     ClassesModule,
     ClassFilesModule,
-    QuestionsModule,
-    AnswersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

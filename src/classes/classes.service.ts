@@ -37,7 +37,6 @@ export class ClassesService {
   ) {}
 
   private allRelations = [
-    'questions',
     'classFiles',
     'createdBy',
     'category',

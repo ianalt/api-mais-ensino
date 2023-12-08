@@ -47,7 +47,7 @@ export class AddressesController {
     return this.addressesService.create(body, userId);
   }
 
-  @Roles('estudante', 'monitor', 'professor', 'admin')
+  @Roles('estudante', 'professor', 'admin')
   @Patch('/:id')
   async update(
     @Param('id', ParseIntPipe) id: number,

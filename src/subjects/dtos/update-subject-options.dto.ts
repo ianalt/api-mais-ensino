@@ -13,9 +13,4 @@ export class UpdateSubjectOptionsDto {
   @ValidateNested({ each: true })
   @Type(() => BaseUserDto)
   teacherOptions: BaseUserDto[];
-
-  @Expose()
-  @ValidateNested({ each: true })
-  @Type(() => BaseUserDto)
-  monitorsOptions: BaseUserDto[];
 }
