@@ -25,7 +25,6 @@ export class SubjectsService {
     private usersRepository: Repository<User>,
   ) {}
 
-  //TODO no errors please
   private allRelations = [
     'users',
     'knowledgeArea',
@@ -231,12 +230,7 @@ export class SubjectsService {
       where: {
         id: subjectId,
       },
-      relations: [
-        'knowledgeArea',
-        'categories',
-        'users',
-        //TODO include classes
-      ],
+      relations: ['knowledgeArea', 'categories', 'users'],
     });
 
     if (!subject) return null;

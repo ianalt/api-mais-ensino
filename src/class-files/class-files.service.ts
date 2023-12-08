@@ -53,7 +53,6 @@ export class ClassFilesService {
     return newClassFile;
   }
 
-  //TODO UPDATE VIDEO CLASS
   async updateVideoClassFile(file: Express.Multer.File, classId: number) {
     const foundClass = await this.classesRepository.findOne({
       where: { id: classId, active: true },
@@ -117,9 +116,7 @@ export class ClassFilesService {
 
     return await this.classesRepository.save(classToUpdate);
   }
-  //UPDATE VIDEO CLASS
 
-  //TODO UPDATE EXTRA FILES
   async updateClassExtraFiles(files: Express.Multer.File[], classId: number) {
     const foundClass = await this.classesRepository.findOne({
       where: { id: classId, active: true },
